@@ -320,9 +320,6 @@
 
         opacity: 0;
         background-color: $theme-color;
-        // &:hover {
-        //     background-color: #000;
-        // }
       }
       .pro-wishlist {
         width: 48px;
@@ -335,7 +332,8 @@
         width: calc(100% - 48px - 48px);
 
         transition-delay: 0.1s;
-      }
+
+      } 
       .pro-quickview {
         width: 48px;
         margin: 0;
@@ -441,6 +439,14 @@
     transform: translateY(0);
 
     opacity: 1;
+  }
+}
+
+input.pro-input {
+  background-color: #fff!important;
+
+  &:hover, &:visited {
+    background-color: #fff!important;
   }
 }
 
