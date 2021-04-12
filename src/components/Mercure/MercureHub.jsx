@@ -28,7 +28,9 @@ const MercureHub = ({ children }) => {
 
     eventSource.onmessage = event => {
         const data = JSON.parse(event.data);
-        // if (data['@id'].includes('products')) {
+        if (data['@id'].includes('products')) {
+            console.log(data);
+        }
         //     const newProducts = data['@type'] === 'Product' ?
         //         ProductActions.updateFromMercure(products, data) :
         //         ProductActions.deleteFromMercure(products, data['@id'].substring(parseInt(data['@id'].lastIndexOf('/')) + 1));
