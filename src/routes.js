@@ -1,6 +1,7 @@
 import React from 'react';
 
 // home pages
+const HomePersonalized = React.lazy(() => import("./pages/home/HomePersonalized"));
 const HomeFashion = React.lazy(() => import("./pages/home/HomeFashion"));
 const HomeFashionTwo = React.lazy(() => import("./pages/home/HomeFashionTwo"));
 const HomeFashionThree = React.lazy(() => import("./pages/home/HomeFashionThree"));
@@ -41,6 +42,7 @@ const HomeBlackFridayTwo = React.lazy(() => import("./pages/home/HomeBlackFriday
 const HomeValentinesDay = React.lazy(() => import("./pages/home/HomeValentinesDay"));
 
 // shop pages
+const ShopGridPersonalized = React.lazy(() => import("./pages/shop/ShopGridPersonalized"));
 const ShopGridStandard = React.lazy(() => import("./pages/shop/ShopGridStandard"));
 const ShopGridFilter = React.lazy(() => import("./pages/shop/ShopGridFilter"));
 const ShopGridTwoColumn = React.lazy(() => import("./pages/shop/ShopGridTwoColumn"));
@@ -79,7 +81,8 @@ const Checkout = React.lazy(() => import("./pages/other/Checkout"));
 const NotFound = React.lazy(() => import("./pages/other/NotFound"));
 
 const routes = [
-                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomeFashion },
+                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
+                { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },
 
                 // {/* Homepages */}
                 { path: process.env.PUBLIC_URL + "/home-fashion", name: 'HomeFashion', component: HomeFashion },

@@ -3,10 +3,10 @@ import React, { Fragment } from "react";
 import HeaderSix from "../wrappers/header/HeaderSix";
 import FooterOne from "../wrappers/footer/FooterOne";
 
-const LayoutSeven = ({ children }) => {
+const LayoutSeven = ({ children, stick="" }) => {
   return (
     <Fragment>
-      <HeaderSix layout="container-fluid" />
+      <HeaderSix layout="container-fluid" stick={ stick }/>
       {children}
       <FooterOne spaceTopClass="pt-100" spaceBottomClass="pb-70" />
     </Fragment>

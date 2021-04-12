@@ -5,10 +5,10 @@ import Paginator from "react-hooks-paginator";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getSortedProducts } from "../../helpers/product";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
-import ShopProducts from "../../wrappers/product/ShopProducts";
+import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 
 const ShopGridNoSidebar = ({ location, products }) => {
   const [layout, setLayout] = useState("grid three-column");
@@ -58,7 +58,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
       <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
       <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Shop</BreadcrumbsItem>
 
-      <LayoutOne headerTop="visible">
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
         {/* <Breadcrumb /> */}
 
@@ -75,7 +75,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
                 />
 
                 {/* shop page content default */}
-                <ShopProducts layout={layout} products={currentData} />
+                <ShopProductsPersonalized layout={layout} products={currentData} />
 
                 {/* shop product pagination */}
                 <div className="pro-pagination-style text-center mt-30">
@@ -95,7 +95,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
             </div>
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };

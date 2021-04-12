@@ -7,21 +7,11 @@ import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 
-const ProductGrid = ({
-  products,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItems,
-  wishlistItems,
-  compareItems,
-  sliderClassName,
-  spaceBottomClass
-}) => {
+const ProductGrid = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass }) => {
+  
   return (
     <Fragment>
-      {products.map(product => {
+      { products.map(product => {
         return (
           <ProductGridSingle
             sliderClassName={sliderClassName}

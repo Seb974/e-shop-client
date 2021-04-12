@@ -6,43 +6,42 @@ import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 
-const ProductGridListSingle = ({
-  product,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItem,
-  wishlistItem,
-  compareItem,
-  sliderClassName,
-  spaceBottomClass
-}) => {
-  const [modalShow, setModalShow] = useState(false);
+const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass}) => {
+  
   const { addToast } = useToasts();
+  const [modalShow, setModalShow] = useState(false);
+  const [quantity, setQuantity] = useState("");
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
+  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate).toFixed(2);
+
+  const handleChange = ({ currentTarget }) => {
+    setQuantity(currentTarget.value);
+  };
 
   const handleShowDetails = event => {
-    event.preventDefault();
-    setModalShow(true);
+      event.preventDefault();
+      setModalShow(true);
+  };
+
+  const handleAddToCart = event => {
+      addToCart(product, addToast, parseFloat(quantity));
+      setQuantity("");
   };
 
   return (
     <Fragment>
+      {/* Card */}
       <div className={`col-xl-4 col-sm-6 ${ sliderClassName ? sliderClassName : "" }`}>
         <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img">
-            <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+            <a href="#" onClick={ handleShowDetails }>
               <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
               { product.image.length <= 1 ? "" :
                 <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
               }
-            </Link>
+              </a>
             { !(product.discount || product.new) ? "" :
                 <div className="product-img-badges">
                   { product.discount ? <span className="pink">-{product.discount}%</span> : "" }
@@ -61,78 +60,36 @@ const ProductGridListSingle = ({
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                {
-                product.affiliateLink ?
-                  <a
-                    href={product.affiliateLink}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {" "}
-                    Buy now{" "}
-                  </a>
-                : product.variation && product.variation.length >= 1 ?
-                  <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
-                    Select Option
-                  </Link>
-                : product.stock && product.stock > 0 ?
-                  <button
-                    onClick={() => addToCart(product, addToast)}
-                    className={
-                      cartItem !== undefined && cartItem.quantity > 0
-                        ? "active"
-                        : ""
-                    }
-                    disabled={cartItem !== undefined && cartItem.quantity > 0}
-                    title={
-                      cartItem !== undefined ? "Added to cart" : "Add to cart"
-                    }
-                  >
-                    {" "}
-                    <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && cartItem.quantity > 0
-                      ? "Added"
-                      : "Add to cart"}
-                  </button>
+                { product.stock && product.stock > 0 ?
+                    <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                  :
-                  <button disabled className="active">Out of Stock</button>
+                    <button disabled className="active">Out of Stock</button>
                 }
               </div>
               <div className="pro-same-action pro-quickview">
-                <button onClick={() => setModalShow(true)} title="Quick View">
-                  <i className="pe-7s-look" />
+                <button onClick={ handleAddToCart } title="Quick View" disabled={ !(product.stock && product.stock > 0) || quantity <= 0 }>
+                  <i className="pe-7s-cart" />
                 </button>
               </div>
             </div>
           </div>
           <div className="product-content text-center">
-            <h3>
-              <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
-                {product.name}
-              </Link>
-            </h3>
-            {product.rating && product.rating > 0 ? (
-              <div className="product-rating">
-                <Rating ratingValue={product.rating} />
-              </div>
-            ) : (
-              ""
-            )}
+            <a href="#" onClick={ handleShowDetails }><h3>{ product.name }</h3></a>
             <div className="product-price">
-              {discountedPrice !== null ? (
+              {discountedPrice !== null ?
                 <Fragment>
-                  <span>{currency.currencySymbol + finalDiscountedPrice}</span>{" "}
-                  <span className="old">
-                    {currency.currencySymbol + finalProductPrice}
-                  </span>
+                    <span>{finalDiscountedPrice + currency.currencySymbol}</span>
+                    {" "}
+                    <span className="old">{finalProductPrice + currency.currencySymbol}</span>
                 </Fragment>
-              ) : (
-                <span>{currency.currencySymbol + finalProductPrice} </span>
-              )}
+              :
+                <span>{finalProductPrice + currency.currencySymbol} </span>
+              }
             </div>
           </div>
         </div>
 
+        {/* List */}
         <div className="shop-list-wrap mb-30">
           <div className="row">
             <div className="col-xl-4 col-md-5 col-sm-6">
@@ -167,39 +124,13 @@ const ProductGridListSingle = ({
                       </Fragment>
                   }
                 </div>
-                { !(product.rating && product.rating > 0) ? "" :
-                    <div className="rating-review">
-                        <div className="product-list-rating">
-                            <Rating ratingValue={product.rating} />
-                        </div>
-                    </div>
-                }
                 {product.shortDescription ? <p>{product.shortDescription}</p> : "" }
-
                 <div className="shop-list-actions d-flex align-items-center">
                   <div className="shop-list-btn btn-hover">
-                    { product.affiliateLink ?
-                      <a href={product.affiliateLink} rel="noopener noreferrer" target="_blank">
-                        {" "}Buy now{" "}
-                      </a>
-                    : 
-                      product.variation && product.variation.length >= 1 ?
-                      <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
-                          Select Option 
-                      </Link>
-                    : 
-                    product.stock && product.stock > 0 ?
-                      <button
-                        onClick={() => addToCart(product, addToast)}
-                        className={ cartItem !== undefined && cartItem.quantity > 0 ? "active" : "" }
-                        disabled={ cartItem !== undefined && cartItem.quantity > 0 }
-                        title={ cartItem !== undefined ? "Added to cart" : "Add to cart" }
-                      >
-                        {" "}<i className="pe-7s-cart"></i>{" "}
-                        { cartItem !== undefined && cartItem.quantity > 0 ? "Added": "Add to cart" }
-                      </button>
+                    { product.stock && product.stock > 0 ?
+                        <input type="number" className="pro-input" />
                     :
-                      <button disabled className="active">Out of Stock</button>
+                        <button disabled className="active">Out of Stock</button>
                     }
                   </div>
 
@@ -229,7 +160,6 @@ const ProductGridListSingle = ({
           </div>
         </div>
       </div>
-      {/* product modal */}
       <ProductModal
         show={modalShow}
         onHide={() => setModalShow(false)}
@@ -250,7 +180,7 @@ const ProductGridListSingle = ({
   );
 };
 
-ProductGridListSingle.propTypes = {
+ProductGridPersonalizedSingle.propTypes = {
   addToCart: PropTypes.func,
   addToCompare: PropTypes.func,
   addToWishlist: PropTypes.func,
@@ -263,4 +193,4 @@ ProductGridListSingle.propTypes = {
   wishlistItem: PropTypes.object
 };
 
-export default ProductGridListSingle;
+export default ProductGridPersonalizedSingle;

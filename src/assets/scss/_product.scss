@@ -320,6 +320,11 @@
 
         opacity: 0;
         background-color: $theme-color;
+        @media #{$lg-layout, $md-layout, $xs-layout} {
+          visibility: visible;
+          opacity: 1;
+          transform: translateY(0);
+        }
       }
       .pro-wishlist {
         width: 48px;

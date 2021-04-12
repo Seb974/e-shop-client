@@ -16,7 +16,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
                    setIsAuthenticated(false);
                    setCurrentUser(AuthActions.getCurrentUser());
                });
-}
+  }
 
   return (
     <div
@@ -268,7 +268,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </ul>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/shop"}>
               {" "}
               {strings["shop"]}
               {sidebarMenu ? (
@@ -283,7 +283,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
               <li>
                 <ul>
                   <li className="mega-menu-title">
-                    <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                    <Link to={process.env.PUBLIC_URL + "/shop"}>
                       {strings["shop_layout"]}
                     </Link>
                   </li>
@@ -395,14 +395,8 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
               <li>
                 <ul>
                   <li className="mega-menu-img">
-                    <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-                      <img
-                        src={
-                          process.env.PUBLIC_URL +
-                          "/assets/img/banner/banner-12.png"
-                        }
-                        alt=""
-                      />
+                    <Link to={process.env.PUBLIC_URL + "/shop"}>
+                      <img src={process.env.PUBLIC_URL + "/assets/img/banner/banner-12.png"}alt=""/>
                     </Link>
                   </li>
                 </ul>
@@ -410,7 +404,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </ul>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/shop"}>
               {strings["collection"]}
             </Link>
           </li>
@@ -513,12 +507,9 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </Link>
           </li>
           <li>
-              { !isAuthenticated ? <Identification /> : 
+              { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
                 <a className="nav-link" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
               }
-            {/* <Link to={process.env.PUBLIC_URL + "/contact"}> */}
-              {/* {strings["login"]} */}
-            {/* </Link> */}
           </li>
         </ul>
       </nav>

@@ -4,7 +4,7 @@ export const SET_CURRENCY = "SET_CURRENCY";
 export const setCurrency = currencyName => {
   return dispatch => {
     axios
-      .get(`https://api.exchangeratesapi.io/latest?base=USD`)
+      .get(`https://api.exchangeratesapi.io/latest?base=EUR`)
       .then(response => {
         const rates = response.data.rates;
         let currencyRate = 0;
@@ -18,8 +18,6 @@ export const setCurrency = currencyName => {
           payload: { currencyName, currencyRate }
         });
       })
-      .catch(err => {
-        console.log("Error: ", err);
-      });
+      .catch(err => console.log("Error: ", err));
   };
 };
