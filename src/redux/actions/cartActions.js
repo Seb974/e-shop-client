@@ -1,3 +1,5 @@
+import { setSecuredProduct } from '../../helpers/product';
+
 export const ADD_TO_CART = "ADD_TO_CART";
 export const DECREASE_QUANTITY = "DECREASE_QUANTITY";
 export const DELETE_FROM_CART = "DELETE_FROM_CART";
@@ -13,7 +15,8 @@ export const addToCart = (item, addToast, quantityCount, selectedProductColor, s
     dispatch({
       type: ADD_TO_CART,
       payload: {
-        ...item,
+        // ...item,
+        product: setSecuredProduct(item),
         quantity: quantityCount,
         selectedProductColor: selectedProductColor
           ? selectedProductColor
@@ -38,7 +41,8 @@ export const decreaseQuantity = (item, addToast) => {
         autoDismiss: true
       });
     }
-    dispatch({ type: DECREASE_QUANTITY, payload: item });
+    // dispatch({ type: DECREASE_QUANTITY, payload: item });
+    dispatch({ type: DECREASE_QUANTITY, payload: setSecuredProduct(item) });
   };
 };
 //delete from cart
@@ -48,6 +52,7 @@ export const deleteFromCart = (item, addToast) => {
       addToast("Removed From Cart", { appearance: "error", autoDismiss: true });
     }
     dispatch({ type: DELETE_FROM_CART, payload: item });
+    // dispatch({ type: DELETE_FROM_CART, payload: setSecuredProduct(item) });
   };
 };
 //delete all from cart
@@ -65,8 +70,8 @@ export const deleteAllFromCart = addToast => {
 
 // get stock of cart item
 export const cartItemStock = (item, color, size) => {
-  if (item.stock) {
-    return item.stock;
+  if (item.product.stock) {
+    return item.product.stock;
   } else {
     return item.variation
       .filter(single => single.color === color)[0]

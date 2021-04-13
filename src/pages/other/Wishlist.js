@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
@@ -10,11 +10,20 @@ import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../
 import { addToCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import ProductsContext from "../../contexts/ProductsContext";
+import { getElementsFromIds } from '../../helpers/product';
 
 const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist }) => {
   
   const { addToast } = useToasts();
   const { pathname } = location;
+  const { products } = useContext(ProductsContext);
+  const [favourites, setFavourites] = useState([]);
+
+  useEffect(() => {
+      const favouriteSet = getElementsFromIds(wishlistItems, products);
+      setFavourites(favouriteSet);
+  }, [wishlistItems, products]);
 
   return (
     <Fragment>
@@ -33,7 +42,8 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
         {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-3">
           <div className="container">
-            {wishlistItems && wishlistItems.length >= 1 ? (
+            {/* {wishlistItems && wishlistItems.length >= 1 ? ( */}
+            { favourites && favourites.length >= 1 ? (
               <Fragment>
                 <h3 className="cart-page-title">Your wishlist items</h3>
                 <div className="row">
@@ -50,7 +60,8 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                           </tr>
                         </thead>
                         <tbody>
-                          {wishlistItems.map((wishlistItem, key) => {
+                          {/* {wishlistItems.map((wishlistItem, key) => { */}
+                          { favourites.map((wishlistItem, key) => {
                             const discountedPrice = getDiscountPrice(
                               wishlistItem.price,
                               wishlistItem.discount

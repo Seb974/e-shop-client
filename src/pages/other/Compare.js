@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
@@ -11,11 +11,20 @@ import { getDiscountPrice } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Rating from "../../components/product/sub-components/ProductRating";
+import ProductsContext from "../../contexts/ProductsContext";
+import { getElementsFromIds } from '../../helpers/product';
 
 const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompare, currency }) => {
   
   const { pathname } = location;
   const { addToast } = useToasts();
+  const { products } = useContext(ProductsContext);
+  const [compareList, setCompareList] = useState([]);
+
+  useEffect(() => {
+      const compareSet = getElementsFromIds(compareItems, products);
+      setCompareList(compareSet);
+  }, [compareItems, products]);
 
   return (
     <Fragment>
@@ -35,7 +44,8 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
         {/* <Breadcrumb /> */}
         <div className="compare-main-area pt-90 pb-100 mt-3">
           <div className="container">
-            {compareItems && compareItems.length >= 1 ? (
+            {/* {compareItems && compareItems.length >= 1 ? ( */}
+            { compareList && compareList.length >= 1 ? (
               <div className="row">
                 <div className="col-lg-12">
                   <div className="compare-page-content">
@@ -44,18 +54,15 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                         <tbody>
                           <tr>
                             <th className="title-column">Product Info</th>
-                            {compareItems.map((compareItem, key) => {
+                            {/* {compareItems.map((compareItem, key) => { */}
+                            { compareList.map((compareItem, key) => {
                               const cartItem = cartItems.filter(
                                 item => item.id === compareItem.id
                               )[0];
                               return (
                                 <td className="product-image-title" key={key}>
                                   <div className="compare-remove">
-                                    <button
-                                      onClick={() =>
-                                        deleteFromCompare(compareItem, addToast)
-                                      }
-                                    >
+                                    <button onClick={ () => deleteFromCompare(compareItem, addToast) }>
                                       <i className="pe-7s-trash" />
                                     </button>
                                   </div>

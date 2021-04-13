@@ -1,27 +1,30 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToCart,
-  decreaseQuantity,
-  deleteFromCart,
-  cartItemStock,
-  deleteAllFromCart
-} from "../../redux/actions/cartActions";
+import { addToCart, decreaseQuantity, deleteFromCart, cartItemStock, deleteAllFromCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import ProductsContext from "../../contexts/ProductsContext";
+import { getProductsFromIds } from '../../helpers/product';
 
 const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart,deleteAllFromCart }) => {
 
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
+  const { products } = useContext(ProductsContext);
+  const [productCart, setProductCart] = useState([])
   let cartTotalPrice = 0;
+
+  useEffect(() => {
+      const productSet = getProductsFromIds(cartItems, products);
+      setProductCart(productSet);
+  }, [cartItems, products])
 
   return (
     <Fragment>
@@ -40,7 +43,8 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
         {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-3">
           <div className="container">
-            {cartItems && cartItems.length >= 1 ? (
+            {/* {cartItems && cartItems.length >= 1 ? ( */}
+            { productCart && productCart.length >= 1 ? (
               <Fragment>
                 <h3 className="cart-page-title">Your cart items</h3>
                 <div className="row">
@@ -58,12 +62,13 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                           </tr>
                         </thead>
                         <tbody>
-                          {cartItems.map((cartItem, key) => {
+                          {/* {cartItems.map((cartItem, key) => { */}
+                          { productCart.map((cartItem, key) => {
                             const discountedPrice = getDiscountPrice(
-                              cartItem.price,
-                              cartItem.discount
+                              cartItem.product.price,
+                              cartItem.product.discount
                             );
-                            const finalProductPrice = (cartItem.price * currency.currencyRate).toFixed(2);
+                            const finalProductPrice = (cartItem.product.price * currency.currencyRate).toFixed(2);
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
 
                             discountedPrice != null ? 
@@ -74,14 +79,14 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
-                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.id}>
-                                      <img className="img-fluid" src={ process.env.PUBLIC_URL + cartItem.image[0] } alt=""/>
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id}>
+                                      <img className="img-fluid" src={ process.env.PUBLIC_URL + cartItem.product.image[0] } alt=""/>
                                   </Link>
                                 </td>
 
                                 <td className="product-name">
-                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.id } >
-                                      {cartItem.name}
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id } >
+                                      {cartItem.product.name}
                                   </Link>
                                   { !(cartItem.selectedProductColor && cartItem.selectedProductSize) ? "" :
                                     <div className="cart-item-variation">

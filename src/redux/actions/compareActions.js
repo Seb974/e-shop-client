@@ -1,3 +1,5 @@
+import { setSecuredProduct } from '../../helpers/product';
+
 export const ADD_TO_COMPARE = "ADD_TO_COMPARE";
 export const DELETE_FROM_COMPARE = "DELETE_FROM_COMPARE";
 
@@ -10,7 +12,7 @@ export const addToCompare = (item, addToast) => {
         autoDismiss: true
       });
     }
-    dispatch({ type: ADD_TO_COMPARE, payload: item });
+    dispatch({ type: ADD_TO_COMPARE, payload: setSecuredProduct(item) });
   };
 };
 

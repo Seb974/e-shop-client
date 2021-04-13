@@ -227,3 +227,27 @@ export const toggleShopTopFilter = e => {
   }
   e.currentTarget.classList.toggle("active");
 };
+
+export const getProductsFromIds = (ids, products) => {
+    return ids.length <= 0 ? [] : ids.map(element => {
+        let i = products.find(product => product.id == element.product.id);
+        return {...element, product: i};
+    });
+};
+
+export const setSecuredProducts = products => {
+    return products.map(product => {
+        return Object.keys(product).includes('product') ? {...product, product: {id: product.product.id}} : { id: product.id };
+    });
+};
+
+export const setSecuredProduct = product => {
+    const securedProduct = Object.keys(product).includes('product') ? {id: product.product.id} : { id: product.id };
+    return securedProduct;
+};
+
+export const getElementsFromIds = (ids, products) => {
+    return ids.map(element => {
+        return products.find(product => product.id == element.id);
+    });
+}

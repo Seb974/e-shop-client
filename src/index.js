@@ -15,11 +15,7 @@ import * as serviceWorker from "./serviceWorker";
 
 import { composeWithDevTools } from "redux-devtools-extension";
 
-const store = createStore(
-  rootReducer,
-  load(),
-  composeWithDevTools(applyMiddleware(thunk, save()))
-);
+const store = createStore(rootReducer, load(), composeWithDevTools(applyMiddleware(thunk, save())));
 
 // fetch products from json file
 store.dispatch(fetchProducts(products));

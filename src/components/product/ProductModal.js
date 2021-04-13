@@ -1,40 +1,22 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import Swiper from "react-id-swiper";
 import { getProductCartQuantity } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
 import Rating from "./sub-components/ProductRating";
 import { connect } from "react-redux";
+// import ProductsContext from "../../contexts/ProductsContext";
 
-function ProductModal(props) {
-  const { product } = props;
-  const { currency } = props;
-  const { discountedprice } = props;
-  const { finalproductprice } = props;
-  const { finaldiscountedprice } = props;
 
+const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, addToast}) => {
+  
+  // const { products } = useContext(ProductsContext);
   const [gallerySwiper, getGallerySwiper] = useState(null);
   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
-  const [selectedProductColor, setSelectedProductColor] = useState(
-    product.variation ? product.variation[0].color : ""
-  );
-  const [selectedProductSize, setSelectedProductSize] = useState(
-    product.variation ? product.variation[0].size[0].name : ""
-  );
-  const [productStock, setProductStock] = useState(
-    product.variation ? product.variation[0].size[0].stock : product.stock
-  );
+  const [selectedProductColor, setSelectedProductColor] = useState( product.variation ? product.variation[0].color : "");
+  const [selectedProductSize, setSelectedProductSize] = useState( product.variation ? product.variation[0].size[0].name : "");
+  const [productStock, setProductStock] = useState( product.variation ? product.variation[0].size[0].stock : product.stock );
   const [quantityCount, setQuantityCount] = useState(1);
-
-  const wishlistItem = props.wishlistitem;
-  const compareItem = props.compareitem;
-
-  const addToCart = props.addtocart;
-  const addToWishlist = props.addtowishlist;
-  const addToCompare = props.addtocompare;
-
-  const addToast = props.addtoast;
-  const cartItems = props.cartitems;
 
   const productCartQty = getProductCartQuantity(
     cartItems,
@@ -90,8 +72,8 @@ function ProductModal(props) {
   return (
     <Fragment>
       <Modal
-        show={props.show}
-        onHide={props.onHide}
+        show={show}
+        onHide={onHide}
         className="product-quickview-modal-wrapper"
       >
         <Modal.Header closeButton></Modal.Header>
@@ -153,7 +135,7 @@ function ProductModal(props) {
                     <span>{currency.currencySymbol + finalproductprice} </span>
                   )}
                 </div>
-                {product.rating && product.rating > 0 ? (
+                {/* {product.rating && product.rating > 0 ? (
                   <div className="pro-details-rating-wrap">
                     <div className="pro-details-rating">
                       <Rating ratingValue={product.rating} />
@@ -161,12 +143,12 @@ function ProductModal(props) {
                   </div>
                 ) : (
                   ""
-                )}
+                )} */}
                 <div className="pro-details-list">
                   <p>{product.shortDescription}</p>
                 </div>
 
-                {product.variation ? (
+                {/* {product.variation ? (
                   <div className="pro-details-size-color">
                     <div className="pro-details-color-wrap">
                       <span>Color</span>
@@ -241,7 +223,7 @@ function ProductModal(props) {
                   </div>
                 ) : (
                   ""
-                )}
+                )} */}
                 {product.affiliateLink ? (
                   <div className="pro-details-quality">
                     <div className="pro-details-cart btn-hover">

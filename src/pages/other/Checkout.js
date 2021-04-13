@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
@@ -7,11 +7,20 @@ import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { getDiscountPrice } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import ProductsContext from "../../contexts/ProductsContext";
+import { getProductsFromIds } from '../../helpers/product';
 
 const Checkout = ({ location, cartItems, currency }) => {
 
   const { pathname } = location;
+  const { products } = useContext(ProductsContext);
+  const [productCart, setProductCart] = useState([]);
   let cartTotalPrice = 0;
+
+  useEffect(() => {
+      const productSet = getProductsFromIds(cartItems, products);
+      setProductCart(productSet);
+  }, [cartItems, products]);
 
   return (
     <Fragment>
@@ -30,7 +39,8 @@ const Checkout = ({ location, cartItems, currency }) => {
         {/* <Breadcrumb /> */}
         <div className="checkout-area pt-95 pb-100 mt-3">
           <div className="container">
-            {cartItems && cartItems.length >= 1 ? (
+            {/* {cartItems && cartItems.length >= 1 ? ( */}
+            { productCart && productCart.length >= 1 ? (
               <div className="row">
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
@@ -140,13 +150,14 @@ const Checkout = ({ location, cartItems, currency }) => {
                         </div>
                         <div className="your-order-middle">
                           <ul>
-                            {cartItems.map((cartItem, key) => {
+                            {/* {cartItems.map((cartItem, key) => { */}
+                            { productCart.map((cartItem, key) => {
                               const discountedPrice = getDiscountPrice(
-                                cartItem.price,
-                                cartItem.discount
+                                cartItem.product.price,
+                                cartItem.product.discount
                               );
                               const finalProductPrice = (
-                                cartItem.price * currency.currencyRate
+                                cartItem.product.price * currency.currencyRate
                               ).toFixed(2);
                               const finalDiscountedPrice = (
                                 discountedPrice * currency.currencyRate
@@ -160,7 +171,7 @@ const Checkout = ({ location, cartItems, currency }) => {
                               return (
                                 <li key={key}>
                                   <span className="order-middle-left">
-                                    {cartItem.name} X {cartItem.quantity}
+                                    {cartItem.product.name} X {cartItem.quantity}
                                   </span>{" "}
                                   <span className="order-price">
                                     {discountedPrice !== null

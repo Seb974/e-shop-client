@@ -95,12 +95,14 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
             <div className="col-xl-4 col-md-5 col-sm-6">
               <div className="product-list-image-wrap">
                 <div className="product-img">
-                  <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
+                  {/* <Link to={process.env.PUBLIC_URL + "/product/" + product.id}> */}
+                  <a href="#" onClick={ handleShowDetails }>
                     <img className="default-img img-fluid" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
                     {product.image.length <= 1 ? "" :
                       <img className="hover-img img-fluid" src={process.env.PUBLIC_URL + product.image[1]} alt="" />
                     }
-                  </Link>
+                  </a>
+                  {/* </Link> */}
                   { !(product.discount || product.new) ? "" :
                     <div className="product-img-badges">
                       { product.discount ? <span className="pink">-{product.discount}%</span> : "" }
@@ -112,9 +114,7 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
             </div>
             <div className="col-xl-8 col-md-7 col-sm-6">
               <div className="shop-list-content">
-                <h3>
-                  <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>{ product.name }</Link>
-                </h3>
+                <a href="#" onClick={ handleShowDetails }><h3>{ product.name }</h3></a>
                 <div className="product-list-price">
                   {discountedPrice === null ? <span>{currency.currencySymbol + finalProductPrice} </span> :
                       <Fragment>

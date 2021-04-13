@@ -1,14 +1,15 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { getProducts } from "../../helpers/product";
 import ProductGridHomePersonalizedSingle from "../../components/product/ProductGridHomePersonalizedSingle";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
+import ProductsContext from "../../contexts/ProductsContext";
 
 const ProductGridHomePersonalized = ({
-  products,
+  // products,
   currency,
   addToCart,
   addToWishlist,
@@ -17,11 +18,23 @@ const ProductGridHomePersonalized = ({
   wishlistItems,
   compareItems,
   sliderClassName,
-  spaceBottomClass
+  spaceBottomClass,
+  category,
+  type,
+  limit,
 }) => {
+
+  const { products } = useContext(ProductsContext);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
+
+  useEffect(() => {
+      const productSet = getProducts(products, category, type, limit);
+      setDisplayedProducts(productSet);
+  }, [products])
+
   return (
     <Fragment>
-      {products.map(product => {
+      {displayedProducts.map(product => {
         return (
           <ProductGridHomePersonalizedSingle
             sliderClassName={sliderClassName}
@@ -67,12 +80,12 @@ ProductGridHomePersonalized.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    products: getProducts(
-      state.productData.products,
-      ownProps.category,
-      ownProps.type,
-      ownProps.limit
-    ),
+    // products: getProducts(
+    //   state.productData.products,
+    //   ownProps.category,
+    //   ownProps.type,
+    //   ownProps.limit
+    // ),
     currency: state.currencyData,
     cartItems: state.cartData,
     wishlistItems: state.wishlistData,

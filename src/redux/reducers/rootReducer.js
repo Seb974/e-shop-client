@@ -1,5 +1,5 @@
 import currencyReducer from "./currencyReducer";
-import productReducer from "./productReducer";
+// import productReducer from "./productReducer";
 import cartReducer from "./cartReducer";
 import wishlistReducer from "./wishlistReducer";
 import compareReducer from "./compareReducer";
@@ -9,7 +9,7 @@ import { createMultilanguageReducer } from "redux-multilanguage";
 const rootReducer = combineReducers({
   multilanguage: createMultilanguageReducer({ currentLanguageCode: "fn" }),
   currencyData: currencyReducer,
-  productData: productReducer,
+  // productData: productReducer,
   cartData: cartReducer,
   wishlistData: wishlistReducer,
   compareData: compareReducer

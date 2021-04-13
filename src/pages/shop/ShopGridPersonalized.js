@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState, useEffect } from "react";
+import React, { Fragment, useState, useEffect, useContext } from "react";
 import MetaTags from "react-meta-tags";
 import Paginator from "react-hooks-paginator";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
@@ -9,8 +9,10 @@ import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
+import ProductsContext from "../../contexts/ProductsContext";
 
-const ShopGridNoSidebar = ({ location, products }) => {
+const ShopGridNoSidebar = ({ location }) => {   // products 
+
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
   const sortValue = "";
@@ -20,6 +22,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
+  const { products } = useContext(ProductsContext);
 
   const pageLimit = 15;
   const { pathname } = location;
@@ -35,11 +38,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
 
   useEffect(() => {
     let sortedProducts = getSortedProducts(products, sortType, sortValue);
-    const filterSortedProducts = getSortedProducts(
-      sortedProducts,
-      filterSortType,
-      filterSortValue
-    );
+    const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
     sortedProducts = filterSortedProducts;
     setSortedProducts(sortedProducts);
     setCurrentData(sortedProducts.slice(offset, offset + pageLimit));
@@ -74,7 +73,7 @@ const ShopGridNoSidebar = ({ location, products }) => {
                   sortedProductCount={currentData.length}
                 />
 
-                {/* shop page content default */}
+                {/* shop page content */}
                 <ShopProductsPersonalized layout={layout} products={currentData} />
 
                 {/* shop product pagination */}
@@ -102,12 +101,12 @@ const ShopGridNoSidebar = ({ location, products }) => {
 
 ShopGridNoSidebar.propTypes = {
   location: PropTypes.object,
-  products: PropTypes.array
+  // products: PropTypes.array
 };
 
 const mapStateToProps = state => {
   return {
-    products: state.productData.products
+    // products: state.productData.products
   };
 };
 

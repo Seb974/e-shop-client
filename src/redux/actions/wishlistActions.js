@@ -1,3 +1,5 @@
+import { setSecuredProduct } from '../../helpers/product';
+
 export const ADD_TO_WISHLIST = "ADD_TO_WISHLIST";
 export const DELETE_FROM_WISHLIST = "DELETE_FROM_WISHLIST";
 export const DELETE_ALL_FROM_WISHLIST = "DELETE_ALL_FROM_WISHLIST";
@@ -11,7 +13,7 @@ export const addToWishlist = (item, addToast) => {
         autoDismiss: true
       });
     }
-    dispatch({ type: ADD_TO_WISHLIST, payload: item });
+    dispatch({ type: ADD_TO_WISHLIST, payload: setSecuredProduct(item) });
   };
 };
 
