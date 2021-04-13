@@ -103,7 +103,7 @@ button {
 a,
 button,
 img,
-input,
+input:not(.ext-input),
 span {
   transition: all 0.3s ease 0s;
 }
@@ -1341,7 +1341,7 @@ textarea:-ms-input-placeholder {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
-input {
+input:not(.ext-input) {
   font-size: 14px;
 
   width: 100%;

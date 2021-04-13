@@ -93,14 +93,14 @@ const Register = ({ onEnd }) => {
             </Form.Group>
             <Form.Group>
                 <Form.Check type="checkbox">
-                    <Form.Check.Input name="acceptCGV" type="checkbox" checked={ user.acceptCGV } onChange={ handleCheckbox } className={errors.acceptCGV && " is-invalid"}/>
+                    <Form.Check.Input name="acceptCGV" type="checkbox" checked={ user.acceptCGV } onChange={ handleCheckbox } className={"ext-input " + (errors.acceptCGV && " is-invalid")}/>
                     <Form.Check.Label>J'accepte les <Link to="/cgv">Conditions Générales de Vente</Link></Form.Check.Label>
                     <Form.Control.Feedback type="invalid">{ errors.acceptCGV }</Form.Control.Feedback>
                 </Form.Check>
             </Form.Group>
             <Form.Group>
                 <Form.Check type="checkbox">
-                    <Form.Check.Input name="acceptRGPD" type="checkbox" checked={ user.acceptRGPD } onChange={ handleCheckbox } className={errors.acceptRGPD && " is-invalid"}/>
+                    <Form.Check.Input name="acceptRGPD" type="checkbox" checked={ user.acceptRGPD } onChange={ handleCheckbox } className={"ext-input " + (errors.acceptRGPD && " is-invalid")}/>
                         <Form.Check.Label>J'accepte que Frais Péi collecte mon adresse et N° de téléphone afin d'assurer la livraison de mes commandes.</Form.Check.Label>
                         <Form.Control.Feedback type="invalid">{ errors.acceptRGPD }</Form.Control.Feedback>
                 </Form.Check>
