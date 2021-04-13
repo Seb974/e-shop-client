@@ -33,7 +33,7 @@ const App = (props) => {
     }, []);
 
     return (
-        <DataProvider>
+        // <DataProvider>
             <ToastProvider placement="bottom-left">
                 <BreadcrumbsProvider>
                     <HashRouter>
@@ -58,7 +58,7 @@ const App = (props) => {
                     </HashRouter>
                 </BreadcrumbsProvider>
             </ToastProvider>
-        </DataProvider>
+        // </DataProvider>
   );
 };
 

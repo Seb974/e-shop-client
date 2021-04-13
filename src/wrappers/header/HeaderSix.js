@@ -30,19 +30,15 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
   return (
     <header
       className={`header-area sticky-bar header-padding-3 header-res-padding clearfix transparent-bar header-hm-7 
-      ${ headerBgClass ? headerBgClass : "" } 
-      ${ headerPaddingClass ? headerPaddingClass : "" } 
-      ${ (scroll > headerTop) || stick !== "" ? "stick" : ""}`}
+          ${ headerBgClass ? headerBgClass : "" } 
+          ${ headerPaddingClass ? headerPaddingClass : "" } 
+          ${ (scroll > headerTop) || stick !== "" ? "stick" : ""}`}
     >
       <div className={layout === "container-fluid" ? layout : "container"}>
         <div className="row">
           <div className="col-xl-5 col-lg-6 d-none d-lg-block">
             <div className="clickable-menu clickable-mainmenu-active">
-              <button
-                onClick={() => {
-                  setOffcanvasActive(true);
-                }}
-              >
+              <button onClick={ () => setOffcanvasActive(true) }>
                 <i className="pe-7s-menu" />
               </button>
             </div>
@@ -65,9 +61,7 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
         </div>
       </div>
       {/* offcanvas menu */}
-      <OffcanvasMenu
-        activeState={offcanvasActive}
-        getActiveState={getActiveState}
+      <OffcanvasMenu activeState={offcanvasActive} getActiveState={getActiveState}
       />
       {/* mobile menu */}
       <MobileMenu />
