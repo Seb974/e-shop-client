@@ -63,62 +63,32 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                               cartItem.price,
                               cartItem.discount
                             );
-                            const finalProductPrice = (
-                              cartItem.price * currency.currencyRate
-                            ).toFixed(2);
-                            const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                            const finalProductPrice = (cartItem.price * currency.currencyRate).toFixed(2);
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
 
-                            discountedPrice != null
-                              ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
-                              : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                            discountedPrice != null ? 
+                                (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : 
+                                (cartTotalPrice += finalProductPrice * cartItem.quantity);
+                            
+                            const partial = cartItem.quantity % 1 === 0 ? 1 : 0.1;
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      cartItem.id
-                                    }
-                                  >
-                                    <img
-                                      className="img-fluid"
-                                      src={
-                                        process.env.PUBLIC_URL +
-                                        cartItem.image[0]
-                                      }
-                                      alt=""
-                                    />
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.id}>
+                                      <img className="img-fluid" src={ process.env.PUBLIC_URL + cartItem.image[0] } alt=""/>
                                   </Link>
                                 </td>
 
                                 <td className="product-name">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      cartItem.id
-                                    }
-                                  >
-                                    {cartItem.name}
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.id } >
+                                      {cartItem.name}
                                   </Link>
-                                  {cartItem.selectedProductColor &&
-                                  cartItem.selectedProductSize ? (
+                                  { !(cartItem.selectedProductColor && cartItem.selectedProductSize) ? "" :
                                     <div className="cart-item-variation">
-                                      <span>
-                                        Color: {cartItem.selectedProductColor}
-                                      </span>
-                                      <span>
-                                        Size: {cartItem.selectedProductSize}
-                                      </span>
+                                        <span>Color: {cartItem.selectedProductColor}</span>
+                                        <span>Size: {cartItem.selectedProductSize}</span>
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
+                                  }
                                 </td>
 
                                 <td className="product-price-cart">
@@ -145,27 +115,22 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                   <div className="cart-plus-minus">
                                     <button
                                       className="dec qtybutton"
-                                      onClick={() =>
-                                        decreaseQuantity(cartItem, addToast)
-                                      }
+                                      // onClick={ () => decreaseQuantity(cartItem, addToast) }
+                                      onClick={ () => addToCart( cartItem, false, -partial) }
+                                      disabled={ cartItem.quantity - partial <= 0}
                                     >
                                       -
                                     </button>
                                     <input
                                       className="cart-plus-minus-box"
                                       type="text"
-                                      value={cartItem.quantity}
+                                      value={ cartItem.quantity.toFixed(2) }
                                       readOnly
                                     />
                                     <button
                                       className="inc qtybutton"
-                                      onClick={() =>
-                                        addToCart(
-                                          cartItem,
-                                          addToast,
-                                          quantityCount
-                                        )
-                                      }
+                                      // onClick={ () => addToCart( cartItem, addToast, partial) }
+                                      onClick={ () => addToCart( cartItem, false, partial) }
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
@@ -214,15 +179,11 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                   <div className="col-lg-12">
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
-                        <Link
-                          to={process.env.PUBLIC_URL + "/shop"}
-                        >
-                          Continue Shopping
-                        </Link>
+                        <Link to={process.env.PUBLIC_URL + "/shop"}>Continue Shopping</Link>
                       </div>
                       <div className="cart-clear">
                         <button onClick={() => deleteAllFromCart(addToast)}>
-                          Clear Shopping Cart
+                            Clear Shopping Cart
                         </button>
                       </div>
                     </div>
