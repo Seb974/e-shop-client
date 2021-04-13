@@ -4,7 +4,7 @@ import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
 const MyAccount = ({ location }) => {
@@ -19,14 +19,14 @@ const MyAccount = ({ location }) => {
           content="Compare page of flone react minimalist eCommerce template."
         />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        My Account
-      </BreadcrumbsItem>
-      <LayoutOne headerTop="visible">
+
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>My Account</BreadcrumbsItem> */}
+
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="myaccount-area pb-80 pt-100">
+        {/* <Breadcrumb /> */}
+        <div className="myaccount-area pb-80 pt-100 mt-3">
           <div className="container">
             <div className="row">
               <div className="ml-auto mr-auto col-lg-9">
@@ -174,7 +174,7 @@ const MyAccount = ({ location }) => {
             </div>
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };

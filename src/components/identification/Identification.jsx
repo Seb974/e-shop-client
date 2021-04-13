@@ -21,7 +21,7 @@ const Identification = ({ name }) => {
 
     return (
         <>
-            <a className="nav-link" href="#" onClick={ handleShow }>{ name }</a>
+            <a href="#" onClick={ handleShow }>{ name }</a> {/* className="nav-link" */}
             <Modal show={ show } onHide={ handleClose } size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
                 <Modal.Header closeButton>
                     <Modal.Title>{ isLogin ? "Connexion" : "Inscription" }</Modal.Title>
