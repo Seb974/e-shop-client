@@ -8,18 +8,12 @@ import { connect } from "react-redux";
 import { addToCart } from "../../redux/actions/cartActions";
 import { deleteFromCompare } from "../../redux/actions/compareActions";
 import { getDiscountPrice } from "../../helpers/product";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Rating from "../../components/product/sub-components/ProductRating";
 
-const Compare = ({
-  location,
-  cartItems,
-  compareItems,
-  addToCart,
-  deleteFromCompare,
-  currency
-}) => {
+const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompare, currency }) => {
+  
   const { pathname } = location;
   const { addToast } = useToasts();
 
@@ -32,14 +26,14 @@ const Compare = ({
           content="Compare page of flone react minimalist eCommerce template."
         />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Compare
-      </BreadcrumbsItem>
-      <LayoutOne headerTop="visible">
+  
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Compare</BreadcrumbsItem> */}
+  
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="compare-main-area pt-90 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="compare-main-area pt-90 pb-100 mt-3">
           <div className="container">
             {compareItems && compareItems.length >= 1 ? (
               <div className="row">
@@ -234,7 +228,7 @@ const Compare = ({
             )}
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };
