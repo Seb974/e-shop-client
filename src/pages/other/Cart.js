@@ -13,18 +13,11 @@ import {
   cartItemStock,
   deleteAllFromCart
 } from "../../redux/actions/cartActions";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
-const Cart = ({
-  location,
-  cartItems,
-  currency,
-  decreaseQuantity,
-  addToCart,
-  deleteFromCart,
-  deleteAllFromCart
-}) => {
+const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart,deleteAllFromCart }) => {
+
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
@@ -34,21 +27,18 @@ const Cart = ({
     <Fragment>
       <MetaTags>
         <title>Flone | Cart</title>
-        <meta
-          name="description"
-          content="Cart page of flone react minimalist eCommerce template."
+        <meta name="description"
+              content="Cart page of flone react minimalist eCommerce template."
         />
       </MetaTags>
 
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Cart
-      </BreadcrumbsItem>
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Cart</BreadcrumbsItem> */}
 
-      <LayoutOne headerTop="visible">
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="cart-main-area pt-90 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="cart-main-area pt-90 pb-100 mt-3">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
               <Fragment>
@@ -225,7 +215,7 @@ const Cart = ({
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
                         <Link
-                          to={process.env.PUBLIC_URL + "/shop-grid-standard"}
+                          to={process.env.PUBLIC_URL + "/shop"}
                         >
                           Continue Shopping
                         </Link>
@@ -349,7 +339,7 @@ const Cart = ({
             )}
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };

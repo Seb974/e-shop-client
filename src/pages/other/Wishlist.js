@@ -6,24 +6,13 @@ import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToWishlist,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-} from "../../redux/actions/wishlistActions";
+import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../redux/actions/wishlistActions";
 import { addToCart } from "../../redux/actions/cartActions";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
-const Wishlist = ({
-  location,
-  cartItems,
-  currency,
-  addToCart,
-  wishlistItems,
-  deleteFromWishlist,
-  deleteAllFromWishlist
-}) => {
+const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist }) => {
+  
   const { addToast } = useToasts();
   const { pathname } = location;
 
@@ -31,21 +20,18 @@ const Wishlist = ({
     <Fragment>
       <MetaTags>
         <title>Flone | Wishlist</title>
-        <meta
-          name="description"
-          content="Wishlist page of flone react minimalist eCommerce template."
+        <meta name="description"
+              content="Wishlist page of flone react minimalist eCommerce template."
         />
       </MetaTags>
 
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Wishlist
-      </BreadcrumbsItem>
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Wishlist</BreadcrumbsItem> */}
 
-      <LayoutOne headerTop="visible">
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="cart-main-area pt-90 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="cart-main-area pt-90 pb-100 mt-3">
           <div className="container">
             {wishlistItems && wishlistItems.length >= 1 ? (
               <Fragment>
@@ -238,7 +224,7 @@ const Wishlist = ({
             )}
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };

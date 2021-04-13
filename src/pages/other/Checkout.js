@@ -5,10 +5,11 @@ import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { getDiscountPrice } from "../../helpers/product";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 
 const Checkout = ({ location, cartItems, currency }) => {
+
   const { pathname } = location;
   let cartTotalPrice = 0;
 
@@ -16,19 +17,18 @@ const Checkout = ({ location, cartItems, currency }) => {
     <Fragment>
       <MetaTags>
         <title>Flone | Checkout</title>
-        <meta
-          name="description"
-          content="Checkout page of flone react minimalist eCommerce template."
+        <meta name="description"
+              content="Checkout page of flone react minimalist eCommerce template."
         />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Checkout
-      </BreadcrumbsItem>
-      <LayoutOne headerTop="visible">
+
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Checkout</BreadcrumbsItem> */}
+      
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="checkout-area pt-95 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="checkout-area pt-95 pb-100 mt-3">
           <div className="container">
             {cartItems && cartItems.length >= 1 ? (
               <div className="row">
@@ -222,7 +222,7 @@ const Checkout = ({ location, cartItems, currency }) => {
             )}
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };
