@@ -15,8 +15,7 @@ export const addToCart = (item, addToast, quantityCount, selectedProductColor, s
     dispatch({
       type: ADD_TO_CART,
       payload: {
-        // ...item,
-        product: setSecuredProduct(item),
+        product: Object.keys(item).includes('product') ? item.product : item,
         quantity: quantityCount,
         selectedProductColor: selectedProductColor
           ? selectedProductColor
@@ -73,7 +72,7 @@ export const cartItemStock = (item, color, size) => {
   if (item.product.stock) {
     return item.product.stock;
   } else {
-    return item.variation
+    return item.product.variation
       .filter(single => single.color === color)[0]
       .size.filter(single => single.name === size)[0].stock;
   }

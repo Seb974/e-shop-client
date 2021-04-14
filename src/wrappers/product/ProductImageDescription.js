@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 import { connect } from "react-redux";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../helpers/product";
@@ -7,31 +7,20 @@ import ProductImageGallery from "../../components/product/ProductImageGallery";
 import ProductDescriptionInfo from "../../components/product/ProductDescriptionInfo";
 import ProductImageGallerySideThumb from "../../components/product/ProductImageGallerySideThumb";
 import ProductImageFixed from "../../components/product/ProductImageFixed";
+import { getElementsFromIds } from "../../helpers/product";
+import ProductsContext from "../../contexts/ProductsContext";
 
-const ProductImageDescription = ({
-  spaceTopClass,
-  spaceBottomClass,
-  galleryType,
-  product,
-  currency,
-  cartItems,
-  wishlistItems,
-  compareItems
-}) => {
-  const wishlistItem = wishlistItems.filter(
-    wishlistItem => wishlistItem.id === product.id
-  )[0];
-  const compareItem = compareItems.filter(
-    compareItem => compareItem.id === product.id
-  )[0];
+const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, currency, cartItems, wishlistItems, compareItems, product}) => {    // product: storedProduct,
+  
   const { addToast } = useToasts();
-
+  const { products } = useContext(ProductsContext);
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(
-    discountedPrice * currency.currencyRate
-  ).toFixed(2);
-
+  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate).toFixed(2);
+  
+  const wishlistItem = getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0];
+  const compareItem = getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0];
+  
   return (
     <div
       className={`shop-area ${spaceTopClass ? spaceTopClass : ""} ${

@@ -237,7 +237,7 @@ const ProductDescriptionInfo = ({
             {product.category.map((single, key) => {
               return (
                 <li key={key}>
-                  <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/shop"}>
                     {single}
                   </Link>
                 </li>
@@ -255,7 +255,7 @@ const ProductDescriptionInfo = ({
             {product.tag.map((single, key) => {
               return (
                 <li key={key}>
-                  <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                  <Link to={process.env.PUBLIC_URL + "/shop"}>
                     {single}
                   </Link>
                 </li>

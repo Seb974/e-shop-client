@@ -1,3 +1,4 @@
+import { setSecuredProduct } from '../../helpers/product';
 import uuid from "uuid/v4";
 import {
   ADD_TO_CART,
@@ -14,34 +15,29 @@ const cartReducer = (state = initState, action) => {
 
   if (action.type === ADD_TO_CART) {
     // for non variant products
-    if (product.variation === undefined) {
+    if (product.product.variation === undefined) {
       const cartItem = cartItems.filter(item => item.product.id == product.product.id)[0];
       if (cartItem === undefined) {
         return [
           ...cartItems,
           {
-            ...product,
+            product: setSecuredProduct(product),
             quantity: product.quantity ? product.quantity : 1,
             cartItemId: uuid()
           }
         ];
       } else {
-        return cartItems.map(item =>
-          item.cartItemId === cartItem.cartItemId
-            ? {
-                ...item,
-                quantity: product.quantity
-                  ? item.quantity + product.quantity
-                  : item.quantity + 1
-              }
-            : item
-        );
+          return cartItems.map(item =>
+            item.cartItemId === cartItem.cartItemId ? 
+                {...item, quantity: product.quantity ? item.quantity + product.quantity : item.quantity + 1 } :
+                item
+          );
       }
       // for variant products
     } else {
       const cartItem = cartItems.filter(
         item =>
-          item.id === product.id &&
+          item.product.id === product.product.id &&
           product.selectedProductColor &&
           product.selectedProductColor === item.selectedProductColor &&
           product.selectedProductSize &&
@@ -50,35 +46,29 @@ const cartReducer = (state = initState, action) => {
       )[0];
 
       if (cartItem === undefined) {
-        return [
-          ...cartItems,
-          {
-            ...product,
-            quantity: product.quantity ? product.quantity : 1,
-            cartItemId: uuid()
-          }
+        return [...cartItems, 
+                { product: setSecuredProduct(product), 
+                  quantity: product.quantity ? product.quantity : 1, 
+                  cartItemId: uuid(),
+                  selectedProductColor: product.selectedProductColor,
+                  selectedProductSize: product.selectedProductSize
+                }
         ];
-      } else if (
-        cartItem !== undefined &&
-        (cartItem.selectedProductColor !== product.selectedProductColor ||
-          cartItem.selectedProductSize !== product.selectedProductSize)
-      ) {
-        return [
-          ...cartItems,
-          {
-            ...product,
-            quantity: product.quantity ? product.quantity : 1,
-            cartItemId: uuid()
-          }
+
+      } else if (cartItem !== undefined && (cartItem.selectedProductColor !== product.selectedProductColor || cartItem.selectedProductSize !== product.selectedProductSize)) {
+        return [...cartItems,
+                { product: setSecuredProduct(product), 
+                  quantity: product.quantity ? product.quantity : 1, 
+                  cartItemId: uuid(),
+                  selectedProductColor: product.selectedProductColor,
+                  selectedProductSize: product.selectedProductSize
+                }
         ];
       } else {
         return cartItems.map(item =>
-          item.cartItemId === cartItem.cartItemId
-            ? {
-                ...item,
-                quantity: product.quantity
-                  ? item.quantity + product.quantity
-                  : item.quantity + 1,
+          item.cartItemId === cartItem.cartItemId ? 
+              {...item,
+                quantity: product.quantity ? item.quantity + product.quantity : item.quantity + 1,
                 selectedProductColor: product.selectedProductColor,
                 selectedProductSize: product.selectedProductSize
               }
@@ -97,16 +87,16 @@ const cartReducer = (state = initState, action) => {
       return remainingItems(cartItems, product);
     } else {
       return cartItems.map(item =>
-        item.product.cartItemId === product.product.cartItemId
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
+        item.product.cartItemId === product.product.cartItemId ? 
+            { ...item, quantity: item.quantity - 1 } : 
+            item
       );
     }
   }
 
   if (action.type === DELETE_FROM_CART) {
     const remainingItems = (cartItems, product) =>
-      cartItems.filter(cartItem => cartItem.cartItemId !== product.cartItemId);
+        cartItems.filter(cartItem => cartItem.cartItemId !== product.cartItemId);
     return remainingItems(cartItems, product);
   }
 

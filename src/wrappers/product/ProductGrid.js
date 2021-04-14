@@ -1,14 +1,18 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { connect } from "react-redux";
-import { getProducts } from "../../helpers/product";
+// import { getProducts } from "../../helpers/product";
 import ProductGridSingle from "../../components/product/ProductGridSingle";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
+import { getElementsFromIds } from "../../helpers/product";
+import ProductsContext from "../../contexts/ProductsContext";
 
-const ProductGrid = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass }) => {
+const ProductGrid = ({ currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass }) => {    // products,
   
+  const { products } = useContext(ProductsContext);
+
   return (
     <Fragment>
       { products.map(product => {
@@ -21,19 +25,9 @@ const ProductGrid = ({ products, currency, addToCart, addToWishlist, addToCompar
             addToCart={addToCart}
             addToWishlist={addToWishlist}
             addToCompare={addToCompare}
-            cartItem={
-              cartItems.filter(cartItem => cartItem.id === product.id)[0]
-            }
-            wishlistItem={
-              wishlistItems.filter(
-                wishlistItem => wishlistItem.id === product.id
-              )[0]
-            }
-            compareItem={
-              compareItems.filter(
-                compareItem => compareItem.id === product.id
-              )[0]
-            }
+            cartItem={ cartItems.filter(cartItem => cartItem.id === product.id)[0] }
+            wishlistItem={ getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0] }
+            compareItem={ getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0] }
             key={product.id}
           />
         );
@@ -57,12 +51,12 @@ ProductGrid.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    products: getProducts(
-      state.productData.products,
-      ownProps.category,
-      ownProps.type,
-      ownProps.limit
-    ),
+    // products: getProducts(
+    //   state.productData.products,
+    //   ownProps.category,
+    //   ownProps.type,
+    //   ownProps.limit
+    // ),
     currency: state.currencyData,
     cartItems: state.cartData,
     wishlistItems: state.wishlistData,

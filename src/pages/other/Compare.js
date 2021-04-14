@@ -66,57 +66,28 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                                       <i className="pe-7s-trash" />
                                     </button>
                                   </div>
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      compareItem.id
-                                    }
-                                    className="image"
-                                  >
-                                    <img
-                                      className="img-fluid"
-                                      src={
-                                        process.env.PUBLIC_URL +
-                                        compareItem.image[0]
-                                      }
-                                      alt=""
-                                    />
+                                  <Link to={process.env.PUBLIC_URL + "/product/" + compareItem.id} className="image">
+                                    <img className="img-fluid" src={process.env.PUBLIC_URL +compareItem.image[0]} alt=""/>
                                   </Link>
                                   <div className="product-title">
-                                    <Link
-                                      to={
-                                        process.env.PUBLIC_URL +
-                                        "/product/" +
-                                        compareItem.id
-                                      }
-                                    >
+                                    <Link to={ process.env.PUBLIC_URL + "/product/" + compareItem.id }>
                                       {compareItem.name}
                                     </Link>
                                   </div>
                                   <div className="compare-btn">
-                                    {compareItem.affiliateLink ? (
-                                      <a
-                                        href={compareItem.affiliateLink}
-                                        rel="noopener noreferrer"
-                                        target="_blank"
-                                      >
-                                        {" "}
-                                        Buy now{" "}
+                                    { compareItem.affiliateLink ?
+                                      <a href={compareItem.affiliateLink} rel="noopener noreferrer" target="_blank">
+                                          {" "}Buy now{" "}
                                       </a>
-                                    ) : compareItem.variation &&
-                                      compareItem.variation.length >= 1 ? (
+                                    : compareItem.variation && compareItem.variation.length >= 1 ?
                                       <Link
                                         to={`${process.env.PUBLIC_URL}/product/${compareItem.id}`}
                                       >
                                         Select Option
                                       </Link>
-                                    ) : compareItem.stock &&
-                                      compareItem.stock > 0 ? (
+                                    : compareItem.stock && compareItem.stock > 0 ?
                                       <button
-                                        onClick={() =>
-                                          addToCart(compareItem, addToast)
-                                        }
+                                        onClick={() => addToCart(compareItem, addToast) }
                                         className={
                                           cartItem !== undefined &&
                                           cartItem.quantity > 0
@@ -138,11 +109,9 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                                           ? "Added"
                                           : "Add to cart"}
                                       </button>
-                                    ) : (
-                                      <button disabled className="active">
-                                        Out of Stock
-                                      </button>
-                                    )}
+                                    :
+                                      <button disabled className="active">Out of Stock</button>
+                                    }
                                   </div>
                                 </td>
                               );

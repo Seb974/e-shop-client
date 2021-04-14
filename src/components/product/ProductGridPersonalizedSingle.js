@@ -60,7 +60,11 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                { product.stock && product.stock > 0 ?
+                { 
+                  product.variation && product.variation.length >= 1 ?
+                  <a href="#" onClick={ handleShowDetails }>Select Option </a>
+                : 
+                  product.stock && product.stock > 0 ?
                     <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                  :
                     <button disabled className="active">Out of Stock</button>
@@ -127,13 +131,25 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
                 {product.shortDescription ? <p>{product.shortDescription}</p> : "" }
                 <div className="shop-list-actions d-flex align-items-center">
                   <div className="shop-list-btn btn-hover">
-                    { product.stock && product.stock > 0 ?
-                        <input type="number" className="pro-input" />
+                    { product.variation && product.variation.length >= 1 ?
+                      <a href="#" onClick={ handleShowDetails }>Select Option </a>
+                    :
+                    product.stock && product.stock > 0 ?
+                        <div className="d-flex mr-1">
+                          <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
+                        </div>
                     :
                         <button disabled className="active">Out of Stock</button>
                     }
                   </div>
-
+                  { !(product.variation && product.variation.length >= 1) && product.stock && product.stock > 0 ?
+                    <div className="shop-list-wishlist ml-10">
+                        <button className={"qty-valid" + (quantity !== "" ? " active" : "")} disabled={ quantity === "" } title="Add to cart" onClick={ handleAddToCart }>
+                            <i className="pe-7s-cart" />
+                        </button>
+                    </div>
+                    : ""
+                  }
                   <div className="shop-list-wishlist ml-10">
                     <button
                       className={wishlistItem !== undefined ? "active" : ""}

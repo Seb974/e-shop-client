@@ -59,7 +59,10 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                { product.stock && product.stock > 0 ?
+                { product.variation && product.variation.length >= 1 ?
+                  <a href="#" onClick={ handleShowDetails }>Select Option </a>
+                :
+                product.stock && product.stock > 0 ?
                   <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                 :
                   <button disabled className="active">Out of Stock</button>

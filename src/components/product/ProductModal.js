@@ -5,12 +5,9 @@ import { getProductCartQuantity } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
 import Rating from "./sub-components/ProductRating";
 import { connect } from "react-redux";
-// import ProductsContext from "../../contexts/ProductsContext";
-
 
 const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, addToast}) => {
-  
-  // const { products } = useContext(ProductsContext);
+
   const [gallerySwiper, getGallerySwiper] = useState(null);
   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
   const [selectedProductColor, setSelectedProductColor] = useState( product.variation ? product.variation[0].color : "");
@@ -18,54 +15,44 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
   const [productStock, setProductStock] = useState( product.variation ? product.variation[0].size[0].stock : product.stock );
   const [quantityCount, setQuantityCount] = useState(1);
 
-  const productCartQty = getProductCartQuantity(
-    cartItems,
-    product,
-    selectedProductColor,
-    selectedProductSize
-  );
+  const productCartQty = getProductCartQuantity(cartItems, product, selectedProductColor, selectedProductSize);
 
   useEffect(() => {
-    if (
-      gallerySwiper !== null &&
-      gallerySwiper.controller &&
-      thumbnailSwiper !== null &&
-      thumbnailSwiper.controller
-    ) {
-      gallerySwiper.controller.control = thumbnailSwiper;
-      thumbnailSwiper.controller.control = gallerySwiper;
+    if (gallerySwiper !== null && gallerySwiper.controller && thumbnailSwiper !== null && thumbnailSwiper.controller) {
+        gallerySwiper.controller.control = thumbnailSwiper;
+        thumbnailSwiper.controller.control = gallerySwiper;
     }
   }, [gallerySwiper, thumbnailSwiper]);
 
   const gallerySwiperParams = {
-    getSwiper: getGallerySwiper,
-    spaceBetween: 10,
-    loopedSlides: 4,
-    loop: true
+      getSwiper: getGallerySwiper,
+      spaceBetween: 10,
+      loopedSlides: 4,
+      loop: true
   };
 
   const thumbnailSwiperParams = {
-    getSwiper: getThumbnailSwiper,
-    spaceBetween: 10,
-    slidesPerView: 4,
-    loopedSlides: 4,
-    touchRatio: 0.2,
-    freeMode: true,
-    loop: true,
-    slideToClickedSlide: true,
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
+      getSwiper: getThumbnailSwiper,
+      spaceBetween: 10,
+      slidesPerView: 4,
+      loopedSlides: 4,
+      touchRatio: 0.2,
+      freeMode: true,
+      loop: true,
+      slideToClickedSlide: true,
+      navigation: {
+        nextEl: ".swiper-button-next",
+        prevEl: ".swiper-button-prev"
     },
     renderPrevButton: () => (
-      <button className="swiper-button-prev ht-swiper-button-nav">
-        <i className="pe-7s-angle-left" />
-      </button>
+        <button className="swiper-button-prev ht-swiper-button-nav">
+          <i className="pe-7s-angle-left" />
+        </button>
     ),
     renderNextButton: () => (
-      <button className="swiper-button-next ht-swiper-button-nav">
-        <i className="pe-7s-angle-right" />
-      </button>
+        <button className="swiper-button-next ht-swiper-button-nav">
+          <i className="pe-7s-angle-right" />
+        </button>
     )
   };
 
@@ -148,7 +135,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                   <p>{product.shortDescription}</p>
                 </div>
 
-                {/* {product.variation ? (
+                {product.variation ? (
                   <div className="pro-details-size-color">
                     <div className="pro-details-color-wrap">
                       <span>Color</span>
@@ -223,71 +210,35 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                   </div>
                 ) : (
                   ""
-                )} */}
-                {product.affiliateLink ? (
-                  <div className="pro-details-quality">
-                    <div className="pro-details-cart btn-hover">
-                      <a
-                        href={product.affiliateLink}
-                        rel="noopener noreferrer"
-                        target="_blank"
-                      >
-                        Buy Now
-                      </a>
-                    </div>
-                  </div>
-                ) : (
+                )}
+                { 
+                // product.affiliateLink ?
+                //   <div className="pro-details-quality">
+                //     <div className="pro-details-cart btn-hover">
+                //       <a href={product.affiliateLink} rel="noopener noreferrer" target="_blank">
+                //           Buy Now
+                //       </a>
+                //     </div>
+                //   </div>
+                // :
                   <div className="pro-details-quality">
                     <div className="cart-plus-minus">
-                      <button
-                        onClick={() =>
-                          setQuantityCount(
-                            quantityCount > 1 ? quantityCount - 1 : 1
-                          )
-                        }
-                        className="dec qtybutton"
-                      >
-                        -
+                      <button onClick={() => setQuantityCount(quantityCount > 1 ? quantityCount - 1 : 1) } className="dec qtybutton">
+                          -
                       </button>
-                      <input
-                        className="cart-plus-minus-box"
-                        type="text"
-                        value={quantityCount}
-                        readOnly
-                      />
-                      <button
-                        onClick={() =>
-                          setQuantityCount(
-                            quantityCount < productStock - productCartQty
-                              ? quantityCount + 1
-                              : quantityCount
-                          )
-                        }
-                        className="inc qtybutton"
-                      >
-                        +
+                      <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly />
+                      <button onClick={() => setQuantityCount( quantityCount < productStock - productCartQty ? quantityCount + 1 : quantityCount)} className="inc qtybutton">
+                          +
                       </button>
                     </div>
                     <div className="pro-details-cart btn-hover">
-                      {productStock && productStock > 0 ? (
-                        <button
-                          onClick={() =>
-                            addToCart(
-                              product,
-                              addToast,
-                              quantityCount,
-                              selectedProductColor,
-                              selectedProductSize
-                            )
-                          }
-                          disabled={productCartQty >= productStock}
-                        >
-                          {" "}
-                          Add To Cart{" "}
+                      { productStock && productStock > 0 ?
+                        <button onClick={() => addToCart(product, addToast, quantityCount, selectedProductColor, selectedProductSize)} disabled={productCartQty >= productStock}>
+                            {" "}Add To Cart{" "}
                         </button>
-                      ) : (
+                      :
                         <button disabled>Out of Stock</button>
-                      )}
+                      }
                     </div>
                     <div className="pro-details-wishlist">
                       <button
@@ -318,7 +269,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                       </button>
                     </div>
                   </div>
-                )}
+                }
               </div>
             </div>
           </div>
