@@ -4,8 +4,11 @@ import { Link } from "react-router-dom";
 import IconGroup from "../../components/header/IconGroup";
 import MobileMenu from "../../components/header/MobileMenu";
 import OffcanvasMenu from "../../components/header/OffcanvasMenu";
+import { useLocation } from 'react-router-dom';
 
 const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) => {
+
+  const { pathname } = useLocation();
   const [scroll, setScroll] = useState(0);
   const [headerTop, setHeaderTop] = useState(0);
   const [offcanvasActive, setOffcanvasActive] = useState(false);
@@ -56,7 +59,7 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
           </div>
           <div className="col-xl-5 col-lg-4 col-md-6 col-6">
             {/* Icon group */}
-            <IconGroup iconWhiteClass="header-right-wrap-white" />
+            { pathname !== '/' && <IconGroup iconWhiteClass="header-right-wrap-white" /> }
           </div>
         </div>
       </div>
