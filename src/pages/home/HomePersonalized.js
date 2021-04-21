@@ -25,6 +25,7 @@ const HomePersonalized = () => {
         {/* headerTop="visible" */}
         {/* hero slider */}
         <HeroSliderTwentyOne />
+
         {/* Intro */}
         <SectionTitleWithText spaceTopClass="pt-95" spaceBottomClass="pb-90" />
         {/* banner */}

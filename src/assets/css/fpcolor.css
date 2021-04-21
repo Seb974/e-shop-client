@@ -1,0 +1,17 @@
+/* 
+Couleur frais péi
+*/
+.text-orange{
+    color : #ff5722  !important;
+}
+/*
+Background frais péi
+*/
+.bg-add-cart{
+    background-color : #2E2E2E !important;
+    color : white !important;
+}
+.bg-add-cart:hover{
+    background-color : #00C851 !important;
+    color : white !important;
+}

@@ -48,7 +48,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
               </div>
             }
             <div className="product-action">
-              <div className="pro-same-action pro-wishlist">
+              <div className="pro-same-action pro-wishlist bg-dark active">
                 <button
                   className={wishlistItem !== undefined ? "active" : ""}
                   disabled={wishlistItem !== undefined}
@@ -58,7 +58,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                   <i className="pe-7s-like" />
                 </button>
               </div>
-              <div className="pro-same-action pro-cart">
+              <div className="pro-same-action pro-cart bg-dark">
                 { product.variation && product.variation.length >= 1 ?
                   <a href="#" onClick={ handleShowDetails }>Select Option </a>
                 :
@@ -68,9 +68,9 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                   <button disabled className="active">Out of Stock</button>
                 }
               </div>
-              <div className="pro-same-action pro-quickview">
+              <div className="pro-same-action pro-quickview bg-add-cart">
                 <button onClick={ handleAddToCart } title="Quick View" disabled={ !(product.stock && product.stock > 0) || quantity <= 0 }>
-                  <i className="pe-7s-cart" />
+                  <i className="fas fa-shopping-basket" />
                 </button>
               </div>
             </div>
