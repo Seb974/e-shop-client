@@ -39,20 +39,23 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
     <div ref={ iconGroupContainer } className={`header-right-wrap ${iconWhiteClass ? iconWhiteClass : ""}`}>
       <div className="same-style header-search d-none d-lg-block">
         <button name="search" className="search-active" onClick={ handleClick }>
-          <i className="pe-7s-search" />
+          {/* <i className="pe-7s-search" /> */}
+          <i className= "fas fa-search"></i>
         </button>
         <div className={"search-content " + (active === "search" ? "active" : "")}>
           <form action="#">
             <input type="text" placeholder="Search" />
             <button className="button-search">
-              <i className="pe-7s-search" />
+              {/* <i className="pe-7s-search" /> */}
+              <i className= "fas fa-search"></i>
             </button>
           </form>
         </div>
       </div>
       <div className="same-style account-setting d-none d-lg-block">
         <button name="account" className="account-setting-active" onClick={ handleClick }>
-          <i className="pe-7s-user-female" />
+          {/* <i className="pe-7s-user-female" /> */}
+          <i className= "fas fa-user-circle"></i>
         </button>
         <div className={"account-dropdown " + (active === "account" ? "active" : "")}>
           <ul>
@@ -70,19 +73,22 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
       </div>
       <div className="same-style header-compare">
         <Link to={process.env.PUBLIC_URL + "/compare"}>
-          <i className="pe-7s-shuffle" />
+          {/* <i className="pe-7s-shuffle" /> */}
+          <i className= "fas fa-random"></i>
           <span className="count-style">{compareData && compareData.length ? compareData.length : 0}</span>
         </Link>
       </div>
       <div className="same-style header-wishlist">
         <Link to={process.env.PUBLIC_URL + "/wishlist"}>
-          <i className="pe-7s-like" />
+          {/* <i className="pe-7s-like" /> */}
+          <i className="fas fa-heart text-danger"/>   
           <span className="count-style">{wishlistData && wishlistData.length ? wishlistData.length : 0}</span>
         </Link>
       </div>
       <div className="same-style cart-wrap d-none d-lg-block">
         <button name="cart" className="icon-cart" onClick={ handleClick }>
-          <i className="pe-7s-shopbag" />
+          {/* <i className="pe-7s-shopbag" /> */}
+          <i className= "fas fa-shopping-basket"/>
           <span className="count-style">{cartData && cartData.length ? cartData.length : 0}</span>
         </button>
         {/* menu cart */}

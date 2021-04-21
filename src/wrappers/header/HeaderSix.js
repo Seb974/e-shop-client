@@ -26,23 +26,24 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
     setScroll(window.scrollY);
   };
 
-  const getActiveState = state => {
+  const getActiveState = (state) => {
     setOffcanvasActive(state);
   };
 
   return (
     <header
       className={`header-area sticky-bar header-padding-3 header-res-padding clearfix transparent-bar header-hm-7 
-          ${ headerBgClass ? headerBgClass : "" } 
-          ${ headerPaddingClass ? headerPaddingClass : "" } 
-          ${ (scroll > headerTop) || stick !== "" ? "stick" : ""}`}
+          ${headerBgClass ? headerBgClass : ""} 
+          ${headerPaddingClass ? headerPaddingClass : ""} 
+          ${scroll > headerTop || stick !== "" ? "stick" : ""}`}
     >
       <div className={layout === "container-fluid" ? layout : "container"}>
         <div className="row">
           <div className="col-xl-5 col-lg-6 d-none d-lg-block">
             <div className="clickable-menu clickable-mainmenu-active">
-              <button onClick={ () => setOffcanvasActive(true) }>
-                <i className="pe-7s-menu" />
+              <button onClick={() => setOffcanvasActive(true)}>
+              <i className="fas fa-bars"></i>
+                {/* <i className="pe-7s-menu" /> */}
               </button>
             </div>
           </div>
@@ -50,10 +51,10 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
             {/* header logo */}
             <div className="logo text-center logo-hm5">
               <Link className="sticky-none" to={process.env.PUBLIC_URL + "/"}>
-                <img alt="" src="assets/img/logo/logo-2.png" />
+                <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1>
               </Link>
               <Link className="sticky-block" to={process.env.PUBLIC_URL + "/"}>
-                <img alt="" src="assets/img/logo/logo.png" />
+              <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1>
               </Link>
             </div>
           </div>
@@ -64,7 +65,9 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
         </div>
       </div>
       {/* offcanvas menu */}
-      <OffcanvasMenu activeState={offcanvasActive} getActiveState={getActiveState}
+      <OffcanvasMenu
+        activeState={offcanvasActive}
+        getActiveState={getActiveState}
       />
       {/* mobile menu */}
       <MobileMenu />
@@ -75,7 +78,7 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
 HeaderSix.propTypes = {
   headerBgClass: PropTypes.string,
   headerPaddingClass: PropTypes.string,
-  layout: PropTypes.string
+  layout: PropTypes.string,
 };
 
 export default HeaderSix;
