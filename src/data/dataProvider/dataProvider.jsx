@@ -30,9 +30,9 @@ const DataProvider = ({ children }) => {
     return (
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource} }>
         <ProductsContext.Provider value={ {products, setProducts} }>
-            {/* <MercureHub> */}
+            <MercureHub>
                 { children }
-            {/* </MercureHub> */}
+            </MercureHub>
         </ProductsContext.Provider>
         </AuthContext.Provider>
     );
