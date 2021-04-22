@@ -7,6 +7,7 @@ export const DELETE_ALL_FROM_CART = "DELETE_ALL_FROM_CART";
 
 //add to cart
 export const addToCart = (item, addToast, quantityCount, selectedProductColor, selectedProductSize) => {
+  console.log(item);
   return dispatch => {
     if (addToast) {
       addToast("Added To Cart", { appearance: "success", autoDismiss: true });

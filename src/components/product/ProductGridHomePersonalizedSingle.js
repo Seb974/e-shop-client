@@ -5,6 +5,7 @@ import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
+import api from '../../config/api';
 
 const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass }) => {
   
@@ -36,10 +37,21 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
         <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img">
             <a href="#" onClick={ handleShowDetails }>
-              <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
+              {Array.isArray(product.image) ? 
+                <img className="default-img" src={process.env.PUBLIC_URL + product.image[0] } alt=""/>
+              :
+                <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt=""/>
+              }
+              { !Array.isArray(product.image) || product.image.length <= 1 ? 
+                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt=""/>
+              :
+                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1] } alt=""/>
+              }
+
+              {/* <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
               {product.image.length <= 1 ? "" :
                 <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
-              }
+              } */}
             </a>
             { !(product.discount || product.new) ? "" :
               <div className="product-img-badges">
@@ -59,10 +71,10 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                 </button>
               </div>
               <div className="pro-same-action pro-cart bg-dark">
-                { product.variation && product.variation.length >= 1 ?
+                { product.variations && product.variations.length >= 1 ?
                   <a href="#" onClick={ handleShowDetails }>Select Option </a>
                 :
-                product.stock && product.stock > 0 ?
+                product.stock && product.stock.quantity > 0 ?
                   <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                 :
                   <button disabled className="active">Out of Stock</button>

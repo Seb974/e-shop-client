@@ -1,16 +1,34 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
+import api from '../../config/api';
+import { components } from "react-select";
 
 const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass}) => {
   
   const { addToast } = useToasts();
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
+  const [hasStock, setHasStock] = useState(false);
+
+  useEffect(() => {
+      let stockStatus = false;
+      if (product.components && product.components.length > 0) {
+        stockStatus = !product.components.map(component => {
+          return component.size && component.size.stock.quantity > 0 ? true :
+                 component.product.stock && component.product.stock.quantity > 0 ? true :
+                 false;
+        }).includes(false);
+      } else if ( !(product.variations && product.variations.length > 0) && product.stock ) {
+        stockStatus = product.stock.quantity > 0 || product.stock > 0;
+      }
+      setHasStock(stockStatus);
+
+  }, [product]);
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
@@ -26,6 +44,7 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
   };
 
   const handleAddToCart = event => {
+      console.log("Add to cart");
       addToCart(product, addToast, parseFloat(quantity));
       setQuantity("");
   };
@@ -37,10 +56,21 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
         <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img">
             <a href="#" onClick={ handleShowDetails }>
-              <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
-              { product.image.length <= 1 ? "" :
-                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
+              {Array.isArray(product.image) ? 
+                <img className="default-img" src={process.env.PUBLIC_URL + product.image[0] } alt="" height="500" width="600"/>
+              :
+                <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
               }
+              { !Array.isArray(product.image) || product.image.length <= 1 ? 
+                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
+              :
+                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1] } alt="" height="500" width="600"/>
+              }
+
+              {/* <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + (Array.isArray(product.image) ? product.image[0] : product.image.filePath)} alt=""/>
+              { product.image.length <= 1 ? "" :
+                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + (Array.isArray(product.image) ? product.image[1] : product.image.filePath)} alt=""/>
+              } */}
               </a>
             { !(product.discount || product.new) ? "" :
                 <div className="product-img-badges">
@@ -61,17 +91,26 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
               </div>
               <div className="pro-same-action pro-cart">
                 { 
-                  product.variation && product.variation.length >= 1 ?
+                //   product.components && product.components.length >= 1 ?
+                //       product.components.map(component => {
+                //         return component.size && component.size.stock.quantity > 0 ? true :
+                //                component.product.stock && component.product.stock.quantity > 0 ? true :
+                //                false;
+                //       }).includes(false) ?
+                //         <button disabled className="active">Out of Stock</button> :
+                //         <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
+                // :
+                  product.variations && product.variations.length >= 1 ?
                   <a href="#" onClick={ handleShowDetails }>Select Option </a>
                 : 
-                  product.stock && product.stock > 0 ?
+                  ((product.stock && (product.stock.quantity > 0 || product.stock > 0) ) || (product.components && product.components.length >= 1)) && hasStock ?
                     <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                  :
                     <button disabled className="active">Out of Stock</button>
                 }
               </div>
               <div className="pro-same-action pro-quickview">
-                <button onClick={ handleAddToCart } title="Quick View" disabled={ !(product.stock && product.stock > 0) || quantity <= 0 }>
+                <button onClick={ handleAddToCart } title="Quick View" disabled={ !hasStock || quantity <= 0 }>    {/* !(product.stock && product.stock > 0)  */}
                   <i className="pe-7s-cart" />
                 </button>
               </div>
@@ -99,11 +138,17 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
             <div className="col-xl-4 col-md-5 col-sm-6">
               <div className="product-list-image-wrap">
                 <div className="product-img">
-                  {/* <Link to={process.env.PUBLIC_URL + "/product/" + product.id}> */}
+                  {/* <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>     process.env.IMAGE_URL   */}
                   <a href="#" onClick={ handleShowDetails }>
-                    <img className="default-img img-fluid" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
-                    {product.image.length <= 1 ? "" :
-                      <img className="hover-img img-fluid" src={process.env.PUBLIC_URL + product.image[1]} alt="" />
+                    {Array.isArray(product.image) ? 
+                      <img className="default-img img-fluid" src={process.env.PUBLIC_URL + product.image[0] } alt="" height="800" width="600"/>
+                    :
+                      <img className="default-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/>
+                    }
+                    { !Array.isArray(product.image) || product.image.length <= 1 ? 
+                      <img className="hover-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/>
+                    :
+                      <img className="hover-img img-fluid" src={process.env.PUBLIC_URL + product.image[1] } alt=""/>
                     }
                   </a>
                   {/* </Link> */}

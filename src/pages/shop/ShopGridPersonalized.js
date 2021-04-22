@@ -61,7 +61,7 @@ const ShopGridNoSidebar = ({ location }) => {   // products
         {/* breadcrumb */}
         {/* <Breadcrumb /> */}
 
-        <div className="shop-area pt-95 pb-100">
+        <div className="shop-area pt-95 pb-100 mt-50">
           <div className="container">
             <div className="row">
               <div className="col-lg-12">

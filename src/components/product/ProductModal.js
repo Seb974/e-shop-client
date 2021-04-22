@@ -5,6 +5,7 @@ import { getProductCartQuantity } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
 import Rating from "./sub-components/ProductRating";
 import { connect } from "react-redux";
+import api from '../../config/api';
 
 const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, addToast}) => {
 
@@ -70,7 +71,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
             <div className="col-md-5 col-sm-12 col-xs-12">
               <div className="product-large-image-wrapper">
                 <Swiper {...gallerySwiperParams}>
-                  {product.image &&
+                  {product.image && Array.isArray(product.image) ?
                     product.image.map((single, key) => {
                       return (
                         <div key={key}>
@@ -83,12 +84,22 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                         </div>
                       );
-                    })}
+                    }) : 
+                    <div>
+                      <div className="single-image">
+                        <img
+                          src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
+                          className="img-fluid"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  }
                 </Swiper>
               </div>
-              <div className="product-small-image-wrapper mt-15">
+              {/* <div className="product-small-image-wrapper mt-15">
                 <Swiper {...thumbnailSwiperParams}>
-                  {product.image &&
+                  {product.image && Array.isArray(product.image) ?
                     product.image.map((single, key) => {
                       return (
                         <div key={key}>
@@ -101,9 +112,19 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                         </div>
                       );
-                    })}
+                    }) :
+                    <div>
+                      <div className="single-image">
+                        <img
+                          src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
+                          className="img-fluid"
+                          alt=""
+                        />
+                      </div>
+                    </div>
+                  }
                 </Swiper>
-              </div>
+              </div> */}
             </div>
             <div className="col-md-7 col-sm-12 col-xs-12">
               <div className="product-details-content quickview-content">

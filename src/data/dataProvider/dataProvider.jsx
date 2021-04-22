@@ -3,6 +3,7 @@ import MercureHub from '../../components/Mercure/MercureHub';
 import AuthContext from '../../contexts/AuthContext';
 import ProductsContext from '../../contexts/ProductsContext';
 import AuthActions from '../../services/AuthActions';
+import ProductActions from '../../services/ProductActions';
 import dbProducts from "../products.json";
 
 const DataProvider = ({ children }) => {
@@ -14,7 +15,14 @@ const DataProvider = ({ children }) => {
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
-        setProducts(dbProducts);
+        ProductActions
+            .findAll()
+            .then(response => {
+                console.log(response);
+                setProducts(dbProducts);
+                // setProducts(dbProducts);
+            });
+        
     }, []);
 
     useEffect(() => setCurrentUser(AuthActions.getCurrentUser()), [isAuthenticated]);

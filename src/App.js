@@ -9,6 +9,10 @@ import { BreadcrumbsProvider } from "react-breadcrumbs-dynamic";
 import routes from './routes';
 import DataProvider from "./data/dataProvider/dataProvider";
 
+import en from "./translations/english.json";
+import fn from "./translations/french.json";
+import de from "./translations/germany.json";
+
 const loading = (
     <div className="flone-preloader-wrapper">
         <div className="flone-preloader">
@@ -21,15 +25,7 @@ const loading = (
 const App = (props) => {
 
     useEffect(() => {
-        props.dispatch(
-            loadLanguages({
-                languages: {
-                    en: require("./translations/english.json"),
-                    fn: require("./translations/french.json"),
-                    de: require("./translations/germany.json")
-                }
-            })
-        );
+        props.dispatch( loadLanguages({languages: { en, fn, de }}) );
     }, []);
 
     return (

@@ -5,6 +5,7 @@ import IconGroup from "../../components/header/IconGroup";
 import MobileMenu from "../../components/header/MobileMenu";
 import OffcanvasMenu from "../../components/header/OffcanvasMenu";
 import { useLocation } from 'react-router-dom';
+import Logo from "../../components/header/Logo";
 
 const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) => {
 
@@ -51,10 +52,13 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
             {/* header logo */}
             <div className="logo text-center logo-hm5">
               <Link className="sticky-none" to={process.env.PUBLIC_URL + "/"}>
-                <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1>
+                {/* <img src={} alt=""></img> */}
+                <img src="/assets/img/logo/logo_fp_4.png" logoClass="logo" height="80"/>
+                {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150" */}
               </Link>
               <Link className="sticky-block" to={process.env.PUBLIC_URL + "/"}>
-              <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1>
+                <img src="/assets/img/logo/logo_fp_4.png" logoClass="logo" height="80"/>
+              {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150"*/}
               </Link>
             </div>
           </div>
