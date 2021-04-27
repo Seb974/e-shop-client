@@ -6,6 +6,7 @@ import {
   DELETE_FROM_CART,
   DELETE_ALL_FROM_CART
 } from "../actions/cartActions";
+import { isDefinedAndNotVoid } from '../../helpers/utils';
 
 const initState = [];
 
@@ -15,7 +16,7 @@ const cartReducer = (state = initState, action) => {
 
   if (action.type === ADD_TO_CART) {
     // for non variant products
-    if (product.product.variation === undefined) {
+    if (!isDefinedAndNotVoid(product.product.variations)) {
       const cartItem = cartItems.filter(item => item.product.id == product.product.id)[0];
       if (cartItem === undefined) {
         return [

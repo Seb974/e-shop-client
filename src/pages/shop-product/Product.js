@@ -9,13 +9,14 @@ import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
 import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
 import ProductsContext from "../../contexts/ProductsContext";
+import { isDefined } from "../../helpers/utils";
 
 const Product = ({ location, match }) => {      // product: storedProduct,
 
   const { id = "new" } = match.params;
   const { pathname } = location;
   const { products } = useContext(ProductsContext);
-  const product = products.find(product => product.id === id);
+  const product = products.find(product => product.id === parseInt(id));
 
   return (
     <Fragment>
@@ -36,7 +37,7 @@ const Product = ({ location, match }) => {      // product: storedProduct,
 
         {/* product description with image */}
         <ProductImageDescription
-          spaceTopClass="pt-100"
+          spaceTopClass="pt-150"
           spaceBottomClass="pb-100"
           product={product}
         />
@@ -44,13 +45,13 @@ const Product = ({ location, match }) => {      // product: storedProduct,
         {/* product description tab */}
         <ProductDescriptionTab
           spaceBottomClass="pb-90"
-          productFullDesc={product.fullDescription}
+          productFullDesc={ isDefined(product) ? product.fullDescription : ""}
         />
 
         {/* related product slider */}
         <RelatedProductSlider
           spaceBottomClass="pb-95"
-          category={product.category[0]}
+          category={isDefined(product) ? product.categories[0].name : ""}
         />
       </LayoutSeven>
     </Fragment>

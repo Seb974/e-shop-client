@@ -1,22 +1,25 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState, useEffect, useContext } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import Swiper from "react-id-swiper";
-import { getProductCartQuantity } from "../../helpers/product";
+import { hasVariationScope, getProductCartQuantity, getAvailableStock } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
 import Rating from "./sub-components/ProductRating";
 import { connect } from "react-redux";
 import api from '../../config/api';
+import { multilanguage } from "redux-multilanguage";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { useToasts } from "react-toast-notifications";
 
-const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, addToast}) => {
+const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, strings}) => {
 
+  const { addToast } = useToasts();
   const [gallerySwiper, getGallerySwiper] = useState(null);
   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
-  const [selectedProductColor, setSelectedProductColor] = useState( product.variation ? product.variation[0].color : "");
-  const [selectedProductSize, setSelectedProductSize] = useState( product.variation ? product.variation[0].size[0].name : "");
-  const [productStock, setProductStock] = useState( product.variation ? product.variation[0].size[0].stock : product.stock );
-  const [quantityCount, setQuantityCount] = useState(1);
-
+  const [selectedProductColor, setSelectedProductColor] = useState( isDefinedAndNotVoid(product.variations) ? product.variations[0] : undefined);
+  const [selectedProductSize, setSelectedProductSize] = useState( isDefinedAndNotVoid(product.variations) && isDefinedAndNotVoid(product.variations[0].sizes) ? product.variations[0].sizes[0]: undefined);
+  const [productStock, setProductStock] = useState(getAvailableStock(product, selectedProductColor, selectedProductSize));
   const productCartQty = getProductCartQuantity(cartItems, product, selectedProductColor, selectedProductSize);
+  const [quantityCount, setQuantityCount] = useState(1);
 
   useEffect(() => {
     if (gallerySwiper !== null && gallerySwiper.controller && thumbnailSwiper !== null && thumbnailSwiper.controller) {
@@ -59,11 +62,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
 
   return (
     <Fragment>
-      <Modal
-        show={show}
-        onHide={onHide}
-        className="product-quickview-modal-wrapper"
-      >
+      <Modal show={show} onHide={onHide} className="product-quickview-modal-wrapper">
         <Modal.Header closeButton></Modal.Header>
 
         <div className="modal-body">
@@ -71,60 +70,50 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
             <div className="col-md-5 col-sm-12 col-xs-12">
               <div className="product-large-image-wrapper">
                 <Swiper {...gallerySwiperParams}>
-                  {product.image && Array.isArray(product.image) ?
-                    product.image.map((single, key) => {
-                      return (
-                        <div key={key}>
-                          <div className="single-image">
-                            <img
-                              src={process.env.PUBLIC_URL + single}
-                              className="img-fluid"
-                              alt=""
-                            />
-                          </div>
+                  { !isDefined(product.image) ? <></> :
+                      <div>
+                        <div className="single-image">
+                          <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
                         </div>
-                      );
-                    }) : 
-                    <div>
-                      <div className="single-image">
-                        <img
-                          src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
-                          className="img-fluid"
-                          alt=""
-                        />
                       </div>
-                    </div>
+                  }
+                  { !isDefinedAndNotVoid(product.variations) ? <></> : product.variations.map((single, key) => {
+                      return !isDefined(single.image) ? <></> : 
+                          <div key={key}>
+                            <div className="single-image">
+                                <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
+                            </div>
+                          </div>
+                      })
                   }
                 </Swiper>
               </div>
-              {/* <div className="product-small-image-wrapper mt-15">
+              <div className="product-small-image-wrapper mt-15">
+              { isDefinedAndNotVoid(product.variations) &&
                 <Swiper {...thumbnailSwiperParams}>
-                  {product.image && Array.isArray(product.image) ?
-                    product.image.map((single, key) => {
-                      return (
-                        <div key={key}>
+                    {isDefined(product.image) && 
+                        <div>
                           <div className="single-image">
                             <img
-                              src={process.env.PUBLIC_URL + single}
+                              src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
                               className="img-fluid"
                               alt=""
                             />
                           </div>
                         </div>
-                      );
-                    }) :
-                    <div>
-                      <div className="single-image">
-                        <img
-                          src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
-                          className="img-fluid"
-                          alt=""
-                        />
-                      </div>
-                    </div>
-                  }
+                    }
+                    { product.variations.map((single, key) => {
+                      return !isDefined(single.image) ? <></> : 
+                          <div key={key}>
+                              <div className="single-image">
+                                  <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt=""/>
+                              </div>
+                          </div>
+                      })
+                    }
                 </Swiper>
-              </div> */}
+              }
+              </div>
             </div>
             <div className="col-md-7 col-sm-12 col-xs-12">
               <div className="product-details-content quickview-content">
@@ -133,164 +122,131 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                   {discountedprice !== null ? (
                     <Fragment>
                       <span>
-                        {currency.currencySymbol + finaldiscountedprice}
+                        {finaldiscountedprice.toFixed(2) + " " + currency.currencySymbol}
                       </span>{" "}
                       <span className="old">
-                        {currency.currencySymbol + finalproductprice}
+                        {finalproductprice.toFixed(2)+ " " + currency.currencySymbol}
                       </span>
                     </Fragment>
                   ) : (
-                    <span>{currency.currencySymbol + finalproductprice} </span>
+                    <span>{finalproductprice.toFixed(2) + " " + currency.currencySymbol} </span>
                   )}
                 </div>
-                {/* {product.rating && product.rating > 0 ? (
-                  <div className="pro-details-rating-wrap">
-                    <div className="pro-details-rating">
-                      <Rating ratingValue={product.rating} />
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )} */}
                 <div className="pro-details-list">
-                  <p>{product.shortDescription}</p>
+                  <p>
+                     { product.shortDescription ? product.shortDescription : 
+                       product.fullDescription ? product.fullDescription : ""
+                     }
+                  </p>
                 </div>
 
-                {product.variation ? (
+                {isDefinedAndNotVoid(product.variations) ? (
                   <div className="pro-details-size-color">
-                    <div className="pro-details-color-wrap">
-                      <span>Color</span>
-                      <div className="pro-details-color-content">
-                        {product.variation.map((single, key) => {
+                    <div className="pro-details-size mr-5">
+                      <span>{ hasVariationScope(product.variations) ? strings["variant"] : ""}</span>
+                      <div className="pro-details-size-content">
+                        {product.variations.map((single, key) => {
                           return (
-                            <label
-                              className={`pro-details-color-content--single ${single.color}`}
-                              key={key}
-                            >
+                            <label hidden={single.color.trim() === ""} className={`pro-details-size-content--single ${single.color}`} key={key}>
                               <input
                                 type="radio"
                                 value={single.color}
-                                name="product-color"
-                                checked={
-                                  single.color === selectedProductColor
-                                    ? "checked"
-                                    : ""
-                                }
+                                checked={single.color === selectedProductColor.color ? "checked" : ""}
                                 onChange={() => {
-                                  setSelectedProductColor(single.color);
-                                  setSelectedProductSize(single.size[0].name);
-                                  setProductStock(single.size[0].stock);
-                                  setQuantityCount(1);
+                                    setSelectedProductColor(single);
+                                    setSelectedProductSize(single.sizes[0]);
+                                    setProductStock(single.sizes[0].stock.quantity);
+                                    setQuantityCount(1);
                                 }}
                               />
-                              <span className="checkmark"></span>
+                              <span className="size-name">{ single.color }</span>
                             </label>
                           );
                         })}
                       </div>
                     </div>
                     <div className="pro-details-size">
-                      <span>Size</span>
+                      <span>{ strings["declination"] }</span>
                       <div className="pro-details-size-content">
-                        {product.variation &&
-                          product.variation.map(single => {
-                            return single.color === selectedProductColor
-                              ? single.size.map((singleSize, key) => {
-                                  return (
-                                    <label
-                                      className={`pro-details-size-content--single`}
-                                      key={key}
-                                    >
-                                      <input
-                                        type="radio"
-                                        value={singleSize.name}
-                                        checked={
-                                          singleSize.name ===
-                                          selectedProductSize
-                                            ? "checked"
-                                            : ""
-                                        }
-                                        onChange={() => {
-                                          setSelectedProductSize(
-                                            singleSize.name
-                                          );
-                                          setProductStock(singleSize.stock);
-                                          setQuantityCount(1);
-                                        }}
-                                      />
-                                      <span className="size-name">
-                                        {singleSize.name}
-                                      </span>
-                                    </label>
-                                  );
-                                })
-                              : "";
-                          })}
+                        { isDefinedAndNotVoid(product.variations) &&
+                          product.variations.map(single => {
+                              return single.color !== selectedProductColor.color ? "" :
+                                  single.sizes.map((singleSize, key) => {
+                                    return (
+                                      <label className={`pro-details-size-content--single`} key={key}>
+                                        <input
+                                          type="radio"
+                                          value={singleSize.name}
+                                          checked={singleSize.name === selectedProductSize.name ? "checked" : ""}
+                                          onChange={() => {
+                                              setSelectedProductColor(single);
+                                              setSelectedProductSize(singleSize);
+                                              setProductStock(singleSize.stock.quantity);
+                                              setQuantityCount(1);
+                                          }}
+                                        />
+                                        <span className="size-name">{singleSize.name}</span>
+                                      </label>
+                                    );
+                                  });
+                            })}
                       </div>
                     </div>
                   </div>
                 ) : (
                   ""
                 )}
-                { 
-                // product.affiliateLink ?
-                //   <div className="pro-details-quality">
-                //     <div className="pro-details-cart btn-hover">
-                //       <a href={product.affiliateLink} rel="noopener noreferrer" target="_blank">
-                //           Buy Now
-                //       </a>
-                //     </div>
-                //   </div>
-                // :
                   <div className="pro-details-quality">
                     <div className="cart-plus-minus">
                       <button onClick={() => setQuantityCount(quantityCount > 1 ? quantityCount - 1 : 1) } className="dec qtybutton">
                           -
                       </button>
-                      <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly />
+                      {/* <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly /> */}
+                      <input 
+                          min="0"
+                          max="999"
+                          className="cart-plus-minus-box" 
+                          type="number" 
+                          value={quantityCount} 
+                          onChange={({currentTarget}) => {
+                            const newQty = currentTarget.value;
+                            setQuantityCount(parseFloat(newQty));
+                          }}
+                      />
                       <button onClick={() => setQuantityCount( quantityCount < productStock - productCartQty ? quantityCount + 1 : quantityCount)} className="inc qtybutton">
                           +
                       </button>
                     </div>
                     <div className="pro-details-cart btn-hover">
-                      { productStock && productStock > 0 ?
-                        <button onClick={() => addToCart(product, addToast, quantityCount, selectedProductColor, selectedProductSize)} disabled={productCartQty >= productStock}>
-                            {" "}Add To Cart{" "}
+                      { getAvailableStock(product, selectedProductColor, selectedProductSize) <= 0 ?
+                        <button disabled>{strings["out_of_stock"]}</button>
+                        :
+                        <button onClick={() => addToCart(product, addToast, quantityCount, selectedProductColor, selectedProductSize)}>
+                            {" "}{strings["add_to_cart"]}{" "}
                         </button>
-                      :
-                        <button disabled>Out of Stock</button>
                       }
                     </div>
                     <div className="pro-details-wishlist">
                       <button
-                        className={wishlistItem !== undefined ? "active" : ""}
-                        disabled={wishlistItem !== undefined}
-                        title={
-                          wishlistItem !== undefined
-                            ? "Added to wishlist"
-                            : "Add to wishlist"
-                        }
-                        onClick={() => addToWishlist(product, addToast)}
+                            className={wishlistItem !== undefined ? "active" : ""}
+                            disabled={wishlistItem !== undefined}
+                            title={wishlistItem !== undefined ? strings["added_to_wishlist"] : strings["add_to_wishlist"]}
+                            onClick={() => addToWishlist(product, addToast)}
                       >
                         <i className="pe-7s-like" />
                       </button>
                     </div>
                     <div className="pro-details-compare">
                       <button
-                        className={compareItem !== undefined ? "active" : ""}
-                        disabled={compareItem !== undefined}
-                        title={
-                          compareItem !== undefined
-                            ? "Added to compare"
-                            : "Add to compare"
-                        }
-                        onClick={() => addToCompare(product, addToast)}
+                          className={compareItem !== undefined ? "active" : ""}
+                          disabled={compareItem !== undefined}
+                          title={compareItem !== undefined ? strings["added_to_compare"] : strings["add_to_compare"]}
+                          onClick={() => addToCompare(product, addToast)}
                       >
                         <i className="pe-7s-shuffle" />
                       </button>
                     </div>
                   </div>
-                }
               </div>
             </div>
           </div>
@@ -323,4 +279,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ProductModal);
+export default connect(mapStateToProps)(multilanguage(ProductModal));

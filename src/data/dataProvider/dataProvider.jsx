@@ -18,8 +18,7 @@ const DataProvider = ({ children }) => {
         ProductActions
             .findAll()
             .then(response => {
-                console.log(response);
-                setProducts(dbProducts);
+                setProducts(response);
                 // setProducts(dbProducts);
             });
         

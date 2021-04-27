@@ -2,13 +2,14 @@ import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-import { getDiscountPrice } from "../../helpers/product";
+import { getDiscountPrice, hasEnoughStock, getAvailableStock } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from '../../config/api';
-import { components } from "react-select";
+import { multilanguage } from "redux-multilanguage";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
-const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass}) => {
+const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass, strings}) => {
   
   const { addToast } = useToasts();
   const [modalShow, setModalShow] = useState(false);
@@ -16,18 +17,8 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
   const [hasStock, setHasStock] = useState(false);
 
   useEffect(() => {
-      let stockStatus = false;
-      if (product.components && product.components.length > 0) {
-        stockStatus = !product.components.map(component => {
-          return component.size && component.size.stock.quantity > 0 ? true :
-                 component.product.stock && component.product.stock.quantity > 0 ? true :
-                 false;
-        }).includes(false);
-      } else if ( !(product.variations && product.variations.length > 0) && product.stock ) {
-        stockStatus = product.stock.quantity > 0 || product.stock > 0;
-      }
+      const stockStatus = hasEnoughStock(product);
       setHasStock(stockStatus);
-
   }, [product]);
 
   const discountedPrice = getDiscountPrice(product.price, product.discount);
@@ -44,7 +35,6 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
   };
 
   const handleAddToCart = event => {
-      console.log("Add to cart");
       addToCart(product, addToast, parseFloat(quantity));
       setQuantity("");
   };
@@ -55,22 +45,9 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
       <div className={`col-xl-4 col-sm-6 ${ sliderClassName ? sliderClassName : "" }`}>
         <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img">
-            <a href="#" onClick={ handleShowDetails }>
-              {Array.isArray(product.image) ? 
-                <img className="default-img" src={process.env.PUBLIC_URL + product.image[0] } alt="" height="500" width="600"/>
-              :
-                <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
-              }
-              { !Array.isArray(product.image) || product.image.length <= 1 ? 
-                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
-              :
-                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1] } alt="" height="500" width="600"/>
-              }
-
-              {/* <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + (Array.isArray(product.image) ? product.image[0] : product.image.filePath)} alt=""/>
-              { product.image.length <= 1 ? "" :
-                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + (Array.isArray(product.image) ? product.image[1] : product.image.filePath)} alt=""/>
-              } */}
+              <a href="#" onClick={ handleShowDetails }>
+                  <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
+                  <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="500" width="600"/>
               </a>
             { !(product.discount || product.new) ? "" :
                 <div className="product-img-badges">
@@ -83,34 +60,22 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
                 <button
                   className={wishlistItem !== undefined ? "active" : ""}
                   disabled={wishlistItem !== undefined}
-                  title={ wishlistItem !== undefined ? "Added to wishlist" : "Add to wishlist"}
+                  title={ wishlistItem !== undefined ? strings["added_to_wishlist"] : strings["add_to_wishlist"]}
                   onClick={() => addToWishlist(product, addToast)}
                 >
                   <i className="pe-7s-like" />
                 </button>
               </div>
               <div className="pro-same-action pro-cart">
-                { 
-                //   product.components && product.components.length >= 1 ?
-                //       product.components.map(component => {
-                //         return component.size && component.size.stock.quantity > 0 ? true :
-                //                component.product.stock && component.product.stock.quantity > 0 ? true :
-                //                false;
-                //       }).includes(false) ?
-                //         <button disabled className="active">Out of Stock</button> :
-                //         <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
-                // :
-                  product.variations && product.variations.length >= 1 ?
-                  <a href="#" onClick={ handleShowDetails }>Select Option </a>
-                : 
-                  ((product.stock && (product.stock.quantity > 0 || product.stock > 0) ) || (product.components && product.components.length >= 1)) && hasStock ?
-                    <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
-                 :
-                    <button disabled className="active">Out of Stock</button>
+                { product.variations && product.variations.length >= 1 ?
+                  <a href="#" onClick={ handleShowDetails }>{strings["select_option"]}</a>
+                :
+                  !getAvailableStock(product) > 0 ? <button disabled className="active">{strings["out_of_stock"]}</button> :
+                  <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
                 }
               </div>
               <div className="pro-same-action pro-quickview">
-                <button onClick={ handleAddToCart } title="Quick View" disabled={ !hasStock || quantity <= 0 }>    {/* !(product.stock && product.stock > 0)  */}
+                <button onClick={ handleAddToCart } title={strings["add_to_cart"]} disabled={ !hasStock || quantity <= 0 }>
                   <i className="pe-7s-cart" />
                 </button>
               </div>
@@ -121,12 +86,12 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
             <div className="product-price">
               {discountedPrice !== null ?
                 <Fragment>
-                    <span>{finalDiscountedPrice + currency.currencySymbol}</span>
+                    <span>{finalDiscountedPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                     {" "}
-                    <span className="old">{finalProductPrice + currency.currencySymbol}</span>
+                    <span className="old">{finalProductPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                 </Fragment>
               :
-                <span>{finalProductPrice + currency.currencySymbol} </span>
+                <span>{finalProductPrice.toFixed(2) + " " + currency.currencySymbol} </span>
               }
             </div>
           </div>
@@ -138,20 +103,10 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
             <div className="col-xl-4 col-md-5 col-sm-6">
               <div className="product-list-image-wrap">
                 <div className="product-img">
-                  {/* <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>     process.env.IMAGE_URL   */}
                   <a href="#" onClick={ handleShowDetails }>
-                    {Array.isArray(product.image) ? 
-                      <img className="default-img img-fluid" src={process.env.PUBLIC_URL + product.image[0] } alt="" height="800" width="600"/>
-                    :
-                      <img className="default-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/>
-                    }
-                    { !Array.isArray(product.image) || product.image.length <= 1 ? 
-                      <img className="hover-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/>
-                    :
-                      <img className="hover-img img-fluid" src={process.env.PUBLIC_URL + product.image[1] } alt=""/>
-                    }
+                    <img className="default-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/>
+                    <img className="hover-img img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" height="800" width="600"/> :
                   </a>
-                  {/* </Link> */}
                   { !(product.discount || product.new) ? "" :
                     <div className="product-img-badges">
                       { product.discount ? <span className="pink">-{product.discount}%</span> : "" }
@@ -165,41 +120,43 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
               <div className="shop-list-content">
                 <a href="#" onClick={ handleShowDetails }><h3>{ product.name }</h3></a>
                 <div className="product-list-price">
-                  {discountedPrice === null ? <span>{currency.currencySymbol + finalProductPrice} </span> :
+                  {discountedPrice === null ? <span>{finalProductPrice.toFixed(2) + " " + currency.currencySymbol} </span> :
                       <Fragment>
-                          <span>{ currency.currencySymbol + finalDiscountedPrice }</span>
+                          <span>{ finalDiscountedPrice.toFixed(2)+ " " + currency.currencySymbol }</span>
                           {" "}
-                          <span className="old">{ currency.currencySymbol + finalProductPrice }</span>
+                          <span className="old">{ finalProductPrice.toFixed(2) + " " + currency.currencySymbol }</span>
                       </Fragment>
                   }
                 </div>
-                {product.shortDescription ? <p>{product.shortDescription}</p> : "" }
+                { 
+                  isDefined(product.shortDescription) ? <p>{product.shortDescription}</p> : 
+                  isDefined(product.fullDescription) ? <p>{product.fullDescription}</p> : "" }
                 <div className="shop-list-actions d-flex align-items-center">
                   <div className="shop-list-btn btn-hover">
-                    { product.variation && product.variation.length >= 1 ?
-                      <a href="#" onClick={ handleShowDetails }>Select Option </a>
-                    :
-                    product.stock && product.stock > 0 ?
-                        <div className="d-flex mr-1">
-                          <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
-                        </div>
-                    :
-                        <button disabled className="active">Out of Stock</button>
+                    { product.variations && product.variations.length >= 1 ?
+                        <a href="#" onClick={ handleShowDetails }>{strings["select_option"]}</a>
+                      : 
+                      // hasStock ?
+                      getAvailableStock(product) > 0 ?
+                          <div className="d-flex mr-1">
+                              <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>
+                          </div>
+                      :
+                          <button disabled className="active">{strings["out_of_stock"]}</button>
                     }
                   </div>
-                  { !(product.variation && product.variation.length >= 1) && product.stock && product.stock > 0 ?
+                  { getAvailableStock(product) <= 0 ? "" :
                     <div className="shop-list-wishlist ml-10">
                         <button className={"qty-valid" + (quantity !== "" ? " active" : "")} disabled={ quantity === "" } title="Add to cart" onClick={ handleAddToCart }>
                             <i className="pe-7s-cart" />
                         </button>
                     </div>
-                    : ""
                   }
                   <div className="shop-list-wishlist ml-10">
                     <button
                       className={wishlistItem !== undefined ? "active" : ""}
                       disabled={wishlistItem !== undefined}
-                      title={ wishlistItem !== undefined ? "Added to wishlist" : "Add to wishlist" }
+                      title={ wishlistItem !== undefined ? strings["added_to_wishlist"] : strings["add_to_wishlist"]}
                       onClick={() => addToWishlist(product, addToast)}
                     >
                       <i className="pe-7s-like" />
@@ -209,7 +166,7 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
                     <button
                       className={compareItem !== undefined ? "active" : ""}
                       disabled={compareItem !== undefined}
-                      title={ compareItem !== undefined ? "Added to compare" : "Add to compare" }
+                      title={ compareItem !== undefined ? strings["added_to_compare"] : strings["add_to_compare"]}
                       onClick={() => addToCompare(product, addToast)}
                     >
                       <i className="pe-7s-shuffle" />
@@ -222,7 +179,7 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
         </div>
       </div>
       <ProductModal
-        show={modalShow}
+        show={ modalShow }
         onHide={() => setModalShow(false)}
         product={product}
         currency={currency}
@@ -235,7 +192,6 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
         addtocart={addToCart}
         addtowishlist={addToWishlist}
         addtocompare={addToCompare}
-        addtoast={addToast}
       />
     </Fragment>
   );
@@ -254,4 +210,4 @@ ProductGridPersonalizedSingle.propTypes = {
   wishlistItem: PropTypes.object
 };
 
-export default ProductGridPersonalizedSingle;
+export default multilanguage(ProductGridPersonalizedSingle);

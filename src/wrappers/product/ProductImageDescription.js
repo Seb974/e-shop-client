@@ -9,17 +9,18 @@ import ProductImageGallerySideThumb from "../../components/product/ProductImageG
 import ProductImageFixed from "../../components/product/ProductImageFixed";
 import { getElementsFromIds } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
+import { isDefined } from "../../helpers/utils";
 
 const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, currency, cartItems, wishlistItems, compareItems, product}) => {    // product: storedProduct,
   
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
-  const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate).toFixed(2);
+  const discountedPrice = isDefined(product) ? getDiscountPrice(product.price, product.discount) : 0;
+  const finalProductPrice = isDefined(product) ? +(product.price * currency.currencyRate).toFixed(2) : 0;
+  const finalDiscountedPrice = isDefined(product) ? +(discountedPrice * currency.currencyRate).toFixed(2) : 0;
   
-  const wishlistItem = getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0];
-  const compareItem = getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0];
+  const wishlistItem = isDefined(product) ? getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0] : null;
+  const compareItem = isDefined(product) ? getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0] : null;
   
   return (
     <div

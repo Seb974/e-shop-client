@@ -5,15 +5,18 @@ import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
-import { getDiscountPrice } from "../../helpers/product";
+import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../redux/actions/wishlistActions";
 import { addToCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getElementsFromIds } from '../../helpers/product';
+import api from "../../config/api";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { multilanguage } from "redux-multilanguage";
 
-const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist }) => {
+const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, strings }) => {
   
   const { addToast } = useToasts();
   const { pathname } = location;
@@ -40,12 +43,11 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
       <LayoutSeven stick="stick">
         {/* breadcrumb */}
         {/* <Breadcrumb /> */}
-        <div className="cart-main-area pt-90 pb-100 mt-3">
+        <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
-            {/* {wishlistItems && wishlistItems.length >= 1 ? ( */}
-            { favourites && favourites.length >= 1 ? (
+            { isDefinedAndNotVoid(favourites) ?
               <Fragment>
-                <h3 className="cart-page-title">Your wishlist items</h3>
+                <h3 className="cart-page-title">{ strings["your_wishlist_items"] }</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
@@ -53,138 +55,68 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                         <thead>
                           <tr>
                             <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Add To Cart</th>
-                            <th>action</th>
+                            <th>{strings["product_name"]}</th>
+                            <th>{strings["unit_price"]}</th>
+                            <th>actions</th>
+                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
-                          {/* {wishlistItems.map((wishlistItem, key) => { */}
                           { favourites.map((wishlistItem, key) => {
-                            const discountedPrice = getDiscountPrice(
-                              wishlistItem.price,
-                              wishlistItem.discount
-                            );
-                            const finalProductPrice = (
-                              wishlistItem.price * currency.currencyRate
-                            ).toFixed(2);
-                            const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
-                            const cartItem = cartItems.filter(
-                              item => item.id === wishlistItem.id
-                            )[0];
-                            return (
+                            const discountedPrice = isDefined(wishlistItem) ? getDiscountPrice(wishlistItem.price, wishlistItem.discount) : 0;
+                            const finalProductPrice = isDefined(wishlistItem) ? (wishlistItem.price * currency.currencyRate).toFixed(2) : 0;
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
+                            const cartItem = isDefined(wishlistItem) ? cartItems.filter(item => item.id === wishlistItem.id)[0] : undefined;
+                            return !isDefined(wishlistItem) ? <></> : (
                               <tr key={key}>
                                 <td className="product-thumbnail">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      wishlistItem.id
-                                    }
-                                  >
-                                    <img
-                                      className="img-fluid"
-                                      src={
-                                        process.env.PUBLIC_URL +
-                                        wishlistItem.image[0]
-                                      }
-                                      alt=""
-                                    />
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + wishlistItem.id}>
+                                    <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + wishlistItem.image.filePath} alt=""/>
                                   </Link>
                                 </td>
 
                                 <td className="product-name text-center">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      wishlistItem.id
-                                    }
-                                  >
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + wishlistItem.id }>
                                     {wishlistItem.name}
                                   </Link>
                                 </td>
 
                                 <td className="product-price-cart">
-                                  {discountedPrice !== null ? (
+                                  {discountedPrice !== null ?
                                     <Fragment>
                                       <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
+                                        { finalProductPrice + " " + currency.currencySymbol}
                                       </span>
                                       <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
+                                        {finalDiscountedPrice + " " + currency.currencySymbol}
                                       </span>
                                     </Fragment>
-                                  ) : (
+                                  :
                                     <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
+                                      {finalProductPrice + " " + currency.currencySymbol}
                                     </span>
-                                  )}
+                                  }
                                 </td>
 
                                 <td className="product-wishlist-cart">
-                                  {wishlistItem.affiliateLink ? (
-                                    <a
-                                      href={wishlistItem.affiliateLink}
-                                      rel="noopener noreferrer"
-                                      target="_blank"
-                                    >
-                                      {" "}
-                                      Buy now{" "}
-                                    </a>
-                                  ) : wishlistItem.variation &&
-                                    wishlistItem.variation.length >= 1 ? (
-                                    <Link
-                                      to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}
-                                    >
-                                      Select option
+                                  { isDefinedAndNotVoid(wishlistItem.variations) ?
+                                    <Link to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}>
+                                        { strings["select_option"] }
                                     </Link>
-                                  ) : wishlistItem.stock &&
-                                    wishlistItem.stock > 0 ? (
+                                  : getAvailableStock(wishlistItem) > 0 ?
                                     <button
-                                      onClick={() =>
-                                        addToCart(wishlistItem, addToast)
-                                      }
-                                      className={
-                                        cartItem !== undefined &&
-                                        cartItem.quantity > 0
-                                          ? "active"
-                                          : ""
-                                      }
-                                      disabled={
-                                        cartItem !== undefined &&
-                                        cartItem.quantity > 0
-                                      }
-                                      title={
-                                        wishlistItem !== undefined
-                                          ? "Added to cart"
-                                          : "Add to cart"
-                                      }
+                                      onClick={() => addToCart(wishlistItem, addToast)}
+                                      className={cartItem !== undefined && cartItem.quantity > 0 ? "active" : ""}
+                                      disabled={cartItem !== undefined && cartItem.quantity > 0 }
+                                      title={wishlistItem !== undefined ? strings["added_to_cart"] : strings["add_to_cart"]}
                                     >
-                                      {cartItem !== undefined &&
-                                      cartItem.quantity > 0
-                                        ? "Added"
-                                        : "Add to cart"}
-                                    </button>
-                                  ) : (
-                                    <button disabled className="active">
-                                      Out of stock
-                                    </button>
-                                  )}
+                                      {cartItem !== undefined && cartItem.quantity > 0 ? strings["added"] : strings["add_to_cart"]}</button>
+                                  :
+                                    <button disabled className="active">{ strings["out_of_stock"] }</button>
+                                  }
                                 </td>
-
                                 <td className="product-remove">
-                                  <button
-                                    onClick={() =>
-                                      deleteFromWishlist(wishlistItem, addToast)
-                                    }
-                                  >
+                                  <button onClick={() => deleteFromWishlist(wishlistItem, addToast)}>
                                     <i className="fa fa-times"></i>
                                   </button>
                                 </td>
@@ -201,22 +133,16 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                   <div className="col-lg-12">
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
-                        <Link
-                          to={process.env.PUBLIC_URL + "/shop"}
-                        >
-                          Continue Shopping
-                        </Link>
+                        <Link to={process.env.PUBLIC_URL + "/shop"}>{ strings["continue_shopping"] }</Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => deleteAllFromWishlist(addToast)}>
-                          Clear Wishlist
-                        </button>
+                          <button onClick={() => deleteAllFromWishlist(addToast)}>{ strings["clear_wishlist"] }</button>
                       </div>
                     </div>
                   </div>
                 </div>
               </Fragment>
-            ) : (
+            :
               <div className="row">
                 <div className="col-lg-12">
                   <div className="item-empty-area text-center">
@@ -224,15 +150,13 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                       <i className="pe-7s-like"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in wishlist <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop"}>
-                        Add Items
-                      </Link>
+                        { strings["no_items_in_wishlist"] } <br />{" "}
+                        <Link to={process.env.PUBLIC_URL + "/shop"}>{ strings["add_items"] }</Link>
                     </div>
                   </div>
                 </div>
               </div>
-            )}
+            }
           </div>
         </div>
       </LayoutSeven>
@@ -275,4 +199,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wishlist);
+export default connect(mapStateToProps, mapDispatchToProps)(multilanguage(Wishlist));
