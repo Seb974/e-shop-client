@@ -10,14 +10,17 @@ import ProductImageFixed from "../../components/product/ProductImageFixed";
 import { getElementsFromIds } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, currency, cartItems, wishlistItems, compareItems, product}) => {    // product: storedProduct,
   
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
+  const { country } = useContext(AuthContext);
+  const taxToApply = product.taxes.find(tax => tax.country === country).rate;
   const discountedPrice = isDefined(product) ? getDiscountPrice(product.price, product.discount) : 0;
-  const finalProductPrice = isDefined(product) ? +(product.price * currency.currencyRate).toFixed(2) : 0;
-  const finalDiscountedPrice = isDefined(product) ? +(discountedPrice * currency.currencyRate).toFixed(2) : 0;
+  const finalProductPrice = isDefined(product) ? +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
+  const finalDiscountedPrice = isDefined(product) ? +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
   
   const wishlistItem = isDefined(product) ? getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0] : null;
   const compareItem = isDefined(product) ? getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0] : null;

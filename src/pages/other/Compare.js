@@ -16,11 +16,13 @@ import { getElementsFromIds } from '../../helpers/product';
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 
 const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompare, currency, strings }) => {
   
   const { pathname } = location;
   const { addToast } = useToasts();
+  const { country } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [compareList, setCompareList] = useState([]);
 
@@ -98,9 +100,10 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                           <tr>
                             <th className="title-column">{ strings["price"] }</th>
                             {compareList.map((compareItem, key) => {
+                              const taxToApply = isDefined(compareItem) ? compareItem.taxes.find(tax => tax.country === country).rate : 0;
                               const discountedPrice = isDefined(compareItem) ? getDiscountPrice(compareItem.price, compareItem.discount) : 0;
-                              const finalProductPrice = isDefined(compareItem) ? (compareItem.price * currency.currencyRate).toFixed(2) : 0;
-                              const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
+                              const finalProductPrice = isDefined(compareItem) ? (compareItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
+                              const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                               return !isDefined(compareItem) ? <></> : (
                                 <td className="product-price" key={key}>
                                   {discountedPrice !== null ? (

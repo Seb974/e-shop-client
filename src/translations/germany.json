@@ -117,7 +117,8 @@
   "proceed_to_checkout": "Zur Kasse",
   "shop_now": "Jetzt einkaufen",
   "categories": "Kategorien",
-  "tags": "Etikett"
+  "tags": "Etikett",
+  "total_tax": "Einschließlich Steuern"
 
   
 }

@@ -15,11 +15,13 @@ import { getElementsFromIds } from '../../helpers/product';
 import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
+import AuthContext from "../../contexts/AuthContext";
 
 const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, strings }) => {
   
   const { addToast } = useToasts();
   const { pathname } = location;
+  const { country } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [favourites, setFavourites] = useState([]);
 
@@ -63,9 +65,10 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                         </thead>
                         <tbody>
                           { favourites.map((wishlistItem, key) => {
+                            const taxToApply = isDefined(wishlistItem) ? wishlistItem.taxes.find(tax => tax.country === country).rate : 0;
                             const discountedPrice = isDefined(wishlistItem) ? getDiscountPrice(wishlistItem.price, wishlistItem.discount) : 0;
-                            const finalProductPrice = isDefined(wishlistItem) ? (wishlistItem.price * currency.currencyRate).toFixed(2) : 0;
-                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
+                            const finalProductPrice = isDefined(wishlistItem) ? (wishlistItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                             const cartItem = isDefined(wishlistItem) ? cartItems.filter(item => item.id === wishlistItem.id)[0] : undefined;
                             return !isDefined(wishlistItem) ? <></> : (
                               <tr key={key}>

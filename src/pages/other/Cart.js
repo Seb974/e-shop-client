@@ -15,15 +15,18 @@ import ProductActions from "../../services/ProductActions";
 import { isDefined } from "../../helpers/utils";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
+import AuthContext from "../../contexts/AuthContext";
 
 const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart,deleteAllFromCart, strings }) => {
 
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
+  const { country } = useContext(AuthContext);
   const { products, setProducts } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([])
   let cartTotalPrice = 0;
+  let cartTotalTax = 0;
 
   useEffect(() => {
     let productSet = [];
@@ -80,13 +83,17 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                         </thead>
                         <tbody>
                           { productCart.map((cartItem, key) => {
+                            const taxToApply = cartItem.product.taxes.find(tax => tax.country === country).rate;
                             const discountedPrice = getDiscountPrice(cartItem.product.price, cartItem.product.discount);
-                            const finalProductPrice = (cartItem.product.price * currency.currencyRate).toFixed(2);
-                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate).toFixed(2);
+                            const finalProductPrice = (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
-                            discountedPrice != null ? 
-                                (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : 
-                                (cartTotalPrice += finalProductPrice * cartItem.quantity);
+                            // discountedPrice != null ? 
+                            //     (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : 
+                            //     (cartTotalPrice += finalProductPrice * cartItem.quantity);
+
+                            cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
+                            cartTotalTax += (discountedPrice != null ? discountedPrice : cartItem.product.price) * cartItem.quantity * taxToApply;
                             
                             const partial = cartItem.quantity % 1 === 0 ? 1 : 0.1;
                             return (
@@ -254,6 +261,11 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                       <h5>{strings["total_products"]}{" "}
                         <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                       </h5>
+                      { cartTotalTax > 0 && 
+                        <h5>{strings["total_tax"]}{" "}
+                        <span>{cartTotalTax.toFixed(2) + " " + currency.currencySymbol}</span>
+                      </h5>
+                      }
 
                       <h4 className="grand-totall-title">{strings["grand_total"]}{" "}
                         <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>

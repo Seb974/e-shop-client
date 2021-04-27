@@ -117,5 +117,6 @@
   "proceed_to_checkout": "Proceed to checkout",
   "shop_now": "Shop now",
   "categories": "Categories",
-  "tags": "Tags"
+  "tags": "Tags",
+  "total_tax": "Including taxes"
 }

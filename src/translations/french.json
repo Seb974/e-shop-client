@@ -117,5 +117,6 @@
   "proceed_to_checkout": "Procéder au paiement",
   "shop_now": "Commencez vos achats",
   "categories": "Catégories",
-  "tags": "Tags"
+  "tags": "Tags",
+  "total_tax": "Dont TVA"
 }

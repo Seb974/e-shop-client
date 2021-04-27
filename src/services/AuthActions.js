@@ -42,7 +42,7 @@ function isAuthenticated() {
     return false;
 }
 
-async function getCurrentUser() {
+function getCurrentUser() {
     const token = window.localStorage.getItem("authToken");
     if (token) {
         const { exp, id, name, roles, email, metas } = jwtDecode(token);

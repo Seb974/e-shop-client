@@ -8,6 +8,7 @@ import { isDefined, isDefinedAndNotVoid } from "../../../helpers/utils";
 import { getProductsFromIds } from '../../../helpers/product';
 import api from "../../../config/api";
 import { multilanguage } from "redux-multilanguage";
+import AuthContext from "../../../contexts/AuthContext";
 
 const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) => {
 
@@ -15,6 +16,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   const { addToast } = useToasts();
   const [productCart, setProductCart] = useState([]);
   const { products } = useContext(ProductsContext);
+  const { country } = useContext(AuthContext);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartData, products);
@@ -27,9 +29,10 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
+              const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
-              const finalProductPrice = isDefined(single.product) ? (single.product.price * currency.currencyRate).toFixed(2) : 0;
-              const finalDiscountedPrice = isDefined(single.product) ? (discountedPrice * currency.currencyRate).toFixed(2) : 0;
+              const finalProductPrice = isDefined(single.product) ? (single.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
+              const finalDiscountedPrice = isDefined(single.product) ? (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
 
               discountedPrice != null ? 
                   cartTotalPrice += finalDiscountedPrice * single.quantity :

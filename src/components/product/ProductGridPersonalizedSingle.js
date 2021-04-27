@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice, hasEnoughStock, getAvailableStock } from "../../helpers/product";
@@ -8,6 +8,7 @@ import ProductModal from "./ProductModal";
 import api from '../../config/api';
 import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass, strings}) => {
   
@@ -15,15 +16,17 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [hasStock, setHasStock] = useState(false);
+  const { country } = useContext(AuthContext);
 
   useEffect(() => {
       const stockStatus = hasEnoughStock(product);
       setHasStock(stockStatus);
   }, [product]);
 
+  const taxToApply = product.taxes.find(tax => tax.country === country).rate;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
   const handleChange = ({ currentTarget }) => {
     setQuantity(currentTarget.value);
