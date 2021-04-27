@@ -2,6 +2,7 @@ import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import api from '../config/api';
 import Roles from '../config/Roles';
+import { isDefined } from '../helpers/utils';
 
 function authenticate(credentials) {
     return api.post('/api/login_check', credentials)
@@ -41,12 +42,13 @@ function isAuthenticated() {
     return false;
 }
 
-function getCurrentUser() {
+async function getCurrentUser() {
     const token = window.localStorage.getItem("authToken");
     if (token) {
         const { exp, id, name, roles, email, metas } = jwtDecode(token);
-        if (exp * 1000 > new Date().getTime())
+        if (exp * 1000 > new Date().getTime()) {
             return {id, email, name, roles: Roles.filterRoles(roles), metas} ;
+        }
     }
     return getDefaultUser();
 }
@@ -76,6 +78,17 @@ function setErrorHandler(setCurrentUser, setIsAuthenticated) {
     });
 }
 
+function getGeolocation() {
+    const country = window.sessionStorage.getItem("country");
+    return isDefined(country) ? new Promise((resolve, reject) => resolve(country)) :
+        axios.get('https://freegeoip.app/json/')
+            .then(response => {
+                window.sessionStorage.setItem("country", response.data.country_code);
+                return response.data.country_code;
+            })
+            .catch(error => "RE");
+}
+
 export default {
     authenticate,
     logout,
@@ -83,5 +96,6 @@ export default {
     isAuthenticated,
     getCurrentUser,
     isDefaultUser,
-    setErrorHandler
+    setErrorHandler,
+    getGeolocation
 }

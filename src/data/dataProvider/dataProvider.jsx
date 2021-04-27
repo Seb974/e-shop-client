@@ -10,24 +10,25 @@ const DataProvider = ({ children }) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(AuthActions.isAuthenticated());
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
+    const [country, setCountry] = useState("RE");
     const [eventSource, setEventSource] = useState({});
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
-        ProductActions
-            .findAll()
-            .then(response => {
-                setProducts(response);
-                // setProducts(dbProducts);
-            });
-        
+        AuthActions.getGeolocation()
+                   .then(response => setCountry(response));
+        ProductActions.findAll()
+                      .then(response => {
+                          console.log(response);
+                          setProducts(response);
+                        });
     }, []);
 
     useEffect(() => setCurrentUser(AuthActions.getCurrentUser()), [isAuthenticated]);
 
     return (
-        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource} }>
+        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry} }>
         <ProductsContext.Provider value={ {products, setProducts} }>
             <MercureHub>
                 { children }
