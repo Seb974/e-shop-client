@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import LayoutOne from "../../layouts/LayoutOne";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import LocationMap from "../../components/contact/LocationMap";
 
@@ -13,19 +13,18 @@ const Contact = ({ location }) => {
     <Fragment>
       <MetaTags>
         <title>Flone | Contact</title>
-        <meta
-          name="description"
-          content="Contact of flone react minimalist eCommerce template."
+        <meta name="description"
+              content="Contact of flone react minimalist eCommerce template."
         />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Contact
-      </BreadcrumbsItem>
-      <LayoutOne headerTop="visible">
+
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Contact</BreadcrumbsItem> */}
+
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="contact-area pt-100 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="contact-area pt-100 pb-100 mt-3">
           <div className="container">
             <div className="contact-map mb-10">
               <LocationMap latitude="47.444" longitude="-122.176" />
@@ -134,7 +133,7 @@ const Contact = ({ location }) => {
             </div>
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };

@@ -5,6 +5,8 @@ import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
+import api from "../../config/api";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const ProductGridSingle = ({
   product,
@@ -39,20 +41,21 @@ const ProductGridSingle = ({
         >
           <div className="product-img">
             <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
-              <img
-                className="default-img"
-                src={process.env.PUBLIC_URL + product.image[0]}
-                alt=""
-              />
-              {product.image.length > 1 ? (
-                <img
-                  className="hover-img"
-                  src={process.env.PUBLIC_URL + product.image[1]}
-                  alt=""
-                />
-              ) : (
-                ""
-              )}
+              {Array.isArray(product.image) ? 
+                <img className="default-img" src={process.env.PUBLIC_URL + product.image[0] } alt="" />
+              :
+                <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" />
+              }
+              { !Array.isArray(product.image) || product.image.length <= 1 ? 
+                <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" />
+              :
+                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1] } alt="" />
+              }
+
+              {/* <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
+              {!(product.image.length > 1) ? "" :
+                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
+              } */}
             </Link>
             {product.discount || product.new ? (
               <div className="product-img-badges">
@@ -92,29 +95,29 @@ const ProductGridSingle = ({
                     {" "}
                     Buy now{" "}
                   </a>
-                ) : product.variation && product.variation.length >= 1 ? (
+                ) : isDefinedAndNotVoid(product.variations) ? (
                   <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
-                    Select Option
+                      Select Option
                   </Link>
-                ) : product.stock && product.stock > 0 ? (
-                  <button
-                    onClick={() => addToCart(product, addToast)}
-                    className={
-                      cartItem !== undefined && cartItem.quantity > 0
-                        ? "active"
-                        : ""
-                    }
-                    disabled={cartItem !== undefined && cartItem.quantity > 0}
-                    title={
-                      cartItem !== undefined ? "Added to cart" : "Add to cart"
-                    }
-                  >
-                    {" "}
-                    <i className="pe-7s-cart"></i>{" "}
-                    {cartItem !== undefined && cartItem.quantity > 0
-                      ? "Added"
-                      : "Add to cart"}
-                  </button>
+                ) : isDefined(product.stock) && product.stock.quantity > 0 ? (
+                    <button
+                      onClick={() => addToCart(product, addToast)}
+                      className={
+                        cartItem !== undefined && cartItem.quantity > 0
+                          ? "active"
+                          : ""
+                      }
+                      disabled={cartItem !== undefined && cartItem.quantity > 0}
+                      title={
+                        cartItem !== undefined ? "Added to cart" : "Add to cart"
+                      }
+                    >
+                      {" "}
+                      <i className="pe-7s-cart"></i>{" "}
+                      {cartItem !== undefined && cartItem.quantity > 0
+                        ? "Added"
+                        : "Add to cart"}
+                    </button>
                 ) : (
                   <button disabled className="active">
                     Out of Stock

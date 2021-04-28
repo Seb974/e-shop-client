@@ -8,7 +8,7 @@ const Field = ({ name, label, value, onChange, placeholder = "", type = "text", 
                 type={ type } 
                 value={ value } 
                 onChange={ onChange } 
-                className={"form-control" + (error && " is-invalid")} 
+                className={"ext-input form-control" + (error && " is-invalid")} 
                 placeholder={ placeholder || label }
                 name={ name } 
                 id={ id || name }

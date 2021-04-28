@@ -1,11 +1,16 @@
+import { isDefined, isDefinedAndNotVoid } from "./utils";
+
 // get products
 export const getProducts = (products, category, type, limit) => {
-  const finalProducts = category
-    ? products.filter(
-        product => product.category.filter(single => single === category)[0]
-      )
-    : products;
-
+  const finalProducts = products;
+  limit = 4;
+  // const finalProducts = category ? products.filter(
+  //       product => product.categories.filter(single => single.name === category)[0]
+  //     ) : 
+  //     products;
+  //     console.log(category);
+  // console.log(products);
+  // console.log(finalProducts);
   if (type && type === "new") {
     const newProducts = finalProducts.filter(single => single.new);
     return newProducts.slice(0, limit ? limit : newProducts.length);
@@ -32,28 +37,36 @@ export const getDiscountPrice = (price, discount) => {
 };
 
 // get product cart quantity
-export const getProductCartQuantity = (cartItems, product, color, size) => {
-  let productInCart = cartItems.filter(
-    single =>
-      single.id === product.id &&
-      (single.selectedProductColor
-        ? single.selectedProductColor === color
-        : true) &&
-      (single.selectedProductSize ? single.selectedProductSize === size : true)
-  )[0];
-  if (cartItems.length >= 1 && productInCart) {
-    if (product.variation) {
-      return cartItems.filter(
-        single =>
-          single.id === product.id &&
-          single.selectedProductColor === color &&
-          single.selectedProductSize === size
-      )[0].quantity;
+export const getProductCartQuantity = (cartItems, selectedProduct, color, size) => {
+  // let productInCart = cartItems.find(single => {
+  //     return single.product.id === product.id && 
+  //     (isDefined(single.selectedProductColor) && isDefined(color) ? single.selectedProductColor.id === color.id : true) &&
+  //     (isDefined(single.selectedProductSize) && isDefined(size) ? single.selectedProductSize.id === size.id : true)
+  //   });
+  // console.log(product.name);
+  // console.log(productInCart);
+  // if (cartItems.length >= 1 && isDefined(productInCart)) {
+  if (isDefinedAndNotVoid(cartItems)) {
+    // if (product.variations) {
+    if (isDefined(color) && isDefined(size)) {
+      let productInCart = cartItems.find( ({ selectedProductColor, selectedProductSize, product }) => {
+          return product.id === selectedProduct.id &&
+          (isDefined(selectedProductColor) ? selectedProductColor.id === color.id : true) &&
+          (isDefined(selectedProductSize) ? selectedProductSize.id === size.id : true)
+      });
+      return isDefined(productInCart) ? productInCart.quantity : 0;
+        
+      //   cartItems.find(single =>
+      //       single.product.id === product.id &&
+      //       (isDefined(single.selectedProductColor) ? single.selectedProductColor.id === color.id : true) &&
+      //       (isDefined(single.selectedProductSize) ? single.selectedProductSize.id === size.id : true)
+      // ).quantity;
     } else {
-      return cartItems.filter(single => product.id === single.id)[0].quantity;
+        let productInCart = cartItems.find(single => selectedProduct.id === single.product.id);
+        return isDefined(productInCart) ? productInCart.quantity : 0;     // cartItems.find(single => product.id === single.product.id).quantity;
     }
   } else {
-    return 0;
+      return 0;
   }
 };
 
@@ -226,4 +239,73 @@ export const toggleShopTopFilter = e => {
       shopTopFilterWrapper.scrollHeight + "px";
   }
   e.currentTarget.classList.toggle("active");
+};
+
+export const getProductsFromIds = (ids, products) => {
+    return ids.length <= 0 ? [] : ids.map(element => {
+        let i = products.find(product => product.id == element.product.id);
+        return {...element, product: i};
+    });
+};
+
+export const setSecuredProducts = products => {
+    return products.map(product => {
+        return Object.keys(product).includes('product') ? {...product, product: {id: product.product.id}} : { id: product.id };
+    });
+};
+
+export const setSecuredProduct = product => {
+    const securedProduct = Object.keys(product).includes('product') ? {id: product.product.id} : { id: product.id };
+    return securedProduct;
+};
+
+export const getElementsFromIds = (ids, products) => {
+    return ids.map(element => {
+        return products.find(product => product.id == element.id);
+    });
+};
+
+export const hasEnoughStock = (product) => {
+    let stockStatus = false;
+    if (isDefinedAndNotVoid(product.components)) {
+      stockStatus = !product.components.map(component => {
+        return isDefined(component.size) && component.size.stock.quantity > 0 ? true :
+              isDefined(component.product.stock) && component.product.stock.quantity > 0 ? true :
+              false;
+      }).includes(false);
+    } else if ( !isDefinedAndNotVoid(product.variations) && isDefined(product.stock) ) {
+      stockStatus = product.stock.quantity > 0 || product.stock > 0;
+    }
+    return stockStatus;
+};
+
+export const getAvailableStock = (product, variation = undefined, size = undefined) => {
+    let productStock = 0;
+    let smallestStock = 100;
+    if (isDefined(variation) && isDefined(size)) {
+        return isDefined(size.stock) && size.stock.quantity > size.stock.security ? size.stock.quantity - size.stock.security : 0;
+    } else if (isDefined(product)) {
+      if (isDefinedAndNotVoid(product.components)) {
+        product.components.map(component => {
+            const stock = isDefined(component.size) ? component.size.stock : (isDefined(component.product.stock) ? component.product.stock : 0);
+            productStock = stock !== 0 && stock.security > stock.quantity ? stock.security - stock.quantity : 0;
+            smallestStock = productStock < smallestStock ? productStock : smallestStock;
+          });
+        return smallestStock;
+      } else {
+          return isDefined(product.stock) && product.stock.quantity > product.stock.security ? product.stock.quantity - product.stock.security : 0;
+      }
+    } else {
+      return 0;
+    }
+};
+
+export const hasVariationScope = variations => {
+  let hasVariations = false;
+  variations.map(variation => {
+      if (variation.color.trim() !== "") {
+          hasVariations = true; 
+      }
+  });
+  return hasVariations;
 };

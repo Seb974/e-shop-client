@@ -3,13 +3,16 @@ import Modal from 'react-bootstrap/Modal';
 import Login from './Login';
 import Register from './Register';
 
-const Identification = (props) => {
+const Identification = ({ name }) => {
 
     const [show, setShow] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
 
     const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const handleShow = e => {
+        e.preventDefault();
+        setShow(true)
+    };
 
     const onIsLoginChange = event => {
         event.preventDefault();
@@ -18,8 +21,7 @@ const Identification = (props) => {
 
     return (
         <>
-            <a className="nav-link" href="#" onClick={ handleShow }>Se connecter</a>
-            
+            <a href="#" onClick={ handleShow }>{ name }</a> {/* className="nav-link" */}
             <Modal show={ show } onHide={ handleClose } size="lg" aria-labelledby="contained-modal-title-vcenter" centered >
                 <Modal.Header closeButton>
                     <Modal.Title>{ isLogin ? "Connexion" : "Inscription" }</Modal.Title>

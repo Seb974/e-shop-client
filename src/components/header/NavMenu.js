@@ -16,28 +16,20 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
                    setIsAuthenticated(false);
                    setCurrentUser(AuthActions.getCurrentUser());
                });
-}
+  }
 
   return (
-    <div
-      className={` ${
-        sidebarMenu
-          ? "sidebar-menu"
-          : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`
-      } `}
-    >
+    <div className={`${sidebarMenu ? "sidebar-menu" : `main-menu ${menuWhiteClass ? menuWhiteClass : ""}`} `}>
       <nav>
         <ul>
           <li>
             <Link to={process.env.PUBLIC_URL + "/"}>
               {strings["home"]}
-              {sidebarMenu ? (
-                <span>
-                  <i className="fa fa-angle-right"></i>
-                </span>
-              ) : (
+              {sidebarMenu ?
+                <span><i className="fa fa-angle-right"></i></span>
+              :
                 <i className="fa fa-angle-down" />
-              )}
+              }
             </Link>
             <ul className="mega-menu mega-menu-padding">
               <li>
@@ -268,22 +260,19 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </ul>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-              {" "}
-              {strings["shop"]}
-              {sidebarMenu ? (
-                <span>
-                  <i className="fa fa-angle-right"></i>
-                </span>
-              ) : (
+            <Link to={process.env.PUBLIC_URL + "/shop"}>
+              {" "}{strings["shop"]}
+              {sidebarMenu ?
+                <span><i className="fa fa-angle-right"></i></span>
+              :
                 <i className="fa fa-angle-down" />
-              )}
+              }
             </Link>
             <ul className="mega-menu">
               <li>
                 <ul>
                   <li className="mega-menu-title">
-                    <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+                    <Link to={process.env.PUBLIC_URL + "/shop"}>
                       {strings["shop_layout"]}
                     </Link>
                   </li>
@@ -395,14 +384,8 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
               <li>
                 <ul>
                   <li className="mega-menu-img">
-                    <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-                      <img
-                        src={
-                          process.env.PUBLIC_URL +
-                          "/assets/img/banner/banner-12.png"
-                        }
-                        alt=""
-                      />
+                    <Link to={process.env.PUBLIC_URL + "/shop"}>
+                      <img src={process.env.PUBLIC_URL + "/assets/img/banner/banner-12.png"}alt=""/>
                     </Link>
                   </li>
                 </ul>
@@ -410,7 +393,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </ul>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/shop"}>
               {strings["collection"]}
             </Link>
           </li>
@@ -474,7 +457,7 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </ul>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/blog-standard"}>
+            <Link to={process.env.PUBLIC_URL + "/blog-no-sidebar"}>
               {strings["blog"]}
               {sidebarMenu ? (
                 <span>
@@ -513,12 +496,9 @@ const NavMenu = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </Link>
           </li>
           <li>
-              { !isAuthenticated ? <Identification /> : 
+              { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
                 <a className="nav-link" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
               }
-            {/* <Link to={process.env.PUBLIC_URL + "/contact"}> */}
-              {/* {strings["login"]} */}
-            {/* </Link> */}
           </li>
         </ul>
       </nav>

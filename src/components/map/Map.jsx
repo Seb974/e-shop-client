@@ -4,15 +4,13 @@ import ReactDOM from 'react-dom';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import AlgoliaPlaces from 'algolia-places-react';
 import LocationMarker from './LocationMarker';
+import { multilanguage } from "redux-multilanguage";
 
-const Map = ({ informations, initialPosition, updatePosition }) => {
+const Map = ({ informations, initialPosition, updatePosition, strings }) => {
 
     const apInput = useRef(null);
+    useEffect(() => apInput.current.autocompleteElem.value = informations.address, [informations.address]);
 
-    useEffect(() => {
-        apInput.current.autocompleteElem.value = informations.address;
-    }, [informations.address]);
-    
     return (
         <>
             <div id="map" className="row mt-3">
@@ -25,10 +23,10 @@ const Map = ({ informations, initialPosition, updatePosition }) => {
                     </MapContainer>
             </div>
             <div className="row mt-3">
-                <div className="col-md-12">
+                <div className="col-md-12 mt-4">
                     <AlgoliaPlaces
                         ref={ apInput }
-                        placeholder='Votre adresse'
+                        placeholder={ strings["address"] }
                         className="form-control"
                         options={{
                             appId: 'pl6124DJ467I',
@@ -37,12 +35,9 @@ const Map = ({ informations, initialPosition, updatePosition }) => {
                             countries: ['fr'],
                             type: 'address',
                         }}
-                        onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
-                            updatePosition(suggestion);
-                        }}
-                        onClear={() => {
-                            updatePosition({latlng: {lat: initialPosition[0], lng: initialPosition[1]}});
-                        }}
+                        onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => updatePosition(suggestion)}
+                        onClear={() => updatePosition({latlng: {lat: initialPosition[0], lng: initialPosition[1]}})}
+
                         // onSuggestions={({ rawAnswer, query, suggestions }) => console.log('On suggestion')}
                         // onCursorChanged={({ rawAnswer, query, suggestion, suggestionIndex }) => console.log('On cursor changed')}
                         // onLimit={({ message }) => console.log('On limit')}
@@ -54,4 +49,4 @@ const Map = ({ informations, initialPosition, updatePosition }) => {
     );
 }
  
-export default Map;
+export default multilanguage(Map);

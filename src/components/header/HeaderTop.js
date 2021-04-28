@@ -5,19 +5,10 @@ import { connect } from "react-redux";
 import { setCurrency } from "../../redux/actions/currencyActions";
 import LanguageCurrencyChanger from "./sub-components/LanguageCurrencyChanger";
 
-const HeaderTop = ({
-  currency,
-  setCurrency,
-  currentLanguageCode,
-  dispatch,
-  borderStyle
-}) => {
+const HeaderTop = ({currency, setCurrency, currentLanguageCode, dispatch, borderStyle }) => {
+
   return (
-    <div
-      className={`header-top-wap ${
-        borderStyle === "fluid-border" ? "border-bottom" : ""
-      }`}
-    >
+    <div className={`header-top-wap ${borderStyle === "fluid-border" ? "border-bottom" : ""}`}>
       <LanguageCurrencyChanger
         currency={currency}
         setCurrency={setCurrency}
@@ -25,12 +16,10 @@ const HeaderTop = ({
         dispatch={dispatch}
       />
       <div className="header-offer">
-        <p>
-          Free delivery on order over{" "}
-          <span>
-            {currency.currencySymbol + (200 * currency.currencyRate).toFixed(2)}
-          </span>
-        </p>
+          <p>
+              Free delivery on order over{" "}
+              <span>{ (200 * currency.currencyRate).toFixed(2) + currency.currencySymbol }</span>
+          </p>
       </div>
     </div>
   );
@@ -45,20 +34,11 @@ HeaderTop.propTypes = {
 };
 
 const mapStateToProps = state => {
-  return {
-    currency: state.currencyData
-  };
+  return { currency: state.currencyData };
 };
 
 const mapDispatchToProps = dispatch => {
-  return {
-    setCurrency: currencyName => {
-      dispatch(setCurrency(currencyName));
-    }
-  };
+  return { setCurrency: currencyName => dispatch(setCurrency(currencyName)) };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(multilanguage(HeaderTop));
+export default connect( mapStateToProps, mapDispatchToProps )(multilanguage(HeaderTop));

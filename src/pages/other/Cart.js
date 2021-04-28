@@ -1,58 +1,72 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
 import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
-import {
-  addToCart,
-  decreaseQuantity,
-  deleteFromCart,
-  cartItemStock,
-  deleteAllFromCart
-} from "../../redux/actions/cartActions";
-import LayoutOne from "../../layouts/LayoutOne";
+import { addToCart, decreaseQuantity, deleteFromCart, cartItemStock, deleteAllFromCart } from "../../redux/actions/cartActions";
+import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import ProductsContext from "../../contexts/ProductsContext";
+import { getProductsFromIds } from '../../helpers/product';
+import ProductActions from "../../services/ProductActions";
+import { isDefined } from "../../helpers/utils";
+import api from "../../config/api";
+import { multilanguage } from "redux-multilanguage";
+import AuthContext from "../../contexts/AuthContext";
 
-const Cart = ({
-  location,
-  cartItems,
-  currency,
-  decreaseQuantity,
-  addToCart,
-  deleteFromCart,
-  deleteAllFromCart
-}) => {
+const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart,deleteAllFromCart, strings }) => {
+
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
+  const { country } = useContext(AuthContext);
+  const { products, setProducts } = useContext(ProductsContext);
+  const [productCart, setProductCart] = useState([])
   let cartTotalPrice = 0;
+  let cartTotalTax = 0;
 
-  return (
+  useEffect(() => {
+    let productSet = [];
+    if (products.length <= 0) {
+        ProductActions
+            .findAll()
+            .then(response => {
+                setProducts(response);
+                productSet = getProductsFromIds(cartItems, response);
+                console.log(productSet);
+                setProductCart(productSet);
+            });
+
+    } else {
+        productSet = getProductsFromIds(cartItems, products);
+        setProductCart(productSet);
+    }
+  }, [cartItems, products])
+
+  return !isDefined(productCart) ? <></> : (
     <Fragment>
       <MetaTags>
         <title>Flone | Cart</title>
-        <meta
-          name="description"
-          content="Cart page of flone react minimalist eCommerce template."
+        <meta name="description"
+              content="Cart page of flone react minimalist eCommerce template."
         />
       </MetaTags>
 
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Cart
-      </BreadcrumbsItem>
+      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
+      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Cart</BreadcrumbsItem> */}
 
-      <LayoutOne headerTop="visible">
+      <LayoutSeven stick="stick">
         {/* breadcrumb */}
-        <Breadcrumb />
-        <div className="cart-main-area pt-90 pb-100">
+        {/* <Breadcrumb /> */}
+        <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
-            {cartItems && cartItems.length >= 1 ? (
+            {/* {cartItems && cartItems.length >= 1 ? ( */}
+            { isDefined(productCart) && productCart.length >= 1 ? (
               <Fragment>
-                <h3 className="cart-page-title">Your cart items</h3>
+                <h3 className="cart-page-title">{ strings["your_cart_items"] }</h3>
                 <div className="row">
                   <div className="col-12">
                     <div className="table-content table-responsive cart-table-content">
@@ -60,130 +74,91 @@ const Cart = ({
                         <thead>
                           <tr>
                             <th>Image</th>
-                            <th>Product Name</th>
-                            <th>Unit Price</th>
-                            <th>Qty</th>
-                            <th>Subtotal</th>
+                            <th>{strings["product_name"]}</th>
+                            <th>{strings["unit_price"]}</th>
+                            <th>{strings["qty"]}</th>
+                            <th>{strings["subtotal"]}</th>
                             <th>action</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {cartItems.map((cartItem, key) => {
-                            const discountedPrice = getDiscountPrice(
-                              cartItem.price,
-                              cartItem.discount
-                            );
-                            const finalProductPrice = (
-                              cartItem.price * currency.currencyRate
-                            ).toFixed(2);
-                            const finalDiscountedPrice = (
-                              discountedPrice * currency.currencyRate
-                            ).toFixed(2);
+                          { productCart.map((cartItem, key) => {
+                            const taxToApply = cartItem.product.taxes.find(tax => tax.country === country).rate;
+                            const discountedPrice = getDiscountPrice(cartItem.product.price, cartItem.product.discount);
+                            const finalProductPrice = (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
-                            discountedPrice != null
-                              ? (cartTotalPrice +=
-                                  finalDiscountedPrice * cartItem.quantity)
-                              : (cartTotalPrice +=
-                                  finalProductPrice * cartItem.quantity);
+                            // discountedPrice != null ? 
+                            //     (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : 
+                            //     (cartTotalPrice += finalProductPrice * cartItem.quantity);
+
+                            cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
+                            cartTotalTax += (discountedPrice != null ? discountedPrice : cartItem.product.price) * cartItem.quantity * taxToApply;
+                            
+                            const partial = cartItem.quantity % 1 === 0 ? 1 : 0.1;
                             return (
                               <tr key={key}>
                                 <td className="product-thumbnail">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      cartItem.id
-                                    }
-                                  >
-                                    <img
-                                      className="img-fluid"
-                                      src={
-                                        process.env.PUBLIC_URL +
-                                        cartItem.image[0]
-                                      }
-                                      alt=""
-                                    />
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id}>
+                                      <img 
+                                        className="img-fluid" 
+                                        src={api.API_DOMAIN + '/uploads/pictures/' + cartItem.product.image.filePath}
+                                        alt=""
+                                      />
                                   </Link>
                                 </td>
 
                                 <td className="product-name">
-                                  <Link
-                                    to={
-                                      process.env.PUBLIC_URL +
-                                      "/product/" +
-                                      cartItem.id
-                                    }
-                                  >
-                                    {cartItem.name}
+                                  <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id } >
+                                      {cartItem.product.name}
                                   </Link>
-                                  {cartItem.selectedProductColor &&
-                                  cartItem.selectedProductSize ? (
+                                  { !(cartItem.selectedProductColor && cartItem.selectedProductSize) ? "" :
                                     <div className="cart-item-variation">
-                                      <span>
-                                        Color: {cartItem.selectedProductColor}
-                                      </span>
-                                      <span>
-                                        Size: {cartItem.selectedProductSize}
-                                      </span>
+                                        <span>{strings["variant"]} : {cartItem.selectedProductColor.color}</span>
+                                        <span>{strings["declination"]} : {cartItem.selectedProductSize.name}</span>
                                     </div>
-                                  ) : (
-                                    ""
-                                  )}
+                                  }
                                 </td>
 
                                 <td className="product-price-cart">
-                                  {discountedPrice !== null ? (
+                                  {discountedPrice !== null ?
                                     <Fragment>
-                                      <span className="amount old">
-                                        {currency.currencySymbol +
-                                          finalProductPrice}
-                                      </span>
-                                      <span className="amount">
-                                        {currency.currencySymbol +
-                                          finalDiscountedPrice}
-                                      </span>
+                                      <span className="amount old">{finalProductPrice + " " + currency.currencySymbol}</span>
+                                      <span className="amount">{finalDiscountedPrice + " " + currency.currencySymbol}</span>
                                     </Fragment>
-                                  ) : (
-                                    <span className="amount">
-                                      {currency.currencySymbol +
-                                        finalProductPrice}
-                                    </span>
-                                  )}
+                                  :
+                                    <span className="amount">{finalProductPrice  + " " + currency.currencySymbol}</span>
+                                  }
                                 </td>
 
                                 <td className="product-quantity">
                                   <div className="cart-plus-minus">
                                     <button
                                       className="dec qtybutton"
-                                      onClick={() =>
-                                        decreaseQuantity(cartItem, addToast)
-                                      }
+                                      // onClick={ () => decreaseQuantity(cartItem, addToast) }
+                                      onClick={ () => addToCart( cartItem, false, -partial) }
+                                      disabled={ cartItem.quantity - partial <= 0}
                                     >
                                       -
                                     </button>
                                     <input
                                       className="cart-plus-minus-box"
                                       type="text"
-                                      value={cartItem.quantity}
+                                      value={ cartItem.quantity.toFixed(2) }
                                       readOnly
                                     />
                                     <button
                                       className="inc qtybutton"
-                                      onClick={() =>
-                                        addToCart(
-                                          cartItem,
-                                          addToast,
-                                          quantityCount
-                                        )
-                                      }
+                                      // onClick={ () => addToCart( cartItem, addToast, partial) }
+                                      onClick={ () => addToCart( cartItem, false, partial) }
                                       disabled={
                                         cartItem !== undefined &&
                                         cartItem.quantity &&
                                         cartItem.quantity >=
                                           cartItemStock(
                                             cartItem,
-                                            cartItem.selectedProductColor,
-                                            cartItem.selectedProductSize
+                                            (isDefined(cartItem.selectedProductColor) ? cartItem.selectedProductColor : undefined),
+                                            (isDefined(cartItem.selectedProductColor) ? cartItem.selectedProductSize : undefined)
                                           )
                                       }
                                     >
@@ -192,23 +167,14 @@ const Cart = ({
                                   </div>
                                 </td>
                                 <td className="product-subtotal">
-                                  {discountedPrice !== null
-                                    ? currency.currencySymbol +
-                                      (
-                                        finalDiscountedPrice * cartItem.quantity
-                                      ).toFixed(2)
-                                    : currency.currencySymbol +
-                                      (
-                                        finalProductPrice * cartItem.quantity
-                                      ).toFixed(2)}
+                                  { isDefined(discountedPrice) ? 
+                                    (finalDiscountedPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol : 
+                                    (finalProductPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol
+                                  }
                                 </td>
 
                                 <td className="product-remove">
-                                  <button
-                                    onClick={() =>
-                                      deleteFromCart(cartItem, addToast)
-                                    }
-                                  >
+                                  <button onClick={() => deleteFromCart(cartItem, addToast)}>
                                     <i className="fa fa-times"></i>
                                   </button>
                                 </td>
@@ -224,33 +190,23 @@ const Cart = ({
                   <div className="col-lg-12">
                     <div className="cart-shiping-update-wrapper">
                       <div className="cart-shiping-update">
-                        <Link
-                          to={process.env.PUBLIC_URL + "/shop-grid-standard"}
-                        >
-                          Continue Shopping
-                        </Link>
+                        <Link to={process.env.PUBLIC_URL + "/shop"}>{strings["continue_shopping"]}</Link>
                       </div>
                       <div className="cart-clear">
-                        <button onClick={() => deleteAllFromCart(addToast)}>
-                          Clear Shopping Cart
-                        </button>
+                        <button onClick={() => deleteAllFromCart(addToast)}>{strings["clear_shopping_cart"]}</button>
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="row">
-                  <div className="col-lg-4 col-md-6">
+                  {/* <div className="col-lg-4 col-md-6">
                     <div className="cart-tax">
                       <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Estimate Shipping And Tax
-                        </h4>
+                        <h4 className="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
                       </div>
                       <div className="tax-wrapper">
-                        <p>
-                          Enter your destination to get a shipping estimate.
-                        </p>
+                        <p>Enter your destination to get a shipping estimate.</p>
                         <div className="tax-select-wrapper">
                           <div className="tax-select">
                             <label>* Country</label>
@@ -276,56 +232,45 @@ const Cart = ({
                             <label>* Zip/Postal Code</label>
                             <input type="text" />
                           </div>
-                          <button className="cart-btn-2" type="submit">
-                            Get A Quote
-                          </button>
+                          <button className="cart-btn-2" type="submit">Get A Quote</button>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
-                  <div className="col-lg-4 col-md-6">
-                    <div className="discount-code-wrapper">
+                  <div className="col-lg-8 col-md-6">
+                    {/* <div className="discount-code-wrapper">
                       <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">
-                          Use Coupon Code
-                        </h4>
+                        <h4 className="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
                       </div>
                       <div className="discount-code">
                         <p>Enter your coupon code if you have one.</p>
                         <form>
                           <input type="text" required name="name" />
-                          <button className="cart-btn-2" type="submit">
-                            Apply Coupon
-                          </button>
+                          <button className="cart-btn-2" type="submit">Apply Coupon</button>
                         </form>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
 
                   <div className="col-lg-4 col-md-12">
                     <div className="grand-totall">
                       <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gary-cart">
-                          Cart Total
-                        </h4>
+                        <h4 className="cart-bottom-title section-bg-gary-cart">{strings["cart_total"]}</h4>
                       </div>
-                      <h5>
-                        Total products{" "}
-                        <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
-                        </span>
+                      <h5>{strings["total_products"]}{" "}
+                        <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                       </h5>
+                      { cartTotalTax > 0 && 
+                        <h5>{strings["total_tax"]}{" "}
+                        <span>{cartTotalTax.toFixed(2) + " " + currency.currencySymbol}</span>
+                      </h5>
+                      }
 
-                      <h4 className="grand-totall-title">
-                        Grand Total{" "}
-                        <span>
-                          {currency.currencySymbol + cartTotalPrice.toFixed(2)}
-                        </span>
+                      <h4 className="grand-totall-title">{strings["grand_total"]}{" "}
+                        <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                       </h4>
-                      <Link to={process.env.PUBLIC_URL + "/checkout"}>
-                        Proceed to Checkout
-                      </Link>
+                      <Link to={process.env.PUBLIC_URL + "/checkout"}>{strings["proceed_to_checkout"]}</Link>
                     </div>
                   </div>
                 </div>
@@ -338,10 +283,8 @@ const Cart = ({
                       <i className="pe-7s-cart"></i>
                     </div>
                     <div className="item-empty-area__text">
-                      No items found in cart <br />{" "}
-                      <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-                        Shop Now
-                      </Link>
+                    {strings["no_items_in_cart"]}<br />{" "}
+                      <Link to={process.env.PUBLIC_URL + "/shop"}>{strings["shop_now"]}</Link>
                     </div>
                   </div>
                 </div>
@@ -349,7 +292,7 @@ const Cart = ({
             )}
           </div>
         </div>
-      </LayoutOne>
+      </LayoutSeven>
     </Fragment>
   );
 };
@@ -388,4 +331,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Cart);
+export default connect(mapStateToProps, mapDispatchToProps)(multilanguage(Cart));

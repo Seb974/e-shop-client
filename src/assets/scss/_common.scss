@@ -103,7 +103,7 @@ button {
 a,
 button,
 img,
-input,
+input:not(.ext-input),
 span {
   transition: all 0.3s ease 0s;
 }
@@ -1341,7 +1341,7 @@ textarea:-ms-input-placeholder {
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=100)";
 }
 
-input {
+input:not(.ext-input) {
   font-size: 14px;
 
   width: 100%;
@@ -1932,4 +1932,16 @@ a.default-btn {
 
 .bg-black-3 {
   background-color: #202022;
+}
+
+.qty-valid {
+  border: #eceff8 2px solid!important;
+  height: 100%!important;
+  margin-left: -15px!important;
+  padding-top: 9.5px!important;
+  padding-bottom: 8px!important;
+  padding-left: 9px!important;
+  padding-right: 9px!important;
+  border-radius: 0 5% 5% 0;
+  background-color: #eceff8!important;
 }

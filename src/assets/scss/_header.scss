@@ -59,7 +59,7 @@
           span {
             &.count-style {
               color: #fff;
-              background-color: #000;
+              background-color: #424242 ;
             }
           }
         }
@@ -1512,7 +1512,7 @@
           letter-spacing: 0.8px;
           text-transform: capitalize;
 
-          color: #000000;
+          color: #424242 ;
           @media #{$xl-layout} {
             font-size: 16px;
           }
