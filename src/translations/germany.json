@@ -118,7 +118,24 @@
   "shop_now": "Jetzt einkaufen",
   "categories": "Kategorien",
   "tags": "Etikett",
-  "total_tax": "Einschließlich Steuern"
-
-  
+  "total_tax": "Einschließlich Steuern",
+  "billing_details": "Rechnungsdetails",
+  "shipping_details": "Lieferdetails",
+  "delivery_date": "Liefertermin",
+  "your_order": "Deine Bestellung",
+  "first_name": "Vorname",
+  "last_name": "Name",
+  "address": "Deine Adresse",
+  "address2": "Wohnung, Suite, Einheit usw.",
+  "city": "Stadt",
+  "zipcode": "Postleitzahl",
+  "phone": "Telefon",
+  "email": "E-Mail-Adresse",
+  "additional_information": "zusätzliche Information",
+  "order_notes": "Bestellhinweise",
+  "product": "Produkt",
+  "total": "Gesamt",
+  "shipping": "Versand",
+  "free_shipping": "Kostenloser Versand",
+  "place_order": "Bestellung aufgeben"
 }
