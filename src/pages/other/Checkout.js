@@ -31,6 +31,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const [informations, setInformations] = useState(initialInformations);
   const [date, setDate] = useState(today.getDay() !== 0 ? today : tomorrow);
   const [user, setUser] = useState({name:"", email: ""});
+  const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
 
@@ -53,6 +54,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       e.preventDefault();
       console.log(user);
       console.log(informations);
+      console.log(message);
   };
 
   return (
@@ -84,9 +86,11 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                       <div className="additional-info">
                         <label>{strings["order_notes"]}</label>
                         <textarea
+                          className="form-control"
                           placeholder="Notes about your order, e.g. special notes for delivery. "
                           name="message"
-                          defaultValue={""}
+                          value={message}
+                          onChange={({currentTarget}) => setMessage(currentTarget.value)}
                         />
                       </div>
                     </div>
