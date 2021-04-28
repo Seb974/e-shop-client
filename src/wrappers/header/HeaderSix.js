@@ -40,24 +40,24 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
     >
       <div className={layout === "container-fluid" ? layout : "container"}>
         <div className="row">
-          <div className="col-xl-5 col-lg-6 d-none d-lg-block">
-            <div className="clickable-menu clickable-mainmenu-active">
-              <button onClick={() => setOffcanvasActive(true)}>
-              <i className="fas fa-bars"></i>
+          <div className="col-xl-5 col-lg-6 d-flex">
+            <div className="clickable-menu clickable-mainmenu-active align-self-center mt-0">
+              <button className="my-auto" onClick={() => setOffcanvasActive(true)}>
+              <i className="fas fa-bars fa-sm"></i>
                 {/* <i className="pe-7s-menu" /> */}
               </button>
             </div>
           </div>
           <div className="col-xl-2 col-lg-2 col-md-6 col-6">
             {/* header logo */}
-            <div className="logo text-center logo-hm5">
+            <div className="logo text-center logo-hm5 my-2">
               <Link className="sticky-none" to={process.env.PUBLIC_URL + "/"}>
                 {/* <img src={} alt=""></img> */}
-                <img src="/assets/img/logo/logo_fp_4.png" logoClass="logo" height="80"/>
+                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="60"/>
                 {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150" */}
               </Link>
               <Link className="sticky-block" to={process.env.PUBLIC_URL + "/"}>
-                <img src="/assets/img/logo/logo_fp_4.png" logoClass="logo" height="80"/>
+                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="60"/>
               {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150"*/}
               </Link>
             </div>
