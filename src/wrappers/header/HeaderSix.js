@@ -41,7 +41,7 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
       <div className={layout === "container-fluid" ? layout : "container"}>
         <div className="row">
           <div className="col-xl-5 col-lg-6 d-flex">
-            <div className="clickable-menu clickable-mainmenu-active align-self-center mt-0">
+            <div className="clickable-menu clickable-mainmenu-active align-self-center">
               <button className="my-auto" onClick={() => setOffcanvasActive(true)}>
               <i className="fas fa-bars fa-sm"></i>
                 {/* <i className="pe-7s-menu" /> */}
