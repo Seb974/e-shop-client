@@ -1,7 +1,4 @@
 import PropTypes from "prop-types";
-import Flatpickr from 'react-flatpickr';
-import { French } from "flatpickr/dist/l10n/fr.js";
-import { English } from "flatpickr/dist/l10n/de.js";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
@@ -15,11 +12,6 @@ import { getProductsFromIds } from '../../helpers/product';
 import AuthContext from "../../contexts/AuthContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
-import AddressPanel from "../../components/forms/address/AddressPanel";
-import ContactPanel from "../../components/forms/contact/ContactPanel";
-
-const today = new Date();
-const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 9, 0, 0);
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
@@ -27,33 +19,12 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const { country } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([]);
-  const initialInformations =  AddressPanel.getInitialInformations();
-  const [informations, setInformations] = useState(initialInformations);
-  const [date, setDate] = useState(today.getDay() !== 0 ? today : tomorrow);
-  const [user, setUser] = useState({name:"", email: ""});
-  const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
       setProductCart(productSet);
   }, [cartItems, products]);
-
-  const onUserInputChange = (newUser) => setUser(newUser);
-  const onInformationsChange = (newInformations) => setInformations(newInformations);
-  const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
-  const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
-
-  const onDateChange = date => {
-    const newSelection = new Date(date[0].getFullYear(), date[0].getMonth(), date[0].getDate(), 9, 0, 0);
-    setDate(newSelection);
-};
-
-  const handleSubmit = e => {
-      e.preventDefault();
-      console.log(user);
-      console.log(informations);
-  };
 
   return (
     <Fragment>
@@ -77,10 +48,81 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                 <div className="col-lg-7">
                   <div className="billing-info-wrap">
                     <h3 className="mb-0">{strings["shipping_details"]}</h3>
-                    <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                    <AddressPanel informations={ informations } onInformationsChange={ onInformationsChange } onPositionChange={ onUpdatePosition } errors={ errors }/>
+                    <div className="row">
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>{strings["first_name"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>{strings["email"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="billing-info mb-20">
+                          <label>Company Name</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="billing-select mb-20">
+                          <label>Country</label>
+                          <select>
+                            <option>Select a country</option>
+                            <option>Azerbaijan</option>
+                            <option>Bahamas</option>
+                            <option>Bahrain</option>
+                            <option>Bangladesh</option>
+                            <option>Barbados</option>
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-lg-12">
+                        <div className="billing-info mb-20">
+                          <label>{strings["address"]}</label>
+                          <input className="billing-address" placeholder="House number and street name" type="text"/>
+                          <input placeholder="Apartment, suite, unit etc." type="text"/>
+                        </div>
+                      </div>
+                      <div className="col-lg-12">
+                        <div className="billing-info mb-20">
+                          <label>{strings["city"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>State / County</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>{strings["zipcode"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>{strings["phone"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                      <div className="col-lg-6 col-md-6">
+                        <div className="billing-info mb-20">
+                          <label>{strings["email"]}</label>
+                          <input type="text" />
+                        </div>
+                      </div>
+                    </div>
+
                     <div className="additional-info-wrap">
-                      <h3>{strings["additional_information"]}</h3>
+                      <h4>{strings["additional_information"]}</h4>
                       <div className="additional-info">
                         <label>{strings["order_notes"]}</label>
                         <textarea
@@ -95,24 +137,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
                 <div className="col-lg-5">
                   <div className="your-order-area">
-                  <h3>{strings["delivery_date"]}</h3>
-                  <div className="row">
-                      <div className="col-md-12 row-date mb-5">
-                        {/* <label htmlFor="date" className="date-label">Date de livraison</label> */}
-                        <Flatpickr
-                            name="date"
-                            value={ date }
-                            onChange={ onDateChange }
-                            className="form-control form-control-sm"
-                            options={{
-                                dateFormat: "d/m/Y",
-                                minDate: today.getDay() !== 0 ? today : tomorrow,
-                                locale: French,
-                                disable: [(date) => date.getDay() === 0],
-                            }}
-                        />
-                      </div>
-                  </div>
                     <h3>{strings["your_order"]}</h3>
                     <div className="your-order-wrap gray-bg-4">
                       <div className="your-order-product-info">
@@ -192,8 +216,17 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   );
 };
 
-Checkout.propTypes = { cartItems: PropTypes.array, currency: PropTypes.object,location: PropTypes.object};
+Checkout.propTypes = {
+  cartItems: PropTypes.array,
+  currency: PropTypes.object,
+  location: PropTypes.object
+};
 
-const mapStateToProps = state => ({cartItems: state.cartData, currency: state.currencyData})
+const mapStateToProps = state => {
+  return {
+    cartItems: state.cartData,
+    currency: state.currencyData
+  };
+};
 
 export default connect(mapStateToProps)(multilanguage(Checkout));
