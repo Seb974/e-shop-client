@@ -6,9 +6,9 @@ function findAll() {
         .then(response => response.data['hydra:member'].sort((a, b) => (a.name > b.name) ? 1 : -1));
 }
 
-function deleteCategory(id) {
-    return api.delete('/api/categories/' + id);
-}
+// function deleteCategory(id) {
+//     return api.delete('/api/categories/' + id);
+// }
 
 function find(id) {
     return api
@@ -16,13 +16,13 @@ function find(id) {
         .then(response => response.data);
 }
 
-function update(id, category) {
-    return api.put('/api/categories/' + id, {...category});
-}
+// function update(id, category) {
+//     return api.put('/api/categories/' + id, {...category});
+// }
 
-function create(category) {
-    return api.post('/api/categories', {...category});
-}
+// function create(category) {
+//     return api.post('/api/categories', {...category});
+// }
 
 function updateFromMercure(categories, category) {
     const filteredCategories = categories.filter(item => item.id !== category.id);
@@ -36,10 +36,10 @@ function deleteFromMercure(categories, id) {
 
 export default { 
     findAll,
-    delete: deleteCategory,
     find, 
-    update, 
-    create,
+    // delete: deleteCategory,
+    // update, 
+    // create,
     updateFromMercure,
     deleteFromMercure,
 }

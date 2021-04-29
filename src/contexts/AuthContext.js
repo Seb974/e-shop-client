@@ -8,5 +8,7 @@ export default React.createContext({
     eventSource: {},
     setEventSource: (value) => {},
     country: "RE",
-    setCountry: (value) => {}
+    setCountry: (value) => {},
+    settings: {},
+    setSettings: (value) => {}
 });

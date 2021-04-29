@@ -137,5 +137,9 @@
   "total": "Total",
   "shipping": "Livraison",
   "free_shipping": "Livraison gratuite",
-  "place_order": "Commander"
+  "place_order": "Commander",
+  "coupon_code": "Code promo",
+  "use_coupon_code": "Utilisez votre code promo",
+  "enter_coupon_code": "Entre votre code si vous bénéficiez d'un coupon de réduction.",
+  "apply_coupon": "Appliquer la réduction"
 }

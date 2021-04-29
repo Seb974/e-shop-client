@@ -3,7 +3,9 @@ import Map from '../../map/Map';
 import Field from '../Field';
 import { multilanguage } from "redux-multilanguage";
 
-const initialPosition = [-21.329519, 55.471617];
+// const initialPosition = [-21.329519, 55.471617];
+// const initialPosition = [-21.099285, 55.480270];
+const initialPosition = [-21.125285, 55.480270];
 const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: initialPosition};
 
 const AddressPanel = ({ informations, onInformationsChange, onPositionChange, errors, strings }) => {

@@ -13,23 +13,21 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getProductsFromIds } from '../../helpers/product';
 import AuthContext from "../../contexts/AuthContext";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { getDateFrom, isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import AddressPanel from "../../components/forms/address/AddressPanel";
 import ContactPanel from "../../components/forms/contact/ContactPanel";
-
-const today = new Date();
-const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 9, 0, 0);
+import DatePicker from "../../components/checkout/datePicker";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { pathname } = location;
-  const { country } = useContext(AuthContext);
+  const { country, settings } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations =  AddressPanel.getInitialInformations();
   const [informations, setInformations] = useState(initialInformations);
-  const [date, setDate] = useState(today.getDay() !== 0 ? today : tomorrow);
+  const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
   const [message, setMessage] = useState("");
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
@@ -40,15 +38,12 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       setProductCart(productSet);
   }, [cartItems, products]);
 
+  useEffect(() => console.log(settings), [settings]);
+
   const onUserInputChange = (newUser) => setUser(newUser);
   const onInformationsChange = (newInformations) => setInformations(newInformations);
   const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
-
-  const onDateChange = date => {
-    const newSelection = new Date(date[0].getFullYear(), date[0].getMonth(), date[0].getDate(), 9, 0, 0);
-    setDate(newSelection);
-};
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -99,10 +94,10 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
                 <div className="col-lg-5">
                   <div className="your-order-area">
-                  <h3>{strings["delivery_date"]}</h3>
-                  <div className="row">
+                    <DatePicker date={ date } setDate={ setDate }/>
+                  {/* <h3>{strings["delivery_date"]}</h3> */}
+                  {/* <div className="row">
                       <div className="col-md-12 row-date mb-5">
-                        {/* <label htmlFor="date" className="date-label">Date de livraison</label> */}
                         <Flatpickr
                             name="date"
                             value={ date }
@@ -116,9 +111,22 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             }}
                         />
                       </div>
-                  </div>
+                  </div> */}
+                  <h3>{strings["coupon_code"]}</h3>
+                  <div className="discount-code-wrapper mb-5">
+                      <div className="title-wrap">
+                        <h4 className="cart-bottom-title section-bg-gray">{strings["use_coupon_code"]}</h4>
+                      </div>
+                      <div className="discount-code">
+                        <p>{strings["enter_coupon_code"]}</p>
+                        <form>
+                          <input type="text" required name="name" />
+                          <button className="cart-btn-2" type="submit">{strings["apply_coupon"]}</button>
+                        </form>
+                      </div>
+                    </div>
                     <h3>{strings["your_order"]}</h3>
-                    <div className="your-order-wrap gray-bg-4">
+                    <div className="discount-code-wrapper your-order-wrap">
                       <div className="your-order-product-info">
                         <div className="your-order-top">
                           <ul>

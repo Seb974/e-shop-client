@@ -10,16 +10,17 @@ const Map = ({ informations, initialPosition, updatePosition, strings }) => {
 
     const apInput = useRef(null);
     useEffect(() => apInput.current.autocompleteElem.value = informations.address, [informations.address]);
-
+    
     return (
         <>
             <div id="map" className="row mt-3">
-                    <MapContainer center={ informations.position } zoom={13} scrollWheelZoom={false}>
+                    <MapContainer center={ informations.position } zoom={10} scrollWheelZoom={false}>
                         <TileLayer
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        <LocationMarker position={ informations.position } initialPosition={ initialPosition }/>
+                        <LocationMarker position={ [-21.2738, 55.4447] } initialPosition={ initialPosition } />
+                        <LocationMarker position={ informations.position } initialPosition={ initialPosition } />
                     </MapContainer>
             </div>
             <div className="row mt-3">
@@ -35,7 +36,10 @@ const Map = ({ informations, initialPosition, updatePosition, strings }) => {
                             countries: ['fr'],
                             type: 'address',
                         }}
-                        onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => updatePosition(suggestion)}
+                        onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => {
+                            console.log(suggestion);
+                            updatePosition(suggestion);
+                        }}
                         onClear={() => updatePosition({latlng: {lat: initialPosition[0], lng: initialPosition[1]}})}
 
                         // onSuggestions={({ rawAnswer, query, suggestions }) => console.log('On suggestion')}

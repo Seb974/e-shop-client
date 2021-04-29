@@ -89,6 +89,21 @@ function getGeolocation() {
             .catch(error => "RE");
 }
 
+function getUserSettings() {
+    return api.get('/api/groups')
+              .then(response => {
+                  const data = response.data['hydra:member'];
+                  console.log(data);
+                  if (data.length > 1) {
+                        const superAdmin = data.find(group => group.value === "ROLE_SUPER_ADMIN");
+                        const admin = data.find(group => group.value === "ROLE_ADMIN");
+                        return isDefined(superAdmin) ? superAdmin : admin;
+                  } else {
+                      return data[0];
+                  }
+                });
+}
+
 export default {
     authenticate,
     logout,
@@ -97,5 +112,6 @@ export default {
     getCurrentUser,
     isDefaultUser,
     setErrorHandler,
-    getGeolocation
+    getGeolocation,
+    getUserSettings
 }
