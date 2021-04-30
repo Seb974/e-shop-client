@@ -141,5 +141,6 @@
   "coupon_code": "Gutscheincode",
   "use_coupon_code": "Gutscheincode verwenden",
   "enter_coupon_code": "Geben Sie Ihren Gutscheincode ein, falls Sie einen haben.",
-  "apply_coupon": "Gutschein einlösen"
+  "apply_coupon": "Gutschein einlösen",
+  "shipping_offered": "Gratisversand"
 }

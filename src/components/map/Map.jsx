@@ -5,12 +5,13 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import AlgoliaPlaces from 'algolia-places-react';
 import LocationMarker from './LocationMarker';
 import { multilanguage } from "redux-multilanguage";
+import { Icon } from 'leaflet';
 
 const Map = ({ informations, initialPosition, updatePosition, strings }) => {
 
     const apInput = useRef(null);
     useEffect(() => apInput.current.autocompleteElem.value = informations.address, [informations.address]);
-    
+
     return (
         <>
             <div id="map" className="row mt-3">

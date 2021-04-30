@@ -1,8 +1,15 @@
-import api from 'src/config/api';
+import api from '../config/api';
+import { getAmericanStringDate } from '../helpers/utils';
 
 function findAll() {
     return api
         .get('/api/day_offs')
+        .then(response => response.data['hydra:member'].sort((a, b) => (a.date > b.date) ? 1 : -1));
+}
+
+function findActives() {
+    return api
+        .get(`/api/day_offs?date[after]=${ getAmericanStringDate(new Date()) }`)
         .then(response => response.data['hydra:member'].sort((a, b) => (a.date > b.date) ? 1 : -1));
 }
 
@@ -27,6 +34,7 @@ function find(id) {
 export default {
     findAll,
     find,
+    findActives
     // delete: deleteDayOff,
     // update,
     // create

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import MercureHub from '../../components/Mercure/MercureHub';
 import AuthContext from '../../contexts/AuthContext';
+import DeliveryContext from '../../contexts/DeliveryContext';
 import ProductsContext from '../../contexts/ProductsContext';
 import AuthActions from '../../services/AuthActions';
 import ProductActions from '../../services/ProductActions';
@@ -12,6 +13,7 @@ const DataProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
     const [settings, setSettings] = useState({});
     const [country, setCountry] = useState("RE");
+    // const [cities, setCities] = useState([]);
     const [eventSource, setEventSource] = useState({});
     const [products, setProducts] = useState([]);
 
@@ -37,11 +39,13 @@ const DataProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings} }>
+        {/* <DeliveryContext.Provider value={ {cities, setCities} }> */}
         <ProductsContext.Provider value={ {products, setProducts} }>
             {/* <MercureHub> */}
                 { children }
             {/* </MercureHub> */}
         </ProductsContext.Provider>
+        {/* </DeliveryContext.Provider> */}
         </AuthContext.Provider>
     );
 }

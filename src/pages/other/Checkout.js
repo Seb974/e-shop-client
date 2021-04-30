@@ -18,32 +18,47 @@ import { multilanguage } from "redux-multilanguage";
 import AddressPanel from "../../components/forms/address/AddressPanel";
 import ContactPanel from "../../components/forms/contact/ContactPanel";
 import DatePicker from "../../components/checkout/datePicker";
+import CityActions from "../../services/CityActions";
+import DeliveryContext from "../../contexts/DeliveryContext";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { pathname } = location;
   const { country, settings } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
+  const [cities, setCities] = useState([]);
   const [productCart, setProductCart] = useState([]);
   const initialInformations =  AddressPanel.getInitialInformations();
   const [informations, setInformations] = useState(initialInformations);
   const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
   const [message, setMessage] = useState("");
+  const [isComplete, setIsComplete] = useState(false);
+  const [condition, setCondition] = useState(undefined);
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
+
+  useEffect(() => {
+     CityActions.findAll()
+                .then(response => setCities(response));
+  }, []);
+
+  useEffect(() => console.log(settings), [settings]);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
       setProductCart(productSet);
   }, [cartItems, products]);
 
-  useEffect(() => console.log(settings), [settings]);
+  useEffect(() => {
+    if (informations.zipcode.length > 0)
+        setCondition( getCityCondition() );
+  }, [informations.zipcode]);
 
   const onUserInputChange = (newUser) => setUser(newUser);
   const onInformationsChange = (newInformations) => setInformations(newInformations);
-  const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
+  const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -51,6 +66,13 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       console.log(informations);
       console.log(message);
   };
+
+  const getCityCondition = () => {
+      const userCity = cities.find(city => city.zipCode === informations.zipcode);
+      return !isDefined(userCity) ? undefined : userCity.conditions.find(condition => {
+          return condition.userGroups.find(group => group.value === settings.value)
+      });
+  }
 
   return (
     <Fragment>
@@ -94,24 +116,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
                 <div className="col-lg-5">
                   <div className="your-order-area">
-                    <DatePicker date={ date } setDate={ setDate }/>
-                  {/* <h3>{strings["delivery_date"]}</h3> */}
-                  {/* <div className="row">
-                      <div className="col-md-12 row-date mb-5">
-                        <Flatpickr
-                            name="date"
-                            value={ date }
-                            onChange={ onDateChange }
-                            className="form-control form-control-sm"
-                            options={{
-                                dateFormat: "d/m/Y",
-                                minDate: today.getDay() !== 0 ? today : tomorrow,
-                                locale: French,
-                                disable: [(date) => date.getDay() === 0],
-                            }}
-                        />
-                      </div>
-                  </div> */}
+                    <DatePicker date={ date } setDate={ setDate } condition={ condition }/>
                   <h3>{strings["coupon_code"]}</h3>
                   <div className="discount-code-wrapper mb-5">
                       <div className="title-wrap">
@@ -160,24 +165,31 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         </div>
                         <div className="your-order-bottom">
                           <ul>
-                            <li className="your-order-shipping">{strings["shipping"]}</li>
-                            <li>{strings["free_shipping"]}</li>
+                              <li className="your-order-shipping">{strings["shipping"]}</li>
+                              <li>
+                                { condition === undefined || condition.price === 0 ? strings["free_shipping"] : 
+                                  condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
+                                  condition.price.toFixed(2) + " " + currency.currencySymbol
+                                }
+                              </li>
                           </ul>
                         </div>
                         <div className="your-order-total">
                           <ul>
-                            <li className="order-total">{strings["total"]}</li>
-                            <li>
-                              {currency.currencySymbol +
-                                cartTotalPrice.toFixed(2)}
-                            </li>
+                              <li className="order-total">{strings["total"]}</li>
+                              <li>
+                                  { condition === undefined || condition.minForFree <= cartTotalPrice ? 
+                                    cartTotalPrice.toFixed(2) + " " + currency.currencySymbol :
+                                    (cartTotalPrice + condition.price).toFixed(2) + " " + currency.currencySymbol
+                                  }
+                              </li>
                           </ul>
                         </div>
                       </div>
                       <div className="payment-method"></div>
                     </div>
                     <div className="place-order mt-25">
-                      <button className="btn-hover" onClick={ handleSubmit }>{strings["place_order"]}</button>
+                      <button className="btn-hover" onClick={ handleSubmit } disabled={ !isComplete }>{strings["place_order"]}</button>
                     </div>
                   </div>
                 </div>
