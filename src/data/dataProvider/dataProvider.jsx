@@ -13,7 +13,9 @@ const DataProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
     const [settings, setSettings] = useState({});
     const [country, setCountry] = useState("RE");
-    // const [cities, setCities] = useState([]);
+    const [cities, setCities] = useState([]);
+    const [relaypoints, setRelaypoints] = useState([]);
+    const [condition, setCondition] = useState(undefined);
     const [eventSource, setEventSource] = useState({});
     const [products, setProducts] = useState([]);
 
@@ -39,13 +41,13 @@ const DataProvider = ({ children }) => {
 
     return (
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings} }>
-        {/* <DeliveryContext.Provider value={ {cities, setCities} }> */}
+        <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition} }>
         <ProductsContext.Provider value={ {products, setProducts} }>
             {/* <MercureHub> */}
                 { children }
             {/* </MercureHub> */}
         </ProductsContext.Provider>
-        {/* </DeliveryContext.Provider> */}
+        </DeliveryContext.Provider>
         </AuthContext.Provider>
     );
 }

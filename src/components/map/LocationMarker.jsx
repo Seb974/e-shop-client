@@ -1,32 +1,37 @@
-import React, { useEffect } from 'react';
-import { Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import React, { useEffect, useState } from 'react';
+import { Marker, Tooltip, useMap } from 'react-leaflet';
+import { isDefined } from '../../helpers/utils';
 
-const LocationMarker = ({ position, initialPosition }) => {
+const LocationMarker = ({ position, initialPosition, informations = undefined, updatePosition }) => {
+
     const map = useMap();
+    const [ownPosition, setOwnPosition] = useState(position);
+    const [ownInformations, setOwnInformations] = useState(informations);
 
     useEffect(() => {
-        if (JSON.stringify(position) !== JSON.stringify([-21.2738, 55.4447])) {
-            map.flyTo(position, 10 + (JSON.stringify(position) === JSON.stringify(initialPosition) ? 0 : 6));
-        }
-    }, [position])
+        map.flyTo(position, 10 + (JSON.stringify(position) === JSON.stringify(initialPosition) ? 0 : 6));
+        setOwnPosition(position);
+        setOwnInformations(informations);
+    }, [position]);
+
+    const handleClick = () => {
+        updatePosition({
+            latlng: {lat: ownPosition[0], lng: ownPosition[1]}, 
+            postcodes: [ownInformations.zipcode],
+            value: ownInformations.address,
+            city: ownInformations.city 
+        })
+    };
 
     return position === null || JSON.stringify(position) === JSON.stringify(initialPosition) ? null : (
-        <Marker position={ position } eventHandlers={{ click: (e) => console.log(e) }}>
-             {/* eventHandlers={{ click: ({ latlng }) => console.log(latlng), mouseover: ({target}) => target.openPopup(), mouseout: ({target}) => target.closePopup() }} */}
+        <Marker position={ position } eventHandlers={{ click: () => handleClick() }}>
             <Tooltip className="text-center">
-                Au bon Fromage<br/>
-                Etang-Salé<br/>
-                <small>(cliquez pour sélectionner)</small>
+                <h5>Votre adresse</h5>
+                { isDefined(informations) && isDefined(informations.city) ? informations.city : ""}<br/>
+                { JSON.stringify(position) !== JSON.stringify(ownPosition) ? <small>(cliquez pour sélectionner)</small> : <></>}
             </Tooltip>
-            <Popup className="text-center">
-                <p className="d-flex flex-column align-items-center">
-                    <p className="mb-0">Au bon Fromage</p>
-                    <p className="mt-0"><small>Etang-Salé</small></p>
-                    <button className="btn btn-primary" onClick={ () => console.log("relayPoint selected") }>Choisir</button>
-                </p>
-            </Popup>
         </Marker>
     );
 }
- 
+
 export default LocationMarker;

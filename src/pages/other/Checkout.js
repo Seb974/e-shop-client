@@ -19,46 +19,42 @@ import AddressPanel from "../../components/forms/address/AddressPanel";
 import ContactPanel from "../../components/forms/contact/ContactPanel";
 import DatePicker from "../../components/checkout/datePicker";
 import CityActions from "../../services/CityActions";
+import RelaypointActions from "../../services/RelaypointActions";
 import DeliveryContext from "../../contexts/DeliveryContext";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { pathname } = location;
-  const { country, settings } = useContext(AuthContext);
+  const { country } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
-  const [cities, setCities] = useState([]);
+  const { cities, setCities, relaypoints, setRelaypoints, condition, setCondition } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations =  AddressPanel.getInitialInformations();
   const [informations, setInformations] = useState(initialInformations);
   const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
   const [message, setMessage] = useState("");
-  const [isComplete, setIsComplete] = useState(false);
-  const [condition, setCondition] = useState(undefined);
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
 
   useEffect(() => {
      CityActions.findAll()
                 .then(response => setCities(response));
+     RelaypointActions.findAll()
+                      .then(response => setRelaypoints(response));
   }, []);
 
-  useEffect(() => console.log(settings), [settings]);
+  useEffect(() => console.log(condition), [condition]);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
       setProductCart(productSet);
   }, [cartItems, products]);
 
-  useEffect(() => {
-    if (informations.zipcode.length > 0)
-        setCondition( getCityCondition() );
-  }, [informations.zipcode]);
 
   const onUserInputChange = (newUser) => setUser(newUser);
-  const onInformationsChange = (newInformations) => setInformations(newInformations);
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
-  const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
+
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -66,13 +62,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       console.log(informations);
       console.log(message);
   };
-
-  const getCityCondition = () => {
-      const userCity = cities.find(city => city.zipCode === informations.zipcode);
-      return !isDefined(userCity) ? undefined : userCity.conditions.find(condition => {
-          return condition.userGroups.find(group => group.value === settings.value)
-      });
-  }
 
   return (
     <Fragment>
@@ -97,7 +86,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                   <div className="billing-info-wrap">
                     <h3 className="mb-0">{strings["shipping_details"]}</h3>
                     <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                    <AddressPanel informations={ informations } onInformationsChange={ onInformationsChange } onPositionChange={ onUpdatePosition } errors={ errors }/>
+                    <AddressPanel informations={ informations } setInformations={ setInformations } errors={ errors } />
                     <div className="additional-info-wrap">
                       <h3>{strings["additional_information"]}</h3>
                       <div className="additional-info">
@@ -149,7 +138,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
                               cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity
 
-                              return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <></> :
+                              return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <div key={key}></div> :
                                 <li key={key}>
                                   <span className="order-middle-left">
                                     {cartItem.product.name} X {cartItem.quantity} {cartItem.product.unit}
@@ -189,7 +178,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                       <div className="payment-method"></div>
                     </div>
                     <div className="place-order mt-25">
-                      <button className="btn-hover" onClick={ handleSubmit } disabled={ !isComplete }>{strings["place_order"]}</button>
+                      <button className="btn-hover" onClick={ handleSubmit } >{strings["place_order"]}</button>
                     </div>
                   </div>
                 </div>

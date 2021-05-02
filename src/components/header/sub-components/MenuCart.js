@@ -38,8 +38,8 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                   cartTotalPrice += finalDiscountedPrice * single.quantity :
                   cartTotalPrice += finalProductPrice * single.quantity;
 
-              return !isDefined(single.product) ? <></> : (
-                <li className="single-shopping-cart" key={key}>
+              return !isDefined(single.product) ? <div key={ key }></div> : (
+                <li className="single-shopping-cart" key={ key }>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
                       <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
