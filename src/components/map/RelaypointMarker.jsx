@@ -2,13 +2,16 @@ import React, { useContext, useEffect, useRef } from 'react';
 import { Marker, Popup, Tooltip, useMap } from 'react-leaflet';
 import AuthContext from '../../contexts/AuthContext';
 import DeliveryContext from '../../contexts/DeliveryContext';
+import { isSameAddress } from '../../helpers/days';
+import AddressPanel from '../forms/address/AddressPanel';
 
-const RelaypointMarker = ({ position, relaypoint, informations, setInformations }) => {
+const RelaypointMarker = ({ position, relaypoint, informations, setInformations, setIsRelaypoint, onClear }) => {
 
     const map = useMap();
     const marker = useRef(null);
     const { settings } = useContext(AuthContext);
     const { setCondition } = useContext(DeliveryContext);
+    const initialPosition = AddressPanel.getInitialPosition();
 
     const onSelect = e => {
         const  { address, address2, zipcode, city } = relaypoint.metas;
@@ -18,8 +21,15 @@ const RelaypointMarker = ({ position, relaypoint, informations, setInformations 
         const newInformations = {...informations, address, address2, zipcode, city};
         setInformations(newInformations);
         setCondition(newCondition);
+        setIsRelaypoint(true);
         map.flyTo(position, 16);
         marker.current.closePopup();
+    };
+
+    const onDeleteSelection = () => {
+        map.flyTo(initialPosition, 10);
+        marker.current.closePopup();
+        onClear();
     };
 
     const getDeliveryDetails = relaypoint => {
@@ -29,32 +39,28 @@ const RelaypointMarker = ({ position, relaypoint, informations, setInformations 
         return (
             <div className="d-flex flex-column align-items-center">
                 <h5 className="mb-0 mt-1">{ relaypoint.name }</h5>
-                <p className="mb-0 mt-1"> Livré les { " " }
+                <p className="mb-0 mt-1 text-center"> Livré les { " " }
                     { selectedCondition.days.map((day, i) => {
                         return day.label + ( i < (selectedCondition.days.length - 2) ? ", " : (i === (selectedCondition.days.length - 2) ? " et " : ""))
                     })}
                 </p>
                 <p className="mt-1">{ relaypoint.informations }</p>
-                <button className="btn btn-primary" onClick={ onSelect }>Choisir</button>
+                { !isSameAddress(relaypoint.metas, informations) ?
+                    <button className="btn btn-primary" onClick={ onSelect }>Choisir</button> :
+                    <button className="btn btn-warning" onClick={ onDeleteSelection }>Effacer ma sélection</button>
+                }
             </div>
         );
     };
 
     return position === null ? null : (
         <Marker ref={marker} position={ position }>
-             {/* eventHandlers={{ click: ({ latlng }) => console.log(latlng), mouseover: ({target}) => target.openPopup(), mouseout: ({target}) => target.closePopup() }} */}
             <Tooltip className="text-center">
                 { relaypoint.name }<br/>
                 { relaypoint.metas.city }<br/>
-                <small>(cliquez pour sélectionner)</small>
+                { !isSameAddress(relaypoint.metas, informations) ? <small>(cliquez pour sélectionner)</small> : <></> }
             </Tooltip>
-            <Popup className="text-center">{ getDeliveryDetails(relaypoint) }
-                {/* <div className="d-flex flex-column align-items-center">
-                    <p className="mb-0">{ relaypoint.name }</p>
-                    <p className="mt-0"><small>{ relaypoint.metas.city }</small></p>
-                    <button className="btn btn-primary" onClick={ onSelect }>Choisir</button>
-                </div> */}
-            </Popup>
+            <Popup className="text-center">{ getDeliveryDetails(relaypoint) }</Popup>
         </Marker>
     );
 }

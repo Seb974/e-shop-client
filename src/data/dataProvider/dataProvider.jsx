@@ -26,10 +26,7 @@ const DataProvider = ({ children }) => {
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
         ProductActions.findAll()
-                      .then(response => {
-                          console.log(response);
-                          setProducts(response);
-                        });
+                      .then(response => setProducts(response));
     }, []);
 
     useEffect(() => {

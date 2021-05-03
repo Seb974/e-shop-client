@@ -17,6 +17,7 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
     const { settings } = useContext(AuthContext);
     const { cities, relaypoints, setCondition } = useContext(DeliveryContext);
     const [hasChanged, setHasChanged] = useState(false);
+    const [isRelaypoint, setIsRelaypoint] = useState(false);
 
     useEffect(() => apInput.current.autocompleteElem.value = informations.address, [informations.address]);
 
@@ -29,6 +30,7 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
 
     const updatePosition = suggestion => {
         const { lat, lng } = suggestion.latlng;
+        setIsRelaypoint(false);
         setInformations(informations => ({
             ...informations, 
             position: [lat, lng], 
@@ -42,6 +44,7 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
 
     const onClear = () => {
         setInformations(informations => ({...informations, position: initialPosition, address: '', zipcode: '', city: ''}));
+        setIsRelaypoint(false);
         setCondition(undefined);
     }
 
@@ -61,8 +64,8 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
                             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         />
-                        { relaypoints.map((relaypoint, i) => <RelaypointMarker key={ i } position={ relaypoint.metas.position } relaypoint={ relaypoint } informations={ informations } setInformations={ setInformations } />) }
-                        <LocationMarker position={ informations.position } initialPosition={ initialPosition } informations={ informations } updatePosition={ updatePosition }/>
+                        { relaypoints.map((relaypoint, i) => <RelaypointMarker key={ i } position={ relaypoint.metas.position } relaypoint={ relaypoint } informations={ informations } setInformations={ setInformations } setIsRelaypoint={ setIsRelaypoint } onClear={ onClear }/>) }
+                        <LocationMarker position={ informations.position } informations={ informations } updatePosition={ updatePosition } isRelaypoint={ isRelaypoint } onClear={ onClear }/>
                     </MapContainer>
             </div>
             <div className="row mt-3">
