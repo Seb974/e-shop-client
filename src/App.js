@@ -8,6 +8,8 @@ import { connect } from "react-redux";
 import { BreadcrumbsProvider } from "react-breadcrumbs-dynamic";
 import routes from './routes';
 import DataProvider from "./data/dataProvider/dataProvider";
+import 'mapbox-gl/dist/mapbox-gl.css';
+// import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 
 import en from "./translations/english.json";
 import fn from "./translations/french.json";

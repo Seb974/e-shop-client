@@ -7,26 +7,26 @@ import LocationMarker from './LocationMarker';
 import { multilanguage } from "redux-multilanguage";
 import { Icon } from 'leaflet';
 import RelaypointMarker from './RelaypointMarker';
-import DeliveryContext from '../../contexts/DeliveryContext';
-import AuthContext from '../../contexts/AuthContext';
-import { isDefined } from '../../helpers/utils';
+import DeliveryContext from '../../../contexts/DeliveryContext';
+import AuthContext from '../../../contexts/AuthContext';
+import { isDefined } from '../../../helpers/utils';
+import { useToasts } from 'react-toast-notifications';
 
-const Map = ({ informations, initialPosition, setInformations, strings }) => {
+const Map = ({ informations, initialPosition, setInformations, isRelaypoint, setIsRelaypoint, setCityCondition, strings }) => {
 
     const apInput = useRef(null);
-    const { settings } = useContext(AuthContext);
-    const { cities, relaypoints, setCondition } = useContext(DeliveryContext);
-    const [hasChanged, setHasChanged] = useState(false);
-    const [isRelaypoint, setIsRelaypoint] = useState(false);
+    const { addToast } = useToasts();
+    const { country } = useContext(AuthContext);
+    const { relaypoints, setCondition } = useContext(DeliveryContext);
+    const reunionArea = [-20.871965, 55.216556, -21.389627, 55.836940];
+    const franceArea = [41.332365, -5.139160, 51.087336, 8.233883];
+    const [selectedArea, setSelectedArea] = useState([franceArea]);
 
     useEffect(() => apInput.current.autocompleteElem.value = informations.address, [informations.address]);
 
-    useEffect(() => {
-        if (hasChanged) {
-            setCityCondition(informations.zipcode);
-            setHasChanged(false);
-        }
-    }, [hasChanged]);
+    useEffect(() => console.log(country), [country]);
+    useEffect(() => setSelectedArea([country === "RE" ? reunionArea : franceArea]), []);
+    useEffect(() => setSelectedArea([country === "RE" ? reunionArea : franceArea]), [country]);
 
     const updatePosition = suggestion => {
         const { lat, lng } = suggestion.latlng;
@@ -38,8 +38,11 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
             zipcode : suggestion.postcodes[0], 
             city: suggestion.city
         }));
-        setHasChanged(true);
-        setCityCondition(suggestion.postcodes[0]);
+        if (isDefined(suggestion.force)) {
+            const newCondition = setCityCondition(suggestion.postcodes[0]);
+            if (isDefined(newCondition))
+                addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
+        }
     };
 
     const onClear = () => {
@@ -47,14 +50,6 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
         setIsRelaypoint(false);
         setCondition(undefined);
     }
-
-    const setCityCondition = zipcode => {
-        const userCity = cities.find(city => city.zipCode === zipcode);
-        const cityCondition = !isDefined(userCity) ? undefined : userCity.conditions.find(condition => {
-            return condition.userGroups.find(group => group.value === settings.value)
-        });
-        setCondition(cityCondition);
-    };
 
     return (
         <>
@@ -78,8 +73,9 @@ const Map = ({ informations, initialPosition, setInformations, strings }) => {
                             appId: 'pl6124DJ467I',
                             apiKey: 'dac682bc8a0dc7a59f7ada449553bcf9',
                             language: 'fr',
-                            countries: ['fr'],
+                            countries: ['fr', 'mc'],      // 'fr', 'mc'
                             type: 'address',
+                            insideBoundingBox: selectedArea
                         }}
                         onChange={({ query, rawAnswer, suggestion, suggestionIndex }) => updatePosition(suggestion)}
                         onClear={ onClear }

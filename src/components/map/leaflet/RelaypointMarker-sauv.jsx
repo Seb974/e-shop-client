@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useRef } from 'react';
 import { Marker, Popup, Tooltip, useMap } from 'react-leaflet';
-import AuthContext from '../../contexts/AuthContext';
-import DeliveryContext from '../../contexts/DeliveryContext';
-import { isSameAddress } from '../../helpers/days';
-import AddressPanel from '../forms/address/AddressPanel';
+import { useToasts } from 'react-toast-notifications';
+import AuthContext from '../../../contexts/AuthContext';
+import DeliveryContext from '../../../contexts/DeliveryContext';
+import { isSameAddress } from '../../../helpers/days';
+import AddressPanel from '../../forms/address/AddressPanel';
 
 const RelaypointMarker = ({ position, relaypoint, informations, setInformations, setIsRelaypoint, onClear }) => {
 
     const map = useMap();
     const marker = useRef(null);
+    const { addToast } = useToasts();
     const { settings } = useContext(AuthContext);
     const { setCondition } = useContext(DeliveryContext);
     const initialPosition = AddressPanel.getInitialPosition();
@@ -22,14 +24,18 @@ const RelaypointMarker = ({ position, relaypoint, informations, setInformations,
         setInformations(newInformations);
         setCondition(newCondition);
         setIsRelaypoint(true);
-        map.flyTo(position, 16);
+        map.flyTo(position, 16, {easeLinearity: 1});
         marker.current.closePopup();
+        addToast("Point de livraison sélectionné", { appearance: "success", autoDismiss: true });
+        // placementType : 'bottom-left' | 'bottom-center' | 'bottom-right' | 'top-left' | 'top-center' | 'top-right'
+        // appearance: success, error, warning, info
     };
 
     const onDeleteSelection = () => {
-        map.flyTo(initialPosition, 10);
+        map.flyTo(initialPosition, 10, {easeLinearity: 1});
         marker.current.closePopup();
         onClear();
+        addToast("Point de livraison effacé", { appearance: "error", autoDismiss: true });
     };
 
     const getDeliveryDetails = relaypoint => {
@@ -54,7 +60,7 @@ const RelaypointMarker = ({ position, relaypoint, informations, setInformations,
     };
 
     return position === null ? null : (
-        <Marker ref={marker} position={ position }>
+        <Marker ref={marker} position={ position } eventHandlers={{ click: ({target}) => target.openPopup() }}>
             <Tooltip className="text-center">
                 { relaypoint.name }<br/>
                 { relaypoint.metas.city }<br/>

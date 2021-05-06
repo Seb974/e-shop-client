@@ -13,9 +13,9 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getProductsFromIds } from '../../helpers/product';
 import AuthContext from "../../contexts/AuthContext";
-import { getDateFrom, isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
-import AddressPanel from "../../components/forms/address/AddressPanel";
+import CheckoutMap from "../../components/map/checkout/Map";
 import ContactPanel from "../../components/forms/contact/ContactPanel";
 import DatePicker from "../../components/checkout/datePicker";
 import CityActions from "../../services/CityActions";
@@ -24,12 +24,12 @@ import DeliveryContext from "../../contexts/DeliveryContext";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
-  const { pathname } = location;
   const { country } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
-  const { cities, setCities, relaypoints, setRelaypoints, condition, setCondition } = useContext(DeliveryContext);
+  const initialPosition = [-21.065285, 55.480270];
+  const { setCities, setRelaypoints, condition } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
-  const initialInformations =  AddressPanel.getInitialInformations();
+  const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: initialPosition};
   const [informations, setInformations] = useState(initialInformations);
   const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
@@ -44,17 +44,13 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                       .then(response => setRelaypoints(response));
   }, []);
 
-  useEffect(() => console.log(condition), [condition]);
-
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
       setProductCart(productSet);
   }, [cartItems, products]);
 
-
   const onUserInputChange = (newUser) => setUser(newUser);
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
-
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -86,7 +82,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                   <div className="billing-info-wrap">
                     <h3 className="mb-0">{strings["shipping_details"]}</h3>
                     <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                    <AddressPanel informations={ informations } setInformations={ setInformations } errors={ errors } />
+                    <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } />
                     <div className="additional-info-wrap">
                       <h3>{strings["additional_information"]}</h3>
                       <div className="additional-info">

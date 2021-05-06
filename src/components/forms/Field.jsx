@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Field = ({ name, label, value, onChange, placeholder = "", type = "text", error = "", required = false, id = "", boots="", disabled=false }) => {
+const Field = ({ name, label, value, onChange, placeholder = "", type = "text", error = "", required = false, id = "", boots="", disabled=false, maxLength=255 }) => {
     return (
         <div className={"form-group " + boots }>
             <label htmlFor={ name }>{ label }</label>
@@ -14,6 +14,7 @@ const Field = ({ name, label, value, onChange, placeholder = "", type = "text", 
                 id={ id || name }
                 required={ required }
                 disabled={ disabled }
+                maxLength={ maxLength }
             />
             { error && <p className="invalid-feedback">{ error }</p> }
         </div>

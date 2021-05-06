@@ -8,7 +8,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
 
     return (
         <>
-            <div className="row mb-1">
+            <div className="row mb-0">
                 <div className="col-md-12">
                     <Field 
                         name="name"
@@ -20,7 +20,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                     />
                 </div>
             </div>
-            <div className="row mb-4">
+            <div className="row mb-2">
                 <div className="col-md-6">
                     <Field 
                         name="email"

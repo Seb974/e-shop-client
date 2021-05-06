@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { Marker, Popup, Tooltip, useMap } from 'react-leaflet';
-import DeliveryContext from '../../contexts/DeliveryContext';
-import { isSameAddress } from '../../helpers/days';
-import { isDefined } from '../../helpers/utils';
-import AddressPanel from '../forms/address/AddressPanel';
+import { useToasts } from 'react-toast-notifications';
+import DeliveryContext from '../../../contexts/DeliveryContext';
+import { isSameAddress } from '../../../helpers/days';
+import { isDefined } from '../../../helpers/utils';
+import AddressPanel from '../../forms/address/AddressPanel';
 
 const LocationMarker = ({ position, informations = undefined, updatePosition, isRelaypoint, onClear }) => {
 
     const map = useMap();
     const selfMarker = useRef(null);
+    const { addToast } = useToasts();
     const initialPosition = AddressPanel.getInitialPosition();
     const { condition } = useContext(DeliveryContext);
     const [ownPosition, setOwnPosition] = useState([]);
@@ -19,8 +21,15 @@ const LocationMarker = ({ position, informations = undefined, updatePosition, is
     useEffect(() => console.log(ownCondition), [ownCondition]);
 
     useEffect(() => {
+        if (ownPosition.length > 0 && !isRelaypoint) {
+            setOwnPosition(position);
+            handleClick();
+        }
+    }, []);
+
+    useEffect(() => {
         const reset = JSON.stringify(position) === JSON.stringify(initialPosition);
-        map.flyTo(position, 10 + (reset ? 0 : 6));
+        map.flyTo(position, 10 + (reset ? 0 : 6), {easeLinearity: 1});
         if (!isRelaypoint || ownPosition.length === 0 || reset) {
             setOwnPosition(reset ? [] : position);
             setOwnInformations(reset ? undefined : informations);
@@ -30,7 +39,7 @@ const LocationMarker = ({ position, informations = undefined, updatePosition, is
     }, [position]); 
 
     useEffect(() => {
-        if (ownPosition.length > 0 && !isRelaypoint) {     // ownPosition.length > 0 && isSameAddress(ownInformations, informations)
+        if (ownPosition.length > 0 && !isRelaypoint) {
             setOwnCondition(condition);
         }
     }, [condition]);
@@ -40,7 +49,8 @@ const LocationMarker = ({ position, informations = undefined, updatePosition, is
             latlng: {lat: ownPosition[0], lng: ownPosition[1]}, 
             postcodes: [ownInformations.zipcode],
             value: ownInformations.address,
-            city: ownInformations.city 
+            city: ownInformations.city,
+            force: true
         });
         selfMarker.current.closePopup();
     };
@@ -49,14 +59,14 @@ const LocationMarker = ({ position, informations = undefined, updatePosition, is
         setOwnCondition(undefined);
         setOwnInformations(undefined);
         setOwnPosition([]);
-        map.flyTo(initialPosition, 10);
+        map.flyTo(initialPosition, 10, {easeLinearity: 1});
         selfMarker.current.closePopup();
         onClear();
+        addToast("Adresse de livraison effacée", { appearance: "error", autoDismiss: true });
     };
 
-    //  eventHandlers={{ click: () => handleClick() }}
     return position === null || JSON.stringify(position) === JSON.stringify(initialPosition) ? null : (
-        <Marker ref={ selfMarker } position={ position }>  
+        <Marker ref={ selfMarker } position={ position } eventHandlers={{ click: ({target}) => target.openPopup() }}>
             <Tooltip className="text-center">
                 <h5>Votre adresse</h5>
                 { !isDefined(ownInformations) || !isDefined(ownInformations.address) ? <></> :

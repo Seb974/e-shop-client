@@ -125,7 +125,7 @@
   "your_order": "Votre commande",
   "first_name": "Prénom",
   "last_name": "Nom",
-  "address": "Votre adresse",
+  "address": "Entrez votre adresse ou sélectionnez un point relais sur la carte",
   "address2": "N° d'appart, digicode...",
   "city": "Ville",
   "zipcode": "Code postal",
