@@ -10,5 +10,7 @@ export default React.createContext({
     country: "RE",
     setCountry: (value) => {},
     settings: {},
-    setSettings: (value) => {}
+    setSettings: (value) => {},
+    selectedCatalog: [],
+    setSelectedCatalog: (value) => {}
 });

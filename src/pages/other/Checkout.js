@@ -127,7 +127,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         <div className="your-order-middle">
                           <ul>
                             { productCart.map((cartItem, key) => {
-                              const taxToApply = isDefined(cartItem) && isDefined(cartItem.product) ? cartItem.product.taxes.find(tax => tax.country === country).rate : 0;
+                              // const taxToApply = isDefined(cartItem) && isDefined(cartItem.product) ? cartItem.product.taxes.find(tax => tax.country === country).rate : 0;
+                              const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
                               const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount) : 0;
                               const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
                               const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

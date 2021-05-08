@@ -48,7 +48,7 @@ const LocationPopup = ({ location, informations, setViewport, setPopup, onClear,
         });
         updatePosition(suggestion);
         setPopup(undefined);
-        addToast("Point de livraison sélectionné", { appearance: "success", autoDismiss: true });
+        // addToast("Point de livraison sélectionné", { appearance: "success", autoDismiss: true });
     };
 
     const onDeleteSelection = () => {

@@ -6,5 +6,11 @@ export default React.createContext({
     relaypoints: [],
     setRelaypoints: (value) => {},
     condition: {},
-    setCondition: (value) => {}
+    setCondition: (value) => {},
+    packages: [],
+    setPackages: (value) => {},
+    totalWeight: 0,
+    setTotalWeight: (value) => {},
+    availableWeight: 0,
+    setAvailableWeight: (value) => {},
 });

@@ -83,9 +83,10 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                         </thead>
                         <tbody>
                           { productCart.map((cartItem, key) => {
-                            const taxToApply = cartItem.product.taxes.find(tax => tax.country === country).rate;
-                            const discountedPrice = getDiscountPrice(cartItem.product.price, cartItem.product.discount);
-                            const finalProductPrice = (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                            // const taxToApply = cartItem.product.taxes.find(tax => tax.country === country).rate;
+                            const taxToApply = !isDefined(cartItem.product) ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                            const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount);
+                            const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
                             // discountedPrice != null ? 
@@ -96,7 +97,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                             cartTotalTax += (discountedPrice != null ? discountedPrice : cartItem.product.price) * cartItem.quantity * taxToApply;
                             
                             const partial = cartItem.quantity % 1 === 0 ? 1 : 0.1;
-                            return (
+                            return !isDefined(cartItem.product) ? <></> : (
                               <tr key={key}>
                                 <td className="product-thumbnail">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id}>

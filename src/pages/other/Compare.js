@@ -100,7 +100,8 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                           <tr>
                             <th className="title-column">{ strings["price"] }</th>
                             {compareList.map((compareItem, key) => {
-                              const taxToApply = isDefined(compareItem) ? compareItem.taxes.find(tax => tax.country === country).rate : 0;
+                              // const taxToApply = isDefined(compareItem) ? compareItem.taxes.find(tax => tax.country === country).rate : 0;
+                              const taxToApply = isDefined(compareItem) ? compareItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent : 0;
                               const discountedPrice = isDefined(compareItem) ? getDiscountPrice(compareItem.price, compareItem.discount) : 0;
                               const finalProductPrice = isDefined(compareItem) ? (compareItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
                               const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

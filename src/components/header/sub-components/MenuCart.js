@@ -9,6 +9,9 @@ import { getProductsFromIds } from '../../../helpers/product';
 import api from "../../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../../contexts/AuthContext";
+import { definePackages, getAvailableWeight, getOrderWeight } from "../../../helpers/containers";
+import ContainerContext from "../../../contexts/ContainerContext";
+import DeliveryContext from "../../../contexts/DeliveryContext";
 
 const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) => {
 
@@ -16,12 +19,26 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   const { addToast } = useToasts();
   const [productCart, setProductCart] = useState([]);
   const { products } = useContext(ProductsContext);
-  const { country } = useContext(AuthContext);
+  const { country, selectedCatalog } = useContext(AuthContext);
+  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight } = useContext(DeliveryContext);
+  const { containers } = useContext(ContainerContext);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartData, products);
       setProductCart(productSet);
-  }, [cartData, products])
+  }, [cartData, products]);
+
+  useEffect(() => {
+    if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
+        setPackages(selectedCatalog.needsParcel ? definePackages(productCart, containers) : []);
+        setTotalWeight(selectedCatalog.needsParcel ? getOrderWeight(productCart) : 0);
+        setAvailableWeight(selectedCatalog.needsParcel ? getAvailableWeight(getOrderWeight(productCart), packages) : 0);
+    }
+  }, [productCart, containers, selectedCatalog]);
+
+  useEffect(() => console.log(packages), [packages]);
+  useEffect(() => console.log(totalWeight), [totalWeight]);
+  useEffect(() => console.log(availableWeight), [availableWeight]);
 
   return (
     <div className={"shopping-cart-content " + active}>
@@ -29,7 +46,9 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
-              const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
+              // const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
+              const taxToApply = !isDefined(single) || !isDefined(single.product) ? 0 : 
+                single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
               const finalProductPrice = isDefined(single.product) ? (single.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
               const finalDiscountedPrice = isDefined(single.product) ? (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;

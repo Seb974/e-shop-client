@@ -1,8 +1,10 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlyToInterpolator } from 'react-map-gl';
 import AuthContext from '../../../../contexts/AuthContext';
 import Geocoder from 'react-map-gl-geocoder';
 import { multilanguage } from "redux-multilanguage";
+import { isInFrance, isInReunionIsland } from '../../../../helpers/map';
+import { isDefined } from '../../../../helpers/utils';
 
 const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLocationPopup, setRelaypointPopup, setViewport, updatePosition, strings }) => {
 
@@ -13,19 +15,24 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
         countries: country, 
         language: "fr", 
         minLength: 6, 
-        marker: false 
+        marker: false,
+        limit: 5,
+        types: "address, postcode"
     };
 
     const onResult = ({ result }) => {
+        console.log(result);
         setIsRelaypoint(false);
         setLocationPopup(undefined);
         setRelaypointPopup(undefined);
         const { center, place_name, context } = result;
+        const postcode = context.find(data => data.id.includes("postcode"));
+        const city = context.find(data => data.id.includes("place"));
         const suggestion = {
             latlng: {lat: center[1], lng: center[0]}, 
             value: place_name, 
-            postcodes: [ context.find(data => data.id.includes("postcode")).text ], 
-            city: context.find(data => data.id.includes("place")).text
+            postcodes: [isDefined(postcode) ? postcode.text : ""], 
+            city: isDefined(city) ? city.text : ""
         };
         const view = {
             latitude: center[1], 
@@ -34,6 +41,8 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         };
+        console.log("Is in Reunion : " + isInReunionIsland(center[1], center[0]));
+        console.log("Is in France : " + isInFrance(center[1], center[0]));
         setViewport(view);
         updatePosition(suggestion);
     }

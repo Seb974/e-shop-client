@@ -30,22 +30,18 @@ const Map = ({ informations, setInformations }) => {
     const [relayPointPopup, setRelaypointPopup] = useState(undefined);
     const [locationTooltip, setLocationTooltip] = useState(undefined);
     const [locationPopup, setLocationPopup] = useState(undefined);
-    // const reunionArea = [-20.871965, 55.216556, -21.389627, 55.836940];
-    // const franceArea = [41.332365, -5.139160, 51.087336, 8.233883];
-    // const [selectedArea, setSelectedArea] = useState([franceArea]);
-    
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
 
     useEffect(() => {
-        if (informations.zipcode.length === 5 && !isRelaypoint) {
+        if (informations.address.length > 0 && !isRelaypoint) {    // informations.zipcode.length === 5 && 
             const newCondition = setCityCondition(informations.zipcode);
-            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings);
+            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position);
             if (isDefined(alternatives))
                 addToast(alternatives.message, alternatives.params);
             if (isDefined(newCondition) && !isDefined(alternatives))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
         }
-    }, [informations.zipcode]);
+    }, [informations.address]);
 
     const updatePosition = suggestion => {
         const { lat, lng } = suggestion.latlng;
