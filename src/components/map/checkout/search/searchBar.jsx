@@ -21,7 +21,6 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
     };
 
     const onResult = ({ result }) => {
-        console.log(result);
         setIsRelaypoint(false);
         setLocationPopup(undefined);
         setRelaypointPopup(undefined);
@@ -35,11 +34,11 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
             city: isDefined(city) ? city.text : ""
         };
         const view = {
-            latitude: center[1], 
-            longitude: center[0], 
-            zoom: 17, 
-            transitionDuration: 1800, 
-            transitionInterpolator: new FlyToInterpolator() 
+            latitude: center[1],
+            longitude: center[0],
+            zoom: 17,
+            transitionDuration: 1800,
+            transitionInterpolator: new FlyToInterpolator()
         };
         console.log("Is in Reunion : " + isInReunionIsland(center[1], center[0]));
         console.log("Is in France : " + isInFrance(center[1], center[0]));

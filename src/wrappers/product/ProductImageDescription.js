@@ -16,9 +16,8 @@ const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, 
   
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
-  const { country } = useContext(AuthContext);
-  // const taxToApply = product.taxes.find(tax => tax.country === country).rate;
-  const taxToApply = !isDefined(product) ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+  const { country, settings } = useContext(AuthContext);
+  const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
   const discountedPrice = isDefined(product) ? getDiscountPrice(product.price, product.discount) : 0;
   const finalProductPrice = isDefined(product) ? +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
   const finalDiscountedPrice = isDefined(product) ? +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;

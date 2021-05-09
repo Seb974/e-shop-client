@@ -12,11 +12,11 @@ import AuthContext from "../../contexts/AuthContext";
 const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass }) => {
   
   const { addToast } = useToasts();
-  const { country } = useContext(AuthContext);
+  const { country, settings } = useContext(AuthContext);
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
 
-  const taxToApply = isDefined(product) ? product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent : 0;
+  const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

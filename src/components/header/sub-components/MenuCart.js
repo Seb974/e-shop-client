@@ -19,7 +19,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   const { addToast } = useToasts();
   const [productCart, setProductCart] = useState([]);
   const { products } = useContext(ProductsContext);
-  const { country, selectedCatalog } = useContext(AuthContext);
+  const { country, selectedCatalog, settings } = useContext(AuthContext);
   const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight } = useContext(DeliveryContext);
   const { containers } = useContext(ContainerContext);
 
@@ -46,8 +46,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
-              // const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
-              const taxToApply = !isDefined(single) || !isDefined(single.product) ? 0 : 
+              const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
                 single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
               const finalProductPrice = isDefined(single.product) ? (single.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;

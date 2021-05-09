@@ -1,6 +1,6 @@
 import { isDefined } from "./utils";
 
-export const checkForAlternatives = (zipcode, condition, relaypoints, settings, position) => {
+export const checkForAlternatives = (zipcode, condition, relaypoints, settings, position, selectedCatalog) => {
     if (isDefined(relaypoints)) {
         let message = "Economisez sur les frais de livraison en choisissant un point relais près de chez vous.";
         const alternatives = relaypoints.filter(relaypoint => relaypoint.metas.zipcode === zipcode);
@@ -14,13 +14,15 @@ export const checkForAlternatives = (zipcode, condition, relaypoints, settings, 
             else 
                 return null;
         } else {
-            
-            message = !isInReunionIsland(position[0], position[1]) && !isInFrance(position[0], position[1]) ? 
-                "Nous avons aucune offre de livraison sur votre pays ou région." :
-                alternatives.length > 0 ?
-                "Nous n'assurons pas les livraisons à domicile sur votre commune, mais il existe un point relais près de chez vous.":
-                "Nous avons aucune offre de livraison sur votre commune. Vérifiez la présence de points relais dans les communues voisines.";
-            return {message, params: {appearance: alternatives.length > 0 ? "warning" : "error", autoDismiss: true, autoDismissTimeout: 10000, placement: "top-right"}};
+            if (!selectedCatalog.needsParcel) {
+                message = !isInSelectedCountry(position[0], position[1], selectedCatalog) ?
+                    "Nous avons aucune offre de livraison sur votre pays ou région." :
+                    alternatives.length > 0 ?
+                    "Nous n'assurons pas les livraisons à domicile sur votre commune, mais il existe un point relais près de chez vous.":
+                    "Nous avons aucune offre de livraison sur votre commune. Vérifiez la présence de points relais dans les communues voisines.";
+                return {message, params: {appearance: alternatives.length > 0 ? "warning" : "error", autoDismiss: true, autoDismissTimeout: 10000, placement: "top-right"}};
+            }
+            return null;
         }
     }
 };
@@ -42,6 +44,11 @@ export const isInFrance = (latitude, longitude) => {
     const franceArea = [41.332365, -5.139160, 51.087336, 9.562025];
     return  isInBoundingBox(latitude, franceArea[0], franceArea[2]) &&
             isInBoundingBox(longitude, franceArea[1], franceArea[3]);
+}
+
+export const isInSelectedCountry = (latitude, longitude, catalog) => {
+    const { minLat, maxLat, minLng, maxLng } = catalog;
+    return isInBoundingBox(latitude, minLat, maxLat) && isInBoundingBox(longitude, minLng, maxLng);
 }
 
 const isInBoundingBox = (point, min, max) => (point >= min && point <= max) || (point <= min && point >= max);

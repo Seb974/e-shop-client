@@ -2,9 +2,8 @@ import '../../../assets/css/map.css';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import DeliveryContext from '../../../contexts/DeliveryContext';
 import AuthContext from '../../../contexts/AuthContext';
-import { isDefined } from '../../../helpers/utils';
+import { isDefined, isDefinedAndNotVoid } from '../../../helpers/utils';
 import { useToasts } from 'react-toast-notifications';
-import AddressPanel from '../../forms/address/AddressPanel';
 import ReactMapGL, { AttributionControl, NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import mapboxgl from "mapbox-gl";
 import { checkForAlternatives, getCityCondition } from '../../../helpers/map';
@@ -19,10 +18,9 @@ const Map = ({ informations, setInformations }) => {
     const map = useRef(null);
     const searchInput = useRef(null);
     const { addToast } = useToasts();
-    const { settings } = useContext(AuthContext);
-    const initialPosition = AddressPanel.getInitialPosition();
+    const { settings, selectedCatalog } = useContext(AuthContext);
     const apiToken = process.env.REACT_APP_MAPBOX_TOKEN;
-    const defaultView = { latitude: initialPosition[0], longitude: initialPosition[1], zoom: 9 };
+    const [defaultView, setDefaultView] = useState({ latitude: 0, longitude: 0, zoom: 9});
     const [viewport, setViewport] = useState(defaultView);
     const { cities, relaypoints, setCondition, condition } = useContext(DeliveryContext);
     const [isRelaypoint, setIsRelaypoint] = useState(false);
@@ -33,13 +31,21 @@ const Map = ({ informations, setInformations }) => {
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
 
     useEffect(() => {
-        if (informations.address.length > 0 && !isRelaypoint) {    // informations.zipcode.length === 5 && 
+        if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center))
+            setDefaultView({ latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom});
+            setViewport({...viewport, latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom})
+    }, [selectedCatalog]);
+
+    useEffect(() => {
+        if (informations.address.length > 0 && !isRelaypoint) {
             const newCondition = setCityCondition(informations.zipcode);
-            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position);
-            if (isDefined(alternatives))
+            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position, selectedCatalog);
+            if (isDefined(alternatives))    // !selectedCatalog.needsParcel &&
                 addToast(alternatives.message, alternatives.params);
             if (isDefined(newCondition) && !isDefined(alternatives))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
+            else if (selectedCatalog.needsParcel && !isDefined(alternatives))
+                addToast("Adresse de livraison sélectionnée", { appearance: "success", autoDismiss: true });
         }
     }, [informations.address]);
 
@@ -64,16 +70,16 @@ const Map = ({ informations, setInformations }) => {
     const onClear = () => {
         setInformations(informations => ({
             ...informations, 
-            position: initialPosition,
-             address: '', 
-             address2: '', 
-             zipcode: '', 
-             city: ''
+            position: selectedCatalog.center,
+            address: '', 
+            address2: '', 
+            zipcode: '', 
+            city: ''
         }));
         setIsRelaypoint(false);
         setCondition(undefined);
         setViewport({
-            ...defaultView, 
+            ...defaultView,
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         });

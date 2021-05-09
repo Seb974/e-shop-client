@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { isDefinedAndNotVoid } from '../../../../../helpers/utils';
 import AddressPanel from '../../../../forms/address/AddressPanel';
 import { Marker } from 'react-map-gl';
+import AuthContext from '../../../../../contexts/AuthContext';
 
 const LocationMarker = ({ position, informations, isRelaypoint, setTooltip, setPopup }) => {
 
-    const initialPosition = AddressPanel.getInitialPosition();
+    const { selectedCatalog } = useContext(AuthContext);
     const [ownPosition, setOwnPosition] = useState([]);
     const [ownInformations, setOwnInformations] = useState(undefined);
 
@@ -15,7 +16,7 @@ const LocationMarker = ({ position, informations, isRelaypoint, setTooltip, setP
     }, []);
 
     useEffect(() => {
-        const reset = JSON.stringify(informations.position) === JSON.stringify(initialPosition);
+        const reset = JSON.stringify(informations.position) === JSON.stringify(selectedCatalog.center);
         if (!isRelaypoint || ownPosition.length === 0 || reset) {
             setOwnPosition(reset ? [] : informations.position);
             setOwnInformations(reset ? undefined : informations);
@@ -28,7 +29,7 @@ const LocationMarker = ({ position, informations, isRelaypoint, setTooltip, setP
         setPopup(ownInformations);
     };
 
-    return !isDefinedAndNotVoid(position) || JSON.stringify(position) === JSON.stringify(initialPosition) ? <></> : (
+    return !isDefinedAndNotVoid(position) || JSON.stringify(position) === JSON.stringify(selectedCatalog.center) ? <></> : (
         <Marker latitude={ position[0] } longitude={ position[1] } offsetLeft={0} offsetTop={-30}>
             <a href="#" onClick={ handleClick }>
                 <img 

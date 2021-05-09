@@ -17,6 +17,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleUserChange }
                         placeholder="Nom"
                         error={ errors.name }
+                        required={ true }
                     />
                 </div>
             </div>
@@ -30,6 +31,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleUserChange }
                         placeholder="Adresse email"
                         error={ errors.email }
+                        required={ true }
                     />
                 </div>
                 <div className="col-md-6">
@@ -41,6 +43,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleChange }
                         placeholder="N° de téléphone"
                         error={ errors.phone }
+                        required={ true }
                     />
                 </div>
             </div>
