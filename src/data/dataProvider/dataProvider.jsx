@@ -26,13 +26,13 @@ const DataProvider = ({ children }) => {
     const [products, setProducts] = useState([]);
     const [containers, setContainers] = useState([]);
     const [packages, setPackages] = useState([]);
-    const [totalWeight, setTotalWeight] = useState(0);
-    const [availableWeight, setAvailableWeight] = useState(0);
+    const [totalWeight, setTotalWeight] = useState(null);
+    const [availableWeight, setAvailableWeight] = useState(null);
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
         AuthActions.getGeolocation()
-                   .then(response => setCountry("FR"));
+                   .then(response => setCountry(response));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
         ProductActions.findAll()

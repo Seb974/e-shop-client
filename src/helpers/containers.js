@@ -1,4 +1,3 @@
-// import { getTax } from './taxDefiner';
 import { isDefined, isDefinedAndNotVoid } from './utils';
 
 const getOrderWeight = (items) => {
@@ -14,11 +13,6 @@ const getOrderWeight = (items) => {
 }
 
 const getPackages = (items, containers) => definePackages(items, containers);
-
-// async function getInitialPackages(items) {
-//     api.get('/api/containers', { headers: {'Content-type': 'application/json'} })
-//          .then(res => definePackages(items, res.data['hydra:member'].filter(container => container.isEnabled)));
-// }
 
 const definePackages = (items, containers) => {
     let packages = [];
@@ -80,20 +74,17 @@ const getBiggestContainer = (weight, containers) => {
 
 const getSmallestContainer = packs => packs.reduce((previous, current) => previous.max < current.max ? previous : current);
 
-const getTotalPackage = (totalWeight, containers) => {
-    const { max, tare } = getSmallestContainer(containers);
-    return Math.ceil(totalWeight / (max - tare)) * (max - tare);
+const formatPackages = (packages, country) => {
+    return packages.map(_package => {
+        const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+        const price = isDefined(catalogPrice) ? catalogPrice.amount : 0;
+        const { name, id, tax} = _package.container;
+        return {
+            quantity: _package.quantity,
+            product: { id, name, tax, price, discount: 0, image: {filePath: '/assets/img/icon-img/parcel.jpg'}},
+            isPackage: true
+        }
+    });
 }
 
-const getPackageCostTTC = (packages, taxCountryCode) => {
-    let totalTTC = 0.0;
-    // packages.forEach(({container, quantity}) => {
-    //     const { tax, price } = container;
-    //     let taxToApply = getTax(tax, taxCountryCode);
-    //     totalTTC += Math.round(price * (1 + taxToApply) * quantity * 1000) / 1000;
-    // });
-    return totalTTC;
-}
-
-// getInitialPackages
-export { getOrderWeight, getPackages, getAvailableWeight, getTotalCost, definePackages, getPackageCostTTC };
+export { getOrderWeight, getPackages, getAvailableWeight, getTotalCost, definePackages, formatPackages };

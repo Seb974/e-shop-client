@@ -9,7 +9,7 @@ import { getProductsFromIds } from '../../../helpers/product';
 import api from "../../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../../contexts/AuthContext";
-import { definePackages, getAvailableWeight, getOrderWeight } from "../../../helpers/containers";
+import { definePackages, getAvailableWeight, getOrderWeight, formatPackages } from "../../../helpers/containers";
 import ContainerContext from "../../../contexts/ContainerContext";
 import DeliveryContext from "../../../contexts/DeliveryContext";
 
@@ -20,25 +20,43 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   const [productCart, setProductCart] = useState([]);
   const { products } = useContext(ProductsContext);
   const { country, selectedCatalog, settings } = useContext(AuthContext);
-  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight } = useContext(DeliveryContext);
+  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight ,condition } = useContext(DeliveryContext);
   const { containers } = useContext(ContainerContext);
+  const [packageUpdate, setPackageUpdate] = useState(false);
 
   useEffect(() => {
+      setPackageUpdate(false);
       const productSet = getProductsFromIds(cartData, products);
       setProductCart(productSet);
   }, [cartData, products]);
 
   useEffect(() => {
-    if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
-        setPackages(selectedCatalog.needsParcel ? definePackages(productCart, containers) : []);
-        setTotalWeight(selectedCatalog.needsParcel ? getOrderWeight(productCart) : 0);
-        setAvailableWeight(selectedCatalog.needsParcel ? getAvailableWeight(getOrderWeight(productCart), packages) : 0);
+    console.log("update");
+    if (isDefinedAndNotVoid(productCart) && !packageUpdate && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
+        setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
+        setTotalWeight(selectedCatalog.needsParcel ? getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))) : 0);
+        setAvailableWeight(selectedCatalog.needsParcel ? getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages) : null);
     }
   }, [productCart, containers, selectedCatalog]);
 
-  useEffect(() => console.log(packages), [packages]);
-  useEffect(() => console.log(totalWeight), [totalWeight]);
-  useEffect(() => console.log(availableWeight), [availableWeight]);
+  useEffect(() => {
+      if (isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
+          if (isDefinedAndNotVoid(packages)) {
+              setPackageUpdate(true);
+              const packageProducts = formatPackages(packages, country);
+              setProductCart([
+                  ...productCart.filter(product => !isDefined(product.isPackage)), 
+                  ...packageProducts
+              ]);
+          } else {
+              if (packages.length === 0) {
+                  setPackageUpdate(false);
+                  const productSet = getProductsFromIds(cartData, products);
+                  setProductCart(productSet);
+              }
+          }
+      }
+  }, [packages, selectedCatalog]);
 
   return (
     <div className={"shopping-cart-content " + active}>
@@ -60,7 +78,10 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                 <li className="single-shopping-cart" key={ key }>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
-                      <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
+                      { isDefined(single.isPackage) && single.isPackage ?
+                        <img alt="" src={single.product.image.filePath} className="img-fluid"/> :
+                        <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
+                      }
                     </Link>
                   </div>
                   <div className="shopping-cart-title">
