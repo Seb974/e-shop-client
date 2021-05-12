@@ -1,16 +1,31 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import AuthContext from '../../../../contexts/AuthContext';
 import DeliveryContext from '../../../../contexts/DeliveryContext';
+import { isDefined, isDefinedAndNotVoid } from '../../../../helpers/utils';
 import RelaypointMarker from './tools/RelaypointMarker';
 import RelaypointPopup from './tools/RelaypointPopup';
 import RelaypointTooltip from './tools/RelaypointTooltip';
 
 const RelaypointTools = ({ informations, relayPointTooltip, relayPointPopup, setInformations, setRelaypointTooltip, setRelaypointPopup, setViewport, setIsRelaypoint, onClear }) => {
 
+    const { settings } = useContext(AuthContext);
     const { relaypoints, setCondition } = useContext(DeliveryContext);
+    const [ userRelaypoints, setUserRelaypoints ] = useState([]);
+
+    useEffect(() => {
+        if (isDefined(settings) && isDefinedAndNotVoid(relaypoints)) {
+            const userOptions = relaypoints.filter(relaypoint => {
+                return relaypoint.conditions.find(condition => {
+                    return condition.userGroups.find(group => group.id === settings.id) !== undefined;
+                }) !== undefined;
+            });
+            setUserRelaypoints(userOptions);
+        }
+    }, [relaypoints, settings]);
 
     return (
         <>
-            { relaypoints.map(relaypoint => {
+            { userRelaypoints.map(relaypoint => {
                 const { id, metas } = relaypoint;
                 return <RelaypointMarker
                             key={ id } 

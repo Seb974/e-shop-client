@@ -142,5 +142,12 @@
   "use_coupon_code": "Use coupon code",
   "enter_coupon_code": "Enter your coupon code if you have one.",
   "apply_coupon": "Apply coupon",
-  "shipping_offered": "Free shipping"
+  "shipping_offered": "Free shipping",
+  "payment_error": "An error occurred while connecting to the payment platform. Check the status of your internet connection and refresh the page to try again.",
+  "card_number": "Card number",
+  "expiration_date": "Expiration  date",
+  "pay": "Pay",
+  "accepted_payment": "Accepted payment",
+  "back to shop": "Go back to shop",
+  "retry": "Try again"
 }

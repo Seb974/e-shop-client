@@ -142,5 +142,12 @@
   "use_coupon_code": "Gutscheincode verwenden",
   "enter_coupon_code": "Geben Sie Ihren Gutscheincode ein, falls Sie einen haben.",
   "apply_coupon": "Gutschein einlösen",
-  "shipping_offered": "Gratisversand"
+  "shipping_offered": "Gratisversand",
+  "payment_error": "Beim Herstellen einer Verbindung zur Zahlungsplattform ist ein Fehler aufgetreten. Überprüfen Sie den Status Ihrer Internetverbindung und aktualisieren Sie die Seite, um es erneut zu versuchen.",
+  "card_number": "Kartennummer",
+  "expiration_date": "Haltbarkeitsdatum",
+  "pay": "Zahlen",
+  "accepted_payment": "Akzeptierte Zahlung",
+  "back to shop": "Geh zurück zum Einkaufen",
+  "retry": "Versuchen Sie es nochmal"
 }

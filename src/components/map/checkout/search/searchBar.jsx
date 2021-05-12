@@ -3,7 +3,7 @@ import { FlyToInterpolator } from 'react-map-gl';
 import AuthContext from '../../../../contexts/AuthContext';
 import Geocoder from 'react-map-gl-geocoder';
 import { multilanguage } from "redux-multilanguage";
-import { isInFrance, isInReunionIsland } from '../../../../helpers/map';
+// import { isInFrance, isInReunionIsland } from '../../../../helpers/map';
 import { isDefined } from '../../../../helpers/utils';
 
 const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLocationPopup, setRelaypointPopup, setViewport, updatePosition, strings }) => {
@@ -40,8 +40,8 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
             transitionDuration: 1800,
             transitionInterpolator: new FlyToInterpolator()
         };
-        console.log("Is in Reunion : " + isInReunionIsland(center[1], center[0]));
-        console.log("Is in France : " + isInFrance(center[1], center[0]));
+        // console.log("Is in Reunion : " + isInReunionIsland(center[1], center[0]));
+        // console.log("Is in France : " + isInFrance(center[1], center[0]));
         setViewport(view);
         updatePosition(suggestion);
     }

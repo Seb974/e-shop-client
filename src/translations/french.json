@@ -142,5 +142,12 @@
   "use_coupon_code": "Utilisez votre code promo",
   "enter_coupon_code": "Entre votre code si vous bénéficiez d'un coupon de réduction.",
   "apply_coupon": "Appliquer la réduction",
-  "shipping_offered": "Livraison offerte"
+  "shipping_offered": "Livraison offerte",
+  "payment_error": "Une erreur est survenue lors de la connexion à la plateforme de paiement. Vérifier l'état de votre connexion internet et rafraichissez la page pour réessayer.",
+  "card_number": "Numéro de carte",
+  "expiration_date": "Date d'expiration",
+  "pay": "Payer",
+  "accepted_payment": "Paiement accepté",
+  "back to shop": "Revnir à la boutique",
+  "retry": "Réessayer"
 }

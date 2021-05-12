@@ -40,7 +40,7 @@ const Map = ({ informations, setInformations }) => {
         if (informations.address.length > 0 && !isRelaypoint) {
             const newCondition = setCityCondition(informations.zipcode);
             const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position, selectedCatalog);
-            if (isDefined(alternatives))    // !selectedCatalog.needsParcel &&
+            if (isDefined(alternatives))
                 addToast(alternatives.message, alternatives.params);
             if (isDefined(newCondition) && !isDefined(alternatives))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });

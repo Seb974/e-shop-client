@@ -17,7 +17,7 @@ import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
 
-const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart,deleteAllFromCart, strings }) => {
+const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart, deleteAllFromCart, strings }) => {
 
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();

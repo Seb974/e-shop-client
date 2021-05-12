@@ -52,11 +52,12 @@ const getAvailableWeight = (totalWeight, packages) => {
     return 0;
 }
 
-const getTotalCost = packages => {
+const getTotalCost = (packages, country) => {
     if (isDefinedAndNotVoid(packages)) {
         return packages.reduce((accumulator, _package) => {
             const { quantity, container } = _package;
-            return accumulator + (quantity * container.price)
+            const catalogPrice = container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+            return accumulator + (quantity * catalogPrice.amount)
         }, 0)
     }
     return 0;

@@ -32,7 +32,7 @@ const DataProvider = ({ children }) => {
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
         AuthActions.getGeolocation()
-                   .then(response => setCountry(response));
+                   .then(response => setCountry("FR"));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
         ProductActions.findAll()

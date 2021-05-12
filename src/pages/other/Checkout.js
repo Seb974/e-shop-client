@@ -23,11 +23,15 @@ import RelaypointActions from "../../services/RelaypointActions";
 import DeliveryContext from "../../contexts/DeliveryContext";
 import { getTotalCost } from '../../helpers/containers';
 import { isInSelectedCountry } from "../../helpers/map";
+import PaymentForm from "../../components/payment/PaymentForm";
+import { deleteAllFromCart } from "../../redux/actions/cartActions";
+import { useToasts } from "react-toast-notifications";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
-  const { country, settings, selectedCatalog } = useContext(AuthContext);
+  const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
   const { setCities, setRelaypoints, condition, packages, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
@@ -131,8 +135,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               { productCart.map((cartItem, key) => {
                                 const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
                                 const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount) : 0;
-                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
-                                const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)) : 0;
+                                const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply));
 
                                 cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity
 
@@ -167,20 +171,25 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               <div className="your-order-middle"> 
                                     <ul>
                                       { packages.map(_package => {
+                                        const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
                                         return <li>
                                                 <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
-                                                <span className="order-price">{ (_package.container.price * _package.quantity).toFixed(2) + " €" }</span>
+                                                <span className="order-price">
+                                                  { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 €" : 
+                                                    (catalogPrice.amount * _package.quantity).toFixed(2) + " €" 
+                                                  }
+                                                </span>
                                               </li>
                                         })
                                       }
                                     </ul> 
                               </div> : <></>
-                              }
+                          }
                           <div className={selectedCatalog.needsParcel ? "your-order-top" : "your-order-total"}>
                             <ul>
                                 <li className="order-total">{strings["total"]}</li>
                                 <li>
-                                    { selectedCatalog.needsParcel ? (cartTotalPrice + getTotalCost(packages)).toFixed(2) + " " + currency.currencySymbol :
+                                    { selectedCatalog.needsParcel ? (cartTotalPrice + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
                                       cartTotalPrice.toFixed(2) + " " + currency.currencySymbol :
@@ -193,7 +202,13 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         <div className="payment-method"></div>
                       </div>
                       <div className="place-order mt-25">
-                        <button type="submit" className="btn-hover" disabled={ !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>{strings["place_order"]}</button>
+                        <PaymentForm
+                            name={ strings["place_order"] }
+                            user={ user }
+                            available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
+                            deleteAllFromCart={ deleteAllFromCart }
+                        />
+                        {/* <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>{strings["place_order"]}</button> */}
                       </div>
                     </div>
                   </div>
@@ -221,8 +236,21 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   );
 };
 
-Checkout.propTypes = { cartItems: PropTypes.array, currency: PropTypes.object,location: PropTypes.object};
+Checkout.propTypes = { 
+    cartItems: PropTypes.array, 
+    currency: PropTypes.object,
+    location: PropTypes.object,
+    deleteAllFromCart: PropTypes.func,
+};
 
-const mapStateToProps = state => ({cartItems: state.cartData, currency: state.currencyData})
+const mapStateToProps = (state, dispatch) => {
+    return {
+        cartItems: state.cartData, 
+        currency: state.currencyData,
+        deleteAllFromCart: addToast => {
+          dispatch(deleteAllFromCart(addToast));
+        }
+    };
+};
 
 export default connect(mapStateToProps)(multilanguage(Checkout));
