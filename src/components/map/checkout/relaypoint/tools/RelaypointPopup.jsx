@@ -6,7 +6,7 @@ import { isSameAddress } from '../../../../../helpers/days';
 import { isDefined } from '../../../../../helpers/utils';
 import AddressPanel from '../../../../forms/address/AddressPanel';
 
-const RelaypointPopup = ({ relaypoint, informations, setInformations, setCondition, setViewport, setPopup, onClear, setIsRelaypoint }) => {
+const RelaypointPopup = ({ relaypoint, informations, setInformations, setCondition, setViewport, setPopup, onClear, setIsRelaypoint, setDiscount, objectDiscount, setObjectDiscount }) => {
 
     const { addToast } = useToasts();
     const { settings } = useContext(AuthContext);
@@ -26,8 +26,11 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
     const onSelect = e => {
             const { address, address2, zipcode, city } = relaypoint.metas;
             const newCondition = relaypoint.conditions.find(condition => {
-                return  condition.userGroups.find(group => group.value === settings.value) !== undefined;
+                return condition.userGroups.find(group => group.value === settings.value) !== undefined;
             });
+            if (isDefined(objectDiscount) && objectDiscount['@type'] === "Relaypoint" && relaypoint.id === objectDiscount.id) {
+                setDiscount(isDefined(relaypoint.discount) ? relaypoint.discount : 0);
+            }
             setInformations({...informations, address, address2, zipcode, city});
             setCondition(newCondition);
             setViewport({
@@ -50,6 +53,9 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
                 transitionDuration: 1500,
                 transitionInterpolator: new FlyToInterpolator(),
             });
+            if (!isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint") {
+                setDiscount(0);
+            }
             onClear();
             addToast("Point de livraison effacé", { appearance: "error", autoDismiss: true });
             setPopup(undefined);

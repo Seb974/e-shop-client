@@ -13,7 +13,7 @@ import SearchBar from './search/searchBar';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-const Map = ({ informations, setInformations }) => {
+const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount, objectDiscount, setObjectDiscount }) => {
 
     const map = useRef(null);
     const searchInput = useRef(null);
@@ -31,9 +31,10 @@ const Map = ({ informations, setInformations }) => {
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
 
     useEffect(() => {
-        if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center))
+        if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center)) {
             setDefaultView({ latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom});
             setViewport({...viewport, latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom})
+        }
     }, [selectedCatalog]);
 
     useEffect(() => {
@@ -46,6 +47,9 @@ const Map = ({ informations, setInformations }) => {
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
             else if (selectedCatalog.needsParcel && !isDefined(alternatives))
                 addToast("Adresse de livraison sélectionnée", { appearance: "success", autoDismiss: true });
+        } 
+        else if (informations.address.length === 0) {
+            onClear()
         }
     }, [informations.address]);
 
@@ -79,7 +83,10 @@ const Map = ({ informations, setInformations }) => {
         setIsRelaypoint(false);
         setCondition(undefined);
         setViewport({
-            ...defaultView,
+            // ...defaultView,
+            latitude: isDefined(selectedCatalog) ? selectedCatalog.center[0] : defaultView.latitude,
+            longitude: isDefined(selectedCatalog) ? selectedCatalog.center[1] : defaultView.longitude,
+            zoom: isDefined(selectedCatalog) ? selectedCatalog.zoom : defaultView.zoom,
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         });
@@ -107,11 +114,15 @@ const Map = ({ informations, setInformations }) => {
                 />
                 <RelaypointTools
                     informations={ informations }
+                    displayedRelaypoints={ displayedRelaypoints }
                     relayPointTooltip={ relayPointTooltip }
                     relayPointPopup={ relayPointPopup }
+                    objectDiscount={ objectDiscount }
                     setInformations={ setInformations }
                     setRelaypointTooltip={ setRelaypointTooltip }
                     setRelaypointPopup={ setRelaypointPopup }
+                    setDiscount={ setDiscount }
+                    setObjectDiscount={ setObjectDiscount }
                     setViewport={ setViewport }
                     setIsRelaypoint={ setIsRelaypoint }
                     onClear={ onClear }

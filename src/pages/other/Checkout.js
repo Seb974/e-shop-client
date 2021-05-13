@@ -26,19 +26,24 @@ import { isInSelectedCountry } from "../../helpers/map";
 import PaymentForm from "../../components/payment/PaymentForm";
 import { deleteAllFromCart } from "../../redux/actions/cartActions";
 import { useToasts } from "react-toast-notifications";
+import PromotionActions from "../../services/PromotionActions";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
   const { country, settings, selectedCatalog } = useContext(AuthContext);
-  const { setCities, setRelaypoints, condition, packages, totalWeight, availableWeight } = useContext(DeliveryContext);
+  const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
   const [informations, setInformations] = useState(initialInformations);
+  const [displayedRelaypoints, setDisplayedRelaypoints] = useState([]);
   const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
   const [message, setMessage] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [objectDiscount, setObjectDiscount] = useState(null);
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
 
@@ -46,8 +51,15 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
      CityActions.findAll()
                 .then(response => setCities(response));
      RelaypointActions.findAll()
-                      .then(response => setRelaypoints(response));
+                      .then(response => {
+                          setRelaypoints(response);
+                          setDisplayedRelaypoints(response.filter(relaypoint => !relaypoint.private))
+                      });
   }, []);
+
+  useEffect(() => console.log(discount), [discount]);
+  useEffect(() => console.log(objectDiscount), [objectDiscount]);
+  useEffect(() => console.log(cartTotalPrice), [cartTotalPrice]);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
@@ -57,12 +69,47 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const onUserInputChange = (newUser) => setUser(newUser);
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
 
+  const handleCouponChange = ({ currentTarget }) =>{ 
+      setCoupon(currentTarget.value);
+      if (isDefined(objectDiscount))
+          clearDiscountAndAdvantages();
+  };
+
+  const handleCouponSubmit = e => {
+      e.preventDefault();
+      const privateRelaypoints = relaypoints.filter(relaypoint => relaypoint.accessCode === coupon);
+      if (isDefinedAndNotVoid(privateRelaypoints)) {
+          setDisplayedRelaypoints([...displayedRelaypoints, ...privateRelaypoints]);
+          setObjectDiscount(privateRelaypoints[0]);
+          return ;
+      }
+      PromotionActions.findByCode(coupon)
+          .then(response => {
+                if (response.length > 0) {
+                  setObjectDiscount(response[0]);
+                  setDiscount(response[0].percentage ? response[0].discount / 100 : response[0].discount);
+                } else {
+                  addToast("Le code promo saisi n'existe pas ou n'est plus valide", { appearance: "error", autoDismiss: true });
+                  setCoupon("");
+                }
+          });
+  };
+
   const handleSubmit = e => {
       e.preventDefault();
       console.log(user);
       console.log(informations);
       console.log(message);
   };
+
+  const clearDiscountAndAdvantages = () => {
+    if (objectDiscount['@type'] === "Relaypoint") {
+        setDisplayedRelaypoints(displayedRelaypoints.filter(relaypoint => relaypoint.id !== objectDiscount.id));
+        setInformations({...informations, address: ""});
+    }
+    setObjectDiscount(null);
+    setDiscount(0);
+}
 
   return (
     <Fragment>
@@ -88,7 +135,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                     <div className="billing-info-wrap">
                       <h3 className="mb-0">{strings["shipping_details"]}</h3>
                       <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                      <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } />
+                      <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } displayedRelaypoints={ displayedRelaypoints } setDiscount={ setDiscount } objectDiscount={ objectDiscount } setObjectDiscount={ setObjectDiscount }/>
                       <div className="additional-info-wrap">
                         <h3>{strings["additional_information"]}</h3>
                         <div className="additional-info">
@@ -116,8 +163,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         <div className="discount-code">
                           <p>{strings["enter_coupon_code"]}</p>
                           <form>
-                            <input type="text" required name="name" />
-                            <button className="cart-btn-2" type="submit">{strings["apply_coupon"]}</button>
+                            <input type="text" required name="coupon" value={ coupon } onChange={ handleCouponChange }/>
+                            <button className="cart-btn-2" type="submit" onClick={ handleCouponSubmit } disabled={ coupon.length === 0 }>{strings["apply_coupon"]}</button>
                           </form>
                         </div>
                       </div>
@@ -138,20 +185,40 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                 const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)) : 0;
                                 const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply));
 
-                                cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity
+                                cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
 
                                 return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <div key={key}></div> :
-                                  <li key={key}>
-                                    <span className="order-middle-left">
-                                      {cartItem.product.name} X {cartItem.quantity} {cartItem.product.unit}
-                                    </span>{" "}
-                                    <span className="order-price">
-                                      {discountedPrice !== null ? 
-                                        (finalDiscountedPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol :
-                                        (finalProductPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol}
-                                    </span>
-                                  </li>
+                                    <li key={key}>
+                                        <span className="order-middle-left">
+                                            {cartItem.product.name} X {cartItem.quantity} {cartItem.product.unit}
+                                        </span>{" "}
+                                        <span className="order-price">
+                                            {discountedPrice !== null ? 
+                                                (finalDiscountedPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol :
+                                                (finalProductPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol}
+                                        </span>
+                                    </li>
                               })}
+                              { !isDefined(discount) || !isDefined(objectDiscount) || discount <= 0 ? <></> : 
+                                  <li className="text-success">
+                                      <span className="order-middle-left">
+                                          <strong>
+                                              { objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                                  "Remise de " + (discount * 100) + "%" :
+                                                  "Remise de " + discount + " " + currency.currencySymbol
+                                              }
+                                          </strong>
+                                      </span>
+                                      <span className="order-price">
+                                          <strong>
+                                               - { objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                                    (Math.round(cartTotalPrice * discount * 100) / 100).toFixed(2) + " " + currency.currencySymbol :
+                                                    discount.toFixed(2) + " " + currency.currencySymbol
+                                                  }
+                                          </strong>
+                                      </span>
+                                  </li>
+                              }
                             </ul>
                           </div>
                           <div className="your-order-bottom">
@@ -175,8 +242,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                         return <li>
                                                 <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
                                                 <span className="order-price">
-                                                  { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 €" : 
-                                                    (catalogPrice.amount * _package.quantity).toFixed(2) + " €" 
+                                                  { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 " + currency.currencySymbol : 
+                                                    (catalogPrice.amount * _package.quantity).toFixed(2) + " " + currency.currencySymbol 
                                                   }
                                                 </span>
                                               </li>
@@ -189,11 +256,16 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             <ul>
                                 <li className="order-total">{strings["total"]}</li>
                                 <li>
-                                    { selectedCatalog.needsParcel ? (cartTotalPrice + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
+                                    { selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
-                                      cartTotalPrice.toFixed(2) + " " + currency.currencySymbol :
-                                      (cartTotalPrice + condition.price).toFixed(2) + " " + currency.currencySymbol
+                                          !isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(cartTotalPrice * 100) / 100 - discount).toFixed(2) + " " + currency.currencySymbol
+                                      :
+                                          !isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + condition.price).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(cartTotalPrice * 100) / 100 - discount + condition.price).toFixed(2) + " " + currency.currencySymbol
                                     }
                                 </li>
                             </ul>
@@ -248,7 +320,7 @@ const mapStateToProps = (state, dispatch) => {
         cartItems: state.cartData, 
         currency: state.currencyData,
         deleteAllFromCart: addToast => {
-          dispatch(deleteAllFromCart(addToast));
+            dispatch(deleteAllFromCart(addToast));
         }
     };
 };

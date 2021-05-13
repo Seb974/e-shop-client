@@ -75,13 +75,13 @@ const getBiggestContainer = (weight, containers) => {
 const getSmallestContainer = packs => packs.reduce((previous, current) => previous.max < current.max ? previous : current);
 
 const formatPackages = (packages, country) => {
-    return packages.map(_package => {
+    return packages.map((_package, key) => {
         const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
         const price = isDefined(catalogPrice) ? catalogPrice.amount : 0;
         const { name, id, tax} = _package.container;
         return {
             quantity: _package.quantity,
-            product: { id, name, tax, price, discount: 0, image: {filePath: '/assets/img/icon-img/parcel.jpg'}},
+            product: { key, id, name, tax, price, discount: 0, image: {filePath: '/assets/img/icon-img/parcel.png'}},
             isPackage: true
         }
     });

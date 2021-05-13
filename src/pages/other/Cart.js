@@ -12,10 +12,13 @@ import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getProductsFromIds } from '../../helpers/product';
 import ProductActions from "../../services/ProductActions";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
+import Packages from "../../components/cartPage/packages";
+import { getTotalCost } from "../../helpers/containers";
+import DeliveryContext from "../../contexts/DeliveryContext";
 
 const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart, deleteAllFromCart, strings }) => {
 
@@ -23,8 +26,10 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
   const { addToast } = useToasts();
   const { pathname } = location;
   const { country, settings } = useContext(AuthContext);
+  const { packages } = useContext(DeliveryContext);
   const { products, setProducts } = useContext(ProductsContext);
-  const [productCart, setProductCart] = useState([])
+  const [productCart, setProductCart] = useState([]);
+  const totalPackages = isDefinedAndNotVoid(packages) ? getTotalCost(packages, country) : 0;
   let cartTotalPrice = 0;
   let cartTotalTax = 0;
 
@@ -63,7 +68,6 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
         {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
-            {/* {cartItems && cartItems.length >= 1 ? ( */}
             { isDefined(productCart) && productCart.length >= 1 ? (
               <Fragment>
                 <h3 className="cart-page-title">{ strings["your_cart_items"] }</h3>
@@ -73,11 +77,11 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                       <table>
                         <thead>
                           <tr>
-                            <th>Image</th>
-                            <th>{strings["product_name"]}</th>
-                            <th>{strings["unit_price"]}</th>
-                            <th>{strings["qty"]}</th>
-                            <th>{strings["subtotal"]}</th>
+                            <th className="text-center">Image</th>
+                            <th className="text-center">{strings["product_name"]}</th>
+                            <th className="text-center">{strings["unit_price"]}</th>
+                            <th className="text-center">{strings["qty"]}</th>
+                            <th className="text-center">{strings["subtotal"]}</th>
                             <th>action</th>
                           </tr>
                         </thead>
@@ -87,10 +91,6 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                             const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount);
                             const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
-
-                            // discountedPrice != null ? 
-                            //     (cartTotalPrice += finalDiscountedPrice * cartItem.quantity) : 
-                            //     (cartTotalPrice += finalProductPrice * cartItem.quantity);
 
                             cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
                             cartTotalTax += (discountedPrice != null ? discountedPrice : cartItem.product.price) * cartItem.quantity * taxToApply;
@@ -108,7 +108,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                   </Link>
                                 </td>
 
-                                <td className="product-name">
+                                <td className="product-name text-center ">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id } >
                                       {cartItem.product.name}
                                   </Link>
@@ -135,7 +135,6 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                   <div className="cart-plus-minus">
                                     <button
                                       className="dec qtybutton"
-                                      // onClick={ () => decreaseQuantity(cartItem, addToast) }
                                       onClick={ () => addToCart( cartItem, false, -partial) }
                                       disabled={ cartItem.quantity - partial <= 0}
                                     >
@@ -149,7 +148,6 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                     />
                                     <button
                                       className="inc qtybutton"
-                                      // onClick={ () => addToCart( cartItem, addToast, partial) }
                                       onClick={ () => addToCart( cartItem, false, partial) }
                                       disabled={
                                         cartItem !== undefined &&
@@ -186,6 +184,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                     </div>
                   </div>
                 </div>
+                <Packages />
                 <div className="row">
                   <div className="col-lg-12">
                     <div className="cart-shiping-update-wrapper">
@@ -200,59 +199,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                 </div>
 
                 <div className="row">
-                  {/* <div className="col-lg-4 col-md-6">
-                    <div className="cart-tax">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">Estimate Shipping And Tax</h4>
-                      </div>
-                      <div className="tax-wrapper">
-                        <p>Enter your destination to get a shipping estimate.</p>
-                        <div className="tax-select-wrapper">
-                          <div className="tax-select">
-                            <label>* Country</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Region / State</label>
-                            <select className="email s-email s-wid">
-                              <option>Bangladesh</option>
-                              <option>Albania</option>
-                              <option>Åland Islands</option>
-                              <option>Afghanistan</option>
-                              <option>Belgium</option>
-                            </select>
-                          </div>
-                          <div className="tax-select">
-                            <label>* Zip/Postal Code</label>
-                            <input type="text" />
-                          </div>
-                          <button className="cart-btn-2" type="submit">Get A Quote</button>
-                        </div>
-                      </div>
-                    </div>
-                  </div> */}
-
-                  <div className="col-lg-8 col-md-6">
-                    {/* <div className="discount-code-wrapper">
-                      <div className="title-wrap">
-                        <h4 className="cart-bottom-title section-bg-gray">Use Coupon Code</h4>
-                      </div>
-                      <div className="discount-code">
-                        <p>Enter your coupon code if you have one.</p>
-                        <form>
-                          <input type="text" required name="name" />
-                          <button className="cart-btn-2" type="submit">Apply Coupon</button>
-                        </form>
-                      </div>
-                    </div> */}
-                  </div>
-
+                  <div className="col-lg-8 col-md-6"></div>
                   <div className="col-lg-4 col-md-12">
                     <div className="grand-totall">
                       <div className="title-wrap">
@@ -261,14 +208,19 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                       <h5>{strings["total_products"]}{" "}
                         <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                       </h5>
+                      { isDefinedAndNotVoid(packages) &&
+                        <h5>{ "Total livraison" }{" "}
+                          <span>{ totalPackages.toFixed(2) + " " + currency.currencySymbol }</span>
+                        </h5>
+                      }
                       { cartTotalTax > 0 && 
                         <h5>{strings["total_tax"]}{" "}
-                        <span>{cartTotalTax.toFixed(2) + " " + currency.currencySymbol}</span>
+                        <span>{ cartTotalTax.toFixed(2) + " " + currency.currencySymbol}</span>
                       </h5>
                       }
 
                       <h4 className="grand-totall-title">{strings["grand_total"]}{" "}
-                        <span>{cartTotalPrice.toFixed(2) + " " + currency.currencySymbol}</span>
+                        <span>{ (cartTotalPrice + totalPackages).toFixed(2) + " " + currency.currencySymbol}</span>
                       </h4>
                       <Link to={process.env.PUBLIC_URL + "/checkout"}>{strings["proceed_to_checkout"]}</Link>
                     </div>

@@ -6,22 +6,25 @@ import RelaypointMarker from './tools/RelaypointMarker';
 import RelaypointPopup from './tools/RelaypointPopup';
 import RelaypointTooltip from './tools/RelaypointTooltip';
 
-const RelaypointTools = ({ informations, relayPointTooltip, relayPointPopup, setInformations, setRelaypointTooltip, setRelaypointPopup, setViewport, setIsRelaypoint, onClear }) => {
+const RelaypointTools = ({ informations, displayedRelaypoints, relayPointTooltip, relayPointPopup, setInformations, setRelaypointTooltip, setRelaypointPopup, setViewport, setIsRelaypoint, onClear, setDiscount, objectDiscount, setObjectDiscount }) => {
 
     const { settings } = useContext(AuthContext);
     const { relaypoints, setCondition } = useContext(DeliveryContext);
     const [ userRelaypoints, setUserRelaypoints ] = useState([]);
 
     useEffect(() => {
-        if (isDefined(settings) && isDefinedAndNotVoid(relaypoints)) {
-            const userOptions = relaypoints.filter(relaypoint => {
-                return relaypoint.conditions.find(condition => {
+        // if (isDefined(settings) && isDefinedAndNotVoid(relaypoints)) {
+        if (isDefined(settings) && isDefinedAndNotVoid(displayedRelaypoints)) {
+            // const userOptions = relaypoints.filter(relaypoint => {
+            const userOptions = displayedRelaypoints.filter(relaypoint => {
+                return relaypoint.available && relaypoint.conditions.find(condition => {
                     return condition.userGroups.find(group => group.id === settings.id) !== undefined;
                 }) !== undefined;
             });
             setUserRelaypoints(userOptions);
         }
-    }, [relaypoints, settings]);
+    }, [displayedRelaypoints, settings]);
+    // }, [relaypoints, settings]);
 
     return (
         <>
@@ -43,12 +46,15 @@ const RelaypointTools = ({ informations, relayPointTooltip, relayPointPopup, set
             <RelaypointPopup
                 relaypoint={ relayPointPopup } 
                 informations={ informations } 
+                objectDiscount={ objectDiscount }
                 setInformations={ setInformations } 
                 setCondition={ setCondition } 
                 setViewport={ setViewport } 
                 setPopup={ setRelaypointPopup } 
                 setTooltip={ setRelaypointTooltip } 
-                onClear={ onClear } 
+                onClear={ onClear }
+                setDiscount={ setDiscount }
+                setObjectDiscount={ setObjectDiscount }
                 setIsRelaypoint={ setIsRelaypoint }
             />
         </>

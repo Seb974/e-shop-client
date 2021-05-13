@@ -31,16 +31,20 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData, products]);
 
   useEffect(() => {
-    console.log("update");
+    // console.log("update");
+    // console.log(productCart);
+    // console.log(packageUpdate);
+    // console.log(containers);
+    // console.log(selectedCatalog);
+    // console.log(products);
     if (isDefinedAndNotVoid(productCart) && !packageUpdate && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
         setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
-        setTotalWeight(selectedCatalog.needsParcel ? getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))) : 0);
-        setAvailableWeight(selectedCatalog.needsParcel ? getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages) : null);
+        setPackageUpdate(false);
     }
   }, [productCart, containers, selectedCatalog]);
 
   useEffect(() => {
-      if (isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
+      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
           if (isDefinedAndNotVoid(packages)) {
               setPackageUpdate(true);
               const packageProducts = formatPackages(packages, country);
@@ -48,15 +52,21 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                   ...productCart.filter(product => !isDefined(product.isPackage)), 
                   ...packageProducts
               ]);
+              setTotalWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))));
+              setAvailableWeight(getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages));
           } else {
               if (packages.length === 0) {
                   setPackageUpdate(false);
                   const productSet = getProductsFromIds(cartData, products);
                   setProductCart(productSet);
+                  setTotalWeight(0);
+                  setAvailableWeight(0);
               }
           }
       }
   }, [packages, selectedCatalog]);
+
+  // useEffect(() => console.log(availableWeight), [availableWeight]);
 
   return (
     <div className={"shopping-cart-content " + active}>
@@ -86,9 +96,11 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                   </div>
                   <div className="shopping-cart-title">
                     <h4>
+                    { isDefined(single.isPackage) && single.isPackage ? " " + single.product.name + " " :
                       <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
                         {" "}{single.product.name}{" "}
                       </Link>
+                    }
                     </h4>
                     <h6>{strings["qty"]} : {single.quantity}</h6>
                     <span>
@@ -103,13 +115,22 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                             <span>Size: {single.selectedProductSize.name}</span>
                         </div>
                     }
+                    { !isDefined(single.isPackage) || !single.isPackage ? <></> :
+                        <div className="cart-item-variation">
+                          { single.product.key === 0 && availableWeight >= 0.1 ? 
+                              <span className="text-warning"><i className="fas fa-info-circle mr-1"></i>{ (Math.floor(availableWeight * 10) / 10).toFixed(2) } Kg disponible</span> :
+                              <span className="text-success"><i className="fas fa-check-circle mr-1"> Colis complet</i></span>
+                          }
+                        </div>
+                    }
                   </div>
-                  <div className="shopping-cart-delete">
-                    {/* <button onClick={() => deleteFromCart(single, addToast)}> */}
-                    <button onClick={() => deleteFromCart(single, addToast)}>
-                      <i className="fa fa-times-circle" />
-                    </button>
-                  </div>
+                  { isDefined(single.isPackage) && single.isPackage ? <></> :
+                      <div className="shopping-cart-delete">
+                          <button onClick={() => deleteFromCart(single, addToast)}>
+                              <i className="fa fa-times-circle" />
+                          </button>
+                      </div>
+                  }
                 </li>
               );
 

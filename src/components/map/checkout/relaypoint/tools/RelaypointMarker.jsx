@@ -14,7 +14,10 @@ const RelaypointMarker = ({ position, relaypoint, setTooltip, setPopup }) => {
             <a href="#" onClick={ handleClick }>
                 <img 
                     alt="Relaypoint" 
-                    src="/assets/img/icon-img/relaypoint-marker.png" 
+                    src={ relaypoint.private ? 
+                        "/assets/img/icon-img/private-relaypoint-marker.png" :
+                        "/assets/img/icon-img/relaypoint-marker.png" 
+                    }
                     onMouseEnter={ () => setTooltip(relaypoint)} 
                     onMouseLeave={ () => setTooltip(undefined) }
                 />
