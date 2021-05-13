@@ -1,3 +1,4 @@
+import '../../assets/css/datepicker.css';
 import React, { useContext, useEffect, useState } from 'react';
 import Flatpickr from 'react-flatpickr';
 import { French } from "flatpickr/dist/l10n/fr.js";
@@ -38,7 +39,7 @@ const DatePicker = ({date, setDate, condition, strings}) => {
             setDate(minDate);
             setMinDate(minDate);
         }
-    }, [settings, daysOff]);
+    }, [settings, daysOff, weekConstraints]);
 
     const onDateChange = datetime => {
         const newSelection = new Date(datetime[0].getFullYear(), datetime[0].getMonth(), datetime[0].getDate(), 9, 0, 0);
@@ -64,7 +65,7 @@ const DatePicker = ({date, setDate, condition, strings}) => {
         const weekDays = getWeekDays();
         const deliveredDays = isDefined(condition) ? condition.days : weekDays.filter(day => day.value !== 0);
         const constraints = weekDays.filter(day => {
-            return deliveredDays.find(openDay => openDay.value ===day.value) === undefined;
+            return deliveredDays.find(openDay => openDay.value === day.value) === undefined;
         });
         return constraints.map(day => day.value);
     }

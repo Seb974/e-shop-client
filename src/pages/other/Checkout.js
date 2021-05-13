@@ -1,7 +1,4 @@
 import PropTypes from "prop-types";
-import Flatpickr from 'react-flatpickr';
-import { French } from "flatpickr/dist/l10n/fr.js";
-import { English } from "flatpickr/dist/l10n/de.js";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
