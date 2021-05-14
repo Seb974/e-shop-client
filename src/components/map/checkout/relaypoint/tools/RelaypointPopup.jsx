@@ -13,9 +13,6 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
     const initialPosition = AddressPanel.getInitialPosition();
     const [ownCondition, setOwnCondition] = useState(undefined);
 
-    // useEffect(() => console.log(relaypoint), [relaypoint]);
-    // useEffect(() => console.log(ownCondition), [ownCondition]);
-
     useEffect(() => {
         const relaypointCondition = !isDefined(relaypoint) ? [] : relaypoint.conditions.find(condition => {
             return condition.userGroups.find(group => group.value === settings.value) !== undefined;

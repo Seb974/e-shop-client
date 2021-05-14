@@ -10,7 +10,8 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
 
   const { isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser } = useContext(AuthContext);
 
-  const handleLogout = () => {
+  const handleLogout = e => {
+    e.preventDefault();
     AuthActions.logout()
                .then(response => {
                    setIsAuthenticated(false);

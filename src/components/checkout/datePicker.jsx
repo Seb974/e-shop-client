@@ -51,12 +51,10 @@ const DatePicker = ({date, setDate, condition, strings}) => {
     const getFirstOpenDay = () => {
         let i = 0;
         const start = isDefined(settings.hourLimit) && isPastHour(settings.hourLimit) ? getDateFrom(new Date(), 1) : new Date();
-        // let openDay = getDateFrom(start, settings.dayInterval);
         let openDay = start;
         while (isOffDay(openDay) || i < settings.dayInterval) {
             i++;
             openDay = getDateFrom(start, i);
-            // openDay = getDateFrom(start, settings.dayInterval + i);
         }
         return openDay;
     };

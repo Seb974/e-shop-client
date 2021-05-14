@@ -3,7 +3,11 @@ import { isDefined } from "./utils";
 export const checkForAlternatives = (zipcode, condition, relaypoints, settings, position, selectedCatalog) => {
     if (isDefined(relaypoints)) {
         let message = "Economisez sur les frais de livraison en choisissant un point relais près de chez vous.";
-        const alternatives = relaypoints.filter(relaypoint => relaypoint.metas.zipcode === zipcode);
+        const alternatives = relaypoints.filter(relaypoint => {
+             return relaypoint.metas.zipcode === zipcode && 
+                    relaypoint.conditions.find(condition => {
+                        return condition.userGroups.find(userGroup => userGroup.value === settings.value) !== undefined}) !== undefined;
+        });
         if (isDefined(condition)) {
             const filteredAlternatives = alternatives.filter(relaypoint => relaypoint.conditions.find(c => {
                     return c.price < condition.price && c.userGroups.find(group => group.value === settings.value) !== undefined
@@ -33,18 +37,6 @@ export const getCityCondition = (zipcode, cities, settings) => {
         return condition.userGroups.find(group => group.value === settings.value)
     });
 }
-
-// export const isInReunionIsland = (latitude, longitude) => {
-//     const reunionArea = [-20.871965, 55.216556, -21.389627, 55.836940];
-//     return  isInBoundingBox(latitude, reunionArea[0], reunionArea[2]) &&
-//             isInBoundingBox(longitude, reunionArea[1], reunionArea[3]);
-// }
-
-// export const isInFrance = (latitude, longitude) => {
-//     const franceArea = [41.332365, -5.139160, 51.087336, 9.562025];
-//     return  isInBoundingBox(latitude, franceArea[0], franceArea[2]) &&
-//             isInBoundingBox(longitude, franceArea[1], franceArea[3]);
-// }
 
 export const isInSelectedCountry = (latitude, longitude, catalog) => {
     const { minLat, maxLat, minLng, maxLng } = catalog;

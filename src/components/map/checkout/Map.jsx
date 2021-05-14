@@ -18,7 +18,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     const map = useRef(null);
     const searchInput = useRef(null);
     const { addToast } = useToasts();
-    const { settings, selectedCatalog } = useContext(AuthContext);
+    const { currentUser, settings, selectedCatalog } = useContext(AuthContext);
     const apiToken = process.env.REACT_APP_MAPBOX_TOKEN;
     const [defaultView, setDefaultView] = useState({ latitude: 0, longitude: 0, zoom: 9});
     const [viewport, setViewport] = useState(defaultView);
@@ -33,9 +33,27 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     useEffect(() => {
         if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center)) {
             setDefaultView({ latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom});
-            setViewport({...viewport, latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom})
+            setViewport({
+                ...viewport, 
+                latitude: !isInitialState(informations.position) ? informations.position[0] : selectedCatalog.center[0], 
+                longitude: !isInitialState(informations.position) ? informations.position[1] : selectedCatalog.center[1], 
+                zoom: !isInitialState(informations.position) ? 17 : selectedCatalog.zoom
+            });
         }
     }, [selectedCatalog]);
+
+    useEffect(() => {
+        if (currentUser.id !== -1 && isDefined(currentUser.metas) && isDefined(currentUser.metas.position) && !isInitialState(currentUser.metas.position)) {
+            setViewport({
+                ...viewport,
+                latitude: currentUser.metas.position[0],
+                longitude: currentUser.metas.position[1],
+                zoom: 17,
+                transitionDuration: 1800, 
+                transitionInterpolator: new FlyToInterpolator() 
+            });
+        }
+    },[currentUser]);
 
     useEffect(() => {
         if (informations.address.length > 0 && !isRelaypoint) {
@@ -83,7 +101,6 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
         setIsRelaypoint(false);
         setCondition(undefined);
         setViewport({
-            // ...defaultView,
             latitude: isDefined(selectedCatalog) ? selectedCatalog.center[0] : defaultView.latitude,
             longitude: isDefined(selectedCatalog) ? selectedCatalog.center[1] : defaultView.longitude,
             zoom: isDefined(selectedCatalog) ? selectedCatalog.zoom : defaultView.zoom,
@@ -97,6 +114,11 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
         setCondition( cityCondition);
         return cityCondition;
     };
+
+    const isInitialState = (position) => {
+        return JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
+               JSON.stringify(position) === JSON.stringify([0, 0]);
+   }
 
     return (
         <>

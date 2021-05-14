@@ -13,9 +13,7 @@ const RelaypointTools = ({ informations, displayedRelaypoints, relayPointTooltip
     const [ userRelaypoints, setUserRelaypoints ] = useState([]);
 
     useEffect(() => {
-        // if (isDefined(settings) && isDefinedAndNotVoid(relaypoints)) {
         if (isDefined(settings) && isDefinedAndNotVoid(displayedRelaypoints)) {
-            // const userOptions = relaypoints.filter(relaypoint => {
             const userOptions = displayedRelaypoints.filter(relaypoint => {
                 return relaypoint.available && relaypoint.conditions.find(condition => {
                     return condition.userGroups.find(group => group.id === settings.id) !== undefined;
@@ -24,7 +22,6 @@ const RelaypointTools = ({ informations, displayedRelaypoints, relayPointTooltip
             setUserRelaypoints(userOptions);
         }
     }, [displayedRelaypoints, settings]);
-    // }, [relaypoints, settings]);
 
     return (
         <>

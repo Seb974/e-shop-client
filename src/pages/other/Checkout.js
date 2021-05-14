@@ -29,7 +29,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
-  const { country, settings, selectedCatalog } = useContext(AuthContext);
+  const { currentUser, country, settings, selectedCatalog } = useContext(AuthContext);
   const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
@@ -45,6 +45,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   let cartTotalPrice = 0;
 
   useEffect(() => {
+     setCurrentUser();
      CityActions.findAll()
                 .then(response => setCities(response));
      RelaypointActions.findAll()
@@ -54,9 +55,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                       });
   }, []);
 
-  useEffect(() => console.log(discount), [discount]);
-  useEffect(() => console.log(objectDiscount), [objectDiscount]);
-  useEffect(() => console.log(cartTotalPrice), [cartTotalPrice]);
+  useEffect(() => setCurrentUser(), [currentUser]);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
@@ -78,6 +77,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       if (isDefinedAndNotVoid(privateRelaypoints)) {
           setDisplayedRelaypoints([...displayedRelaypoints, ...privateRelaypoints]);
           setObjectDiscount(privateRelaypoints[0]);
+          addToast("Vous avez débloqué l'accès à un point relais privé. Sélectionnez le sur la carte pour profiter de ses avantages.", { appearance: "warning", autoDismiss: true, autoDismissTimeout: 10000 });
           return ;
       }
       PromotionActions.findByCode(coupon)
@@ -106,7 +106,17 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
     }
     setObjectDiscount(null);
     setDiscount(0);
-}
+  };
+
+  const setCurrentUser = () => {
+      if (currentUser.id !== -1) {
+          const { name, email } = currentUser;
+          setUser({ name, email });
+          if (isDefined(currentUser.metas) && JSON.stringify(informations) === JSON.stringify(initialInformations)) {
+              setInformations(currentUser.metas);
+          }
+      }
+  };
 
   return (
     <Fragment>
@@ -230,7 +240,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                 </li>
                             </ul>
                           </div>
-                          {/* className="your-order-middle" */}
                           { !isDefined(condition) && selectedCatalog.needsParcel ? 
                               <div className="your-order-middle"> 
                                     <ul>
