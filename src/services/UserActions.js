@@ -1,4 +1,5 @@
 import api from '../config/api';
+import Roles from '../config/Roles';
 
 function register(user) {
     const { name, email, password } = user;
@@ -22,7 +23,11 @@ function find(id) {
 }
 
 function update(id, user) {
-    return api.put('/api/users/' + id, user);
+    return api.put('/api/users/' + id, user)
+              .then(response => {
+                  const { id, email, name, roles, metas } = response.data;
+                  return {id, email, name, roles: Roles.filterRoles(roles), metas} ;
+              })
 }
 
 function create(user) {
