@@ -1,9 +1,13 @@
 import PropTypes from "prop-types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import MenuCart from "./sub-components/MenuCart";
 import { deleteFromCart } from "../../redux/actions/cartActions";
+import AuthContext from "../../contexts/AuthContext";
+import Identification from "../identification/Identification";
+import AuthActions from "../../services/AuthActions";
+import { multilanguage } from "redux-multilanguage";
 
 const UseOutsideAlerter = (ref, handler) => {
   useEffect(() => {
@@ -16,8 +20,9 @@ const UseOutsideAlerter = (ref, handler) => {
   }, [ref]);
 };
 
-const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCart, iconWhiteClass }) => {
+const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCart, iconWhiteClass, strings }) => {
 
+  const { isAuthenticated, setIsAuthenticated, setCurrentUser } = useContext(AuthContext);
   const iconGroupContainer = useRef(null);
   const [active, setActive] = useState("");
   const clearActive = () => setActive("");
@@ -28,6 +33,14 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
       setActive(newActive);
   };
 
+  const handleLogout = () => {
+    AuthActions.logout()
+               .then(response => {
+                   setIsAuthenticated(false);
+                   setCurrentUser(AuthActions.getCurrentUser());
+               });
+  }
+
   const triggerMobileMenu = () => {
     const offcanvasMobileMenu = document.querySelector(
       "#offcanvas-mobile-menu"
@@ -37,40 +50,40 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
 
   return (
     <div ref={ iconGroupContainer } className={`header-right-wrap ${iconWhiteClass ? iconWhiteClass : ""}`}>
-      <div className="same-style header-search d-none d-lg-block">
+      {/* <div className="same-style header-search d-none d-lg-block">
         <button name="search" className="search-active" onClick={ handleClick }>
-          {/* <i className="pe-7s-search" /> */}
           <i className= "fas fa-search"></i>
         </button>
         <div className={"search-content " + (active === "search" ? "active" : "")}>
           <form action="#">
             <input type="text" placeholder="Search" />
             <button className="button-search">
-              {/* <i className="pe-7s-search" /> */}
               <i className= "fas fa-search"></i>
             </button>
           </form>
         </div>
-      </div>
-      <div className="same-style account-setting d-none d-lg-block">
-        <button name="account" className="account-setting-active" onClick={ handleClick }>
-          {/* <i className="pe-7s-user-female" /> */}
-          <i className= "fas fa-user-circle"></i>
-        </button>
-        <div className={"account-dropdown " + (active === "account" ? "active" : "")}>
-          <ul>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>Login</Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/login-register"}>Register</Link>
-            </li>
-            <li>
-              <Link to={process.env.PUBLIC_URL + "/my-account"}>my account</Link>
-            </li>
-          </ul>
-        </div>
-      </div>
+      </div> */}
+          <div className="same-style account-setting d-none d-lg-block">
+            <button name="account" className="account-setting-active" onClick={ handleClick }>
+              <i className= "fas fa-user-circle pb-2" style={{fontSize: '1.1em'}}></i>
+            </button>
+            <div className={"account-dropdown " + (active === "account" ? "active" : "")}>
+              <ul>
+                { isAuthenticated &&
+                  <li>
+                    <Link to={process.env.PUBLIC_URL + "/my-account"}>{ strings["my_account"] }</Link>
+                  </li>
+                }
+                <li>
+                    { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
+                      <a className="nav-link" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
+                    }
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
       <div className="same-style header-compare">
         <Link to={process.env.PUBLIC_URL + "/compare"}>
           {/* <i className="pe-7s-shuffle" /> */}
@@ -135,4 +148,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(IconGroup);
+export default connect(mapStateToProps, mapDispatchToProps)(multilanguage(IconGroup));

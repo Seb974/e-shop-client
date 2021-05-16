@@ -8,6 +8,7 @@ import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 import AuthActions from '../../services/AuthActions';
 import CatalogActions from '../../services/CatalogActions';
 import ContainerActions from '../../services/ContainerActions';
+import CategoryActions from '../../services/CategoryActions';
 import ProductActions from '../../services/ProductActions';
 import dbProducts from "../products.json";
 
@@ -20,11 +21,14 @@ const DataProvider = ({ children }) => {
     const [cities, setCities] = useState([]);
     const [catalogs, setCatalogs] = useState([]);
     const [selectedCatalog, setSelectedCatalog] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState(-1);
     const [relaypoints, setRelaypoints] = useState([]);
     const [condition, setCondition] = useState(undefined);
     const [eventSource, setEventSource] = useState({});
     const [products, setProducts] = useState([]);
+    const [navSearch, setNavSearch] = useState("");
     const [containers, setContainers] = useState([]);
+    const [categories, setCategories] = useState([]);
     const [packages, setPackages] = useState([]);
     const [totalWeight, setTotalWeight] = useState(null);
     const [availableWeight, setAvailableWeight] = useState(null);
@@ -41,6 +45,8 @@ const DataProvider = ({ children }) => {
                         .then(response => setContainers(response));
         CatalogActions.findAll()
                       .then(response => setCatalogs(response));
+        CategoryActions.findAll()
+                       .then(response => setCategories(response));
     }, []);
 
     useEffect(() => {
@@ -62,7 +68,7 @@ const DataProvider = ({ children }) => {
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog} }>
         <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight} }>
         <ContainerContext.Provider value={{ containers, setContainers }}>
-        <ProductsContext.Provider value={ {products, setProducts} }>
+        <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
             {/* <MercureHub> */}
                 { children }
             {/* </MercureHub> */}
