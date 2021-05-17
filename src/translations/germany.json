@@ -167,5 +167,6 @@
   "delete_account_successful": "Dein Account wurde gelöscht.",
   "confirm_deletion": "Bitte bestätigen Sie das Löschen des Kontos",
   "confirm": "Bestätigen",
-  "cancel": "Stornieren"
+  "cancel": "Stornieren",
+  "error_occured": "Ein Fehler ist aufgetreten. Bitte versuch es später."
 }

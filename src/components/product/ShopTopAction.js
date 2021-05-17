@@ -49,7 +49,7 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
           </div>
       </div>
 
-      <div className="col-md-2 shop-tab">
+      <div className="col-md-2 shop-tab text-right mr-1">
         <button onClick={e => {
             getLayout("grid two-column");
             setActiveLayout(e);

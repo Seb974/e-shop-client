@@ -167,5 +167,6 @@
   "delete_account_successful": "Votre compte a bien été supprimé.",
   "confirm_deletion": "Veuillez confirmer la suppression du compte",
   "confirm": "Confirmer",
-  "cancel": "Annuler"
+  "cancel": "Annuler",
+  "error_occured": "Une erreur est survenue. Veuillez s'il vous plaît réessayer ultérieurement."
 }

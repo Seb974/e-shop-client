@@ -15,7 +15,7 @@ import { isDefined } from '../../helpers/utils';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import AuthContext from '../../contexts/AuthContext';
 
-const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, strings }) => {
+const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, objectDiscount, createOrder, strings }) => {
 
     const stripe = useStripe();
     const elements = useElements();
@@ -77,7 +77,8 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, stri
             setError(strings["payment_error"]);
             return ;
         }
-        confirmPayment();
+        createOrder();
+        // confirmPayment();
     };
 
     const handleSuccess = () => {
@@ -90,7 +91,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, stri
 
     const createPayment = () => {
         setLoading(true);
-         api.post('/api/create-payment', {items: cartItems, packages, area: selectedCatalog, customer: user})
+         api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount})
             .then(({data}) => {
                 setClientSecret(data.clientSecret);
                 setAmount(data.amount / 100 );

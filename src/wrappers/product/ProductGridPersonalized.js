@@ -16,8 +16,6 @@ const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist,
   useEffect(() => setProductsToDisplay(), []);
   useEffect(() => setProductsToDisplay(), [products, navSearch, selectedCategory]);
 
-  useEffect(() => console.log(products), [products]);
-
   const setProductsToDisplay = () => {
       if (isDefinedAndNotVoid(products)) {
           let productsToDisplay = products;

@@ -21,8 +21,16 @@ const DeleteAccount = ({ password, setError, strings }) => {
         setShow(false);
         AuthActions
             .deleteAccount(currentUser, password)
-            .then(response => setDeleteAccountSuccess())
-            .catch( error => setAuthenticationError());
+            .then(response => {
+                response.isAuthenticated ?
+                setDeleteAccountSuccess() :
+                setAuthenticationError();
+            })
+            .catch( error => {
+                // setAuthenticationError()
+                addToast(strings["error_occured"], { appearance: "error", autoDismiss: true});
+                AuthActions.logout();
+            });
     };
 
     const setAuthenticationError = () => {

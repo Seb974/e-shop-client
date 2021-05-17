@@ -77,8 +77,15 @@ const MyAccount = ({ location, strings }) => {
       }
       AuthActions
           .updatePassword(currentUser, {current, newPassword})
-          .then(response => setUpdatePasswordSuccess())
-          .catch( error => setAuthenticationError());
+          .then(response => {
+              response.isAuthenticated ? 
+                  setUpdatePasswordSuccess() : 
+                  setAuthenticationError();
+          })
+          .catch( error => {
+              // setAuthenticationError()
+              addToast(strings["error_occured"], { appearance: "error", autoDismiss: true});
+          });
   };
 
   const setDataUser = () => {

@@ -25,8 +25,8 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
             const newCondition = relaypoint.conditions.find(condition => {
                 return condition.userGroups.find(group => group.value === settings.value) !== undefined;
             });
-            if (isDefined(objectDiscount) && objectDiscount['@type'] === "Relaypoint" && relaypoint.id === objectDiscount.id) {
-                setDiscount(isDefined(relaypoint.discount) ? relaypoint.discount : 0);
+            if (isDefined(objectDiscount) && isDefined(relaypoint.promotion) && relaypoint.promotion.id === objectDiscount.id) {
+                setDiscount(isDefined(relaypoint.promotion.discount) ? relaypoint.promotion.discount : 0);
             }
             setInformations({...informations, address, address2, zipcode, city});
             setCondition(newCondition);
@@ -50,7 +50,7 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
                 transitionDuration: 1500,
                 transitionInterpolator: new FlyToInterpolator(),
             });
-            if (!isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint") {
+            if (isDefined(objectDiscount)) {
                 setDiscount(0);
             }
             onClear();

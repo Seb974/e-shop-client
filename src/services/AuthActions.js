@@ -104,31 +104,35 @@ function getUserSettings() {
 }
 
 function updatePassword(user, passwords) {
-    const credentials = { username : user.email, password: passwords.current};
-    return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
-            .then(response => {
-                if (!response.ok)
-                    throw Error({message: response.statusText, status: response.status});
-                return response;
-            })
-            .then(response => {
-                return api.put('/api/users/' + user.id, {...user, password: passwords.newPassword, roles: [user.roles]});
-            })
+    return api.post('/api/reset-password', {username: user.email, passwords})
+              .then(response => response.data);
+    // const credentials = { username : user.email, password: passwords.current};
+    // return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
+    //         .then(response => {
+    //             if (!response.ok)
+    //                 throw Error({message: response.statusText, status: response.status});
+    //             return response;
+    //         })
+    //         .then(response => {
+    //             return api.put('/api/users/' + user.id, {...user, password: passwords.newPassword, roles: [user.roles]});
+    //         })
 }
 
 function deleteAccount(user, password) {
-    const credentials = { username : user.email, password};
-    return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
-            .then(response => {
-                if (!response.ok)
-                    throw Error({message: response.statusText, status: response.status});
-                return response;
-            })
-            .then(response => {
-                console.log(response);
-                logout();
-                return api.delete('/api/users/' + user.id);
-            })
+    return api.post('/api/delete-account', {username: user.email, password})
+              .then(response => response.data);
+    // const credentials = { username : user.email, password};
+    // return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
+    //         .then(response => {
+    //             if (!response.ok)
+    //                 throw Error({message: response.statusText, status: response.status});
+    //             return response;
+    //         })
+    //         .then(response => {
+    //             console.log(response);
+    //             logout();
+    //             return api.delete('/api/users/' + user.id);
+    //         })
 }
 
 export default {

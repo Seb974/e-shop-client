@@ -24,6 +24,7 @@ import PaymentForm from "../../components/payment/PaymentForm";
 import { deleteAllFromCart } from "../../redux/actions/cartActions";
 import { useToasts } from "react-toast-notifications";
 import PromotionActions from "../../services/PromotionActions";
+import OrderActions from "../../services/OrderActions";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
@@ -76,7 +77,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       const privateRelaypoints = relaypoints.filter(relaypoint => relaypoint.accessCode === coupon);
       if (isDefinedAndNotVoid(privateRelaypoints)) {
           setDisplayedRelaypoints([...displayedRelaypoints, ...privateRelaypoints]);
-          setObjectDiscount(privateRelaypoints[0]);
+          setObjectDiscount(privateRelaypoints[0].promotion);
           addToast("Vous avez débloqué l'accès à un point relais privé. Sélectionnez le sur la carte pour profiter de ses avantages.", { appearance: "warning", autoDismiss: true, autoDismissTimeout: 10000 });
           return ;
       }
@@ -97,11 +98,12 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       console.log(user);
       console.log(informations);
       console.log(message);
+      console.log(cartItems);
   };
 
   const clearDiscountAndAdvantages = () => {
-    if (objectDiscount['@type'] === "Relaypoint") {
-        setDisplayedRelaypoints(displayedRelaypoints.filter(relaypoint => relaypoint.id !== objectDiscount.id));
+    if (objectDiscount.code === "relaypoint") {
+        setDisplayedRelaypoints(displayedRelaypoints.filter(relaypoint => !isDefined(relaypoint.promotion) || relaypoint.promotion.id !== objectDiscount.id));
         setInformations({...informations, address: ""});
     }
     setObjectDiscount(null);
@@ -116,6 +118,29 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
               setInformations(currentUser.metas);
           }
       }
+  };
+
+  const createOrder = () => {
+    const order = getOrderToWrite();
+    console.log(order);
+    OrderActions
+        .create(order)
+        .then(response => console.log(response));
+  }
+
+  const getOrderToWrite = () => {
+      return {
+          ...user,
+          deliveryDate: date,
+          metas: {...informations},
+          user: currentUser.id !== -1 ? '/api/users/' + currentUser.id : null,
+          message: message,
+          isRemains: false,
+          status: "",
+          catalog: selectedCatalog['@id'],
+          promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
+          items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
+      };
   };
 
   return (
@@ -210,7 +235,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                   <li className="text-success">
                                       <span className="order-middle-left">
                                           <strong>
-                                              { objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                              { objectDiscount.percentage ? 
                                                   "Remise de " + (discount * 100) + "%" :
                                                   "Remise de " + discount + " " + currency.currencySymbol
                                               }
@@ -218,7 +243,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                       </span>
                                       <span className="order-price">
                                           <strong>
-                                               - { objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                               - { objectDiscount.percentage ? 
                                                     (Math.round(cartTotalPrice * discount * 100) / 100).toFixed(2) + " " + currency.currencySymbol :
                                                     discount.toFixed(2) + " " + currency.currencySymbol
                                                   }
@@ -265,11 +290,11 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                     { selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
-                                          !isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                          !isDefined(objectDiscount) || objectDiscount.percentage ? 
                                               (Math.round(cartTotalPrice * 100) / 100 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
                                               (Math.round(cartTotalPrice * 100) / 100 - discount).toFixed(2) + " " + currency.currencySymbol
                                       :
-                                          !isDefined(objectDiscount) || objectDiscount['@type'] === "Relaypoint" || (objectDiscount['@type'] === "Promotion" && objectDiscount.percentage) ? 
+                                          !isDefined(objectDiscount) || objectDiscount.percentage ? 
                                               (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + condition.price).toFixed(2) + " " + currency.currencySymbol :
                                               (Math.round(cartTotalPrice * 100) / 100 - discount + condition.price).toFixed(2) + " " + currency.currencySymbol
                                     }
@@ -285,6 +310,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             user={ user }
                             available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
                             deleteAllFromCart={ deleteAllFromCart }
+                            objectDiscount={ objectDiscount }
+                            createOrder={ createOrder }
                         />
                         {/* <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>{strings["place_order"]}</button> */}
                       </div>

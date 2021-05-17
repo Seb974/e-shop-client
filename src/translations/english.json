@@ -167,5 +167,6 @@
   "delete_account_successful": "Your account has been deleted.",
   "confirm_deletion": "Please confirm for deleting account",
   "confirm": "Confirm",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+  "error_occured": "An error occured. Please try later."
 }
