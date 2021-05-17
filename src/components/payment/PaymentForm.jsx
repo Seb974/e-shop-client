@@ -77,7 +77,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
             setError(strings["payment_error"]);
             return ;
         }
-        createOrder();
+        createOrder(confirmPayment);
         // confirmPayment();
     };
 

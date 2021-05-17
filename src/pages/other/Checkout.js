@@ -120,12 +120,15 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       }
   };
 
-  const createOrder = () => {
+  const createOrder = (callBack = null) => {
     const order = getOrderToWrite();
     console.log(order);
     OrderActions
         .create(order)
-        .then(response => console.log(response));
+        .then(response => {
+            if (isDefined(callBack))
+                callBack();
+        });
   }
 
   const getOrderToWrite = () => {
