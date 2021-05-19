@@ -1,22 +1,14 @@
 import PropTypes from "prop-types";
-<<<<<<< HEAD
-import React, { Fragment, useContext, useState } from "react";
-=======
-import React, { Fragment, useRef, useState } from "react";
->>>>>>> feature/custom-layout
+import React, { Fragment, useContext,useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice, getElementsFromIds } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
-<<<<<<< HEAD
 import api from '../../config/api';
 import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
-=======
-import api from "../../config/api";
 import * as icons from "react-bootstrap-icons";
->>>>>>> feature/custom-layout
 
 const ProductGridHomePersonalizedSingle = ({
   product,
