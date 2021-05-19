@@ -4,14 +4,11 @@ import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import MenuCart from "./sub-components/MenuCart";
 import { deleteFromCart } from "../../redux/actions/cartActions";
-<<<<<<< HEAD
 import AuthContext from "../../contexts/AuthContext";
 import Identification from "../identification/Identification";
 import AuthActions from "../../services/AuthActions";
 import { multilanguage } from "redux-multilanguage";
-=======
 import * as icons from "react-bootstrap-icons";
->>>>>>> feature/custom-layout
 
 const UseOutsideAlerter = (ref, handler) => {
   useEffect(() => {
@@ -54,7 +51,6 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
 
   return (
     <div ref={ iconGroupContainer } className={`header-right-wrap ${iconWhiteClass ? iconWhiteClass : ""}`}>
-<<<<<<< HEAD
       {/* <div className="same-style header-search d-none d-lg-block">
         <button name="search" className="search-active" onClick={ handleClick }>
           <i className= "fas fa-search"></i>
@@ -68,7 +64,7 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
           </form>
         </div>
       </div> */}
-          <div className="same-style account-setting d-none d-lg-block">
+          {/* <div className="same-style account-setting d-none d-lg-block">
             <button name="account" className="account-setting-active" onClick={ handleClick }>
               <i className= "fas fa-user-circle pb-2" style={{fontSize: '1.1em'}}></i>
             </button>
@@ -86,11 +82,9 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
                 </li>
               </ul>
             </div>
-          </div>
+          </div> */}
 
 
-=======
->>>>>>> feature/custom-layout
       <div className="same-style header-compare">
         <Link to={process.env.PUBLIC_URL + "/compare"}>
           {/* <i className="pe-7s-shuffle" /> */}
