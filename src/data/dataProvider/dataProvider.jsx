@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import MercureHub from '../../components/Mercure/MercureHub';
 import AuthContext from '../../contexts/AuthContext';
+import ContainerContext from '../../contexts/ContainerContext';
+import DeliveryContext from '../../contexts/DeliveryContext';
 import ProductsContext from '../../contexts/ProductsContext';
+import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 import AuthActions from '../../services/AuthActions';
+import CatalogActions from '../../services/CatalogActions';
+import ContainerActions from '../../services/ContainerActions';
+import CategoryActions from '../../services/CategoryActions';
 import ProductActions from '../../services/ProductActions';
 import dbProducts from "../products.json";
 
@@ -10,30 +16,65 @@ const DataProvider = ({ children }) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(AuthActions.isAuthenticated());
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
+    const [settings, setSettings] = useState({});
     const [country, setCountry] = useState("RE");
+    const [cities, setCities] = useState([]);
+    const [catalogs, setCatalogs] = useState([]);
+    const [selectedCatalog, setSelectedCatalog] = useState({});
+    const [selectedCategory, setSelectedCategory] = useState(-1);
+    const [relaypoints, setRelaypoints] = useState([]);
+    const [condition, setCondition] = useState(undefined);
     const [eventSource, setEventSource] = useState({});
     const [products, setProducts] = useState([]);
+    const [navSearch, setNavSearch] = useState("");
+    const [containers, setContainers] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [packages, setPackages] = useState([]);
+    const [totalWeight, setTotalWeight] = useState(null);
+    const [availableWeight, setAvailableWeight] = useState(null);
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
         AuthActions.getGeolocation()
                    .then(response => setCountry(response));
+        AuthActions.getUserSettings()
+                   .then(response => setSettings(response));
         ProductActions.findAll()
-                      .then(response => {
-                          console.log(response);
-                          setProducts(response);
-                        });
+                      .then(response => setProducts(response));
+        ContainerActions.findAll()
+                        .then(response => setContainers(response));
+        CatalogActions.findAll()
+                      .then(response => setCatalogs(response));
+        CategoryActions.findAll()
+                       .then(response => setCategories(response));
     }, []);
 
-    useEffect(() => setCurrentUser(AuthActions.getCurrentUser()), [isAuthenticated]);
+    useEffect(() => {
+        setCurrentUser(AuthActions.getCurrentUser());
+        AuthActions
+            .getUserSettings()
+            .then(response => setSettings(response));
+    }, [isAuthenticated]);
+
+    useEffect(() => {
+        if (isDefinedAndNotVoid(catalogs) && isDefined(country)) {
+            const catalog = catalogs.find(catalogOption => catalogOption.code === country);
+            const selection = isDefined(catalog) ? catalog : catalogs.filter(country => country.isDefault);
+            setSelectedCatalog(selection);
+        }
+    }, [catalogs, country]);
 
     return (
-        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry} }>
-        <ProductsContext.Provider value={ {products, setProducts} }>
+        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog} }>
+        <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight} }>
+        <ContainerContext.Provider value={{ containers, setContainers }}>
+        <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
             {/* <MercureHub> */}
                 { children }
             {/* </MercureHub> */}
         </ProductsContext.Provider>
+        </ContainerContext.Provider>
+        </DeliveryContext.Provider>
         </AuthContext.Provider>
     );
 }

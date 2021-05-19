@@ -1,21 +1,25 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from '../../config/api';
+import { isDefined } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass }) => {
   
   const { addToast } = useToasts();
+  const { country, settings } = useContext(AuthContext);
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
 
+  const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
-  const finalProductPrice = +(product.price * currency.currencyRate).toFixed(2);
-  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate).toFixed(2);
+  const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+  const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
   const handleChange = ({ currentTarget }) => {
     setQuantity(currentTarget.value);

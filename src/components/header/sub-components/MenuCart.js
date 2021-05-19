@@ -9,6 +9,9 @@ import { getProductsFromIds } from '../../../helpers/product';
 import api from "../../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../../contexts/AuthContext";
+import { definePackages, getAvailableWeight, getOrderWeight, formatPackages } from "../../../helpers/containers";
+import ContainerContext from "../../../contexts/ContainerContext";
+import DeliveryContext from "../../../contexts/DeliveryContext";
 
 const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) => {
 
@@ -16,12 +19,54 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   const { addToast } = useToasts();
   const [productCart, setProductCart] = useState([]);
   const { products } = useContext(ProductsContext);
-  const { country } = useContext(AuthContext);
+  const { country, selectedCatalog, settings } = useContext(AuthContext);
+  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight ,condition } = useContext(DeliveryContext);
+  const { containers } = useContext(ContainerContext);
+  const [packageUpdate, setPackageUpdate] = useState(false);
 
   useEffect(() => {
+      setPackageUpdate(false);
       const productSet = getProductsFromIds(cartData, products);
       setProductCart(productSet);
-  }, [cartData, products])
+  }, [cartData, products]);
+
+  useEffect(() => {
+    // console.log("update");
+    // console.log(productCart);
+    // console.log(packageUpdate);
+    // console.log(containers);
+    // console.log(selectedCatalog);
+    // console.log(products);
+    if (isDefinedAndNotVoid(productCart) && !packageUpdate && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
+        setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
+        setPackageUpdate(false);
+    }
+  }, [productCart, containers, selectedCatalog]);
+
+  useEffect(() => {
+      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
+          if (isDefinedAndNotVoid(packages)) {
+              setPackageUpdate(true);
+              const packageProducts = formatPackages(packages, country);
+              setProductCart([
+                  ...productCart.filter(product => !isDefined(product.isPackage)), 
+                  ...packageProducts
+              ]);
+              setTotalWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))));
+              setAvailableWeight(getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages));
+          } else {
+              if (packages.length === 0) {
+                  setPackageUpdate(false);
+                  const productSet = getProductsFromIds(cartData, products);
+                  setProductCart(productSet);
+                  setTotalWeight(0);
+                  setAvailableWeight(0);
+              }
+          }
+      }
+  }, [packages, selectedCatalog]);
+
+  // useEffect(() => console.log(availableWeight), [availableWeight]);
 
   return (
     <div className={"shopping-cart-content " + active}>
@@ -29,27 +74,33 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
-              const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
+              const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
+                single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
-              const finalProductPrice = isDefined(single.product) ? (single.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
-              const finalDiscountedPrice = isDefined(single.product) ? (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
+              const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
+              const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
 
               discountedPrice != null ? 
-                  cartTotalPrice += finalDiscountedPrice * single.quantity :
-                  cartTotalPrice += finalProductPrice * single.quantity;
+                  cartTotalPrice += Math.round(finalDiscountedPrice * single.quantity * 100) / 100 :
+                  cartTotalPrice += Math.round(finalProductPrice * single.quantity * 100) / 100;
 
-              return !isDefined(single.product) ? <></> : (
-                <li className="single-shopping-cart" key={key}>
+              return !isDefined(single.product) ? <div key={ key }></div> : (
+                <li className="single-shopping-cart" key={ key }>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
-                      <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
+                      { isDefined(single.isPackage) && single.isPackage ?
+                        <img alt="" src={single.product.image.filePath} className="img-fluid"/> :
+                        <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
+                      }
                     </Link>
                   </div>
                   <div className="shopping-cart-title">
                     <h4>
+                    { isDefined(single.isPackage) && single.isPackage ? " " + single.product.name + " " :
                       <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
                         {" "}{single.product.name}{" "}
                       </Link>
+                    }
                     </h4>
                     <h6>{strings["qty"]} : {single.quantity}</h6>
                     <span>
@@ -64,13 +115,22 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                             <span>Size: {single.selectedProductSize.name}</span>
                         </div>
                     }
+                    { !isDefined(single.isPackage) || !single.isPackage ? <></> :
+                        <div className="cart-item-variation">
+                          { single.product.key === 0 && availableWeight >= 0.1 ? 
+                              <span className="text-warning"><i className="fas fa-info-circle mr-1"></i>{ (Math.floor(availableWeight * 10) / 10).toFixed(2) } Kg disponible</span> :
+                              <span className="text-success"><i className="fas fa-check-circle mr-1"> Colis complet</i></span>
+                          }
+                        </div>
+                    }
                   </div>
-                  <div className="shopping-cart-delete">
-                    {/* <button onClick={() => deleteFromCart(single, addToast)}> */}
-                    <button onClick={() => deleteFromCart(single, addToast)}>
-                      <i className="fa fa-times-circle" />
-                    </button>
-                  </div>
+                  { isDefined(single.isPackage) && single.isPackage ? <></> :
+                      <div className="shopping-cart-delete">
+                          <button onClick={() => deleteFromCart(single, addToast)}>
+                              <i className="fa fa-times-circle" />
+                          </button>
+                      </div>
+                  }
                 </li>
               );
 

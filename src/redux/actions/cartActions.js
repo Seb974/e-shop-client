@@ -71,17 +71,15 @@ export const deleteFromCart = (item, addToast) => {
 };
 //delete all from cart
 export const deleteAllFromCart = addToast => {
+  console.log("In deleteFromCart function");
   return dispatch => {
-    if (addToast) {
+    if (isDefined(addToast)) {
       const local_storage = JSON.parse(localStorage.getItem('redux_localstorage_simple'));
       const language = isDefined(local_storage) && isDefined(local_storage.multilanguage) ? local_storage.multilanguage.currentLanguageCode : 'en';
       const message = language === 'fn' ? "Panier vidé" :
                       language === 'de' ? "Alles aus dem Warenkorb entfernt" : 
                       "Removed All From Cart";
-      addToast(message, {
-        appearance: "error",
-        autoDismiss: true
-      });
+      addToast(message, { appearance: "error", autoDismiss: true });
     }
     dispatch({ type: DELETE_ALL_FROM_CART });
   };

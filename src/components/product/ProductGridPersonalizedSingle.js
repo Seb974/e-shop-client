@@ -16,14 +16,14 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [hasStock, setHasStock] = useState(false);
-  const { country } = useContext(AuthContext);
+  const { country, settings } = useContext(AuthContext);
 
   useEffect(() => {
       const stockStatus = hasEnoughStock(product);
       setHasStock(stockStatus);
   }, [product]);
 
-  const taxToApply = product.taxes.find(tax => tax.country === country).rate;
+  const taxToApply = !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
@@ -139,7 +139,6 @@ const ProductGridPersonalizedSingle = ({product, currency, addToCart, addToWishl
                     { product.variations && product.variations.length >= 1 ?
                         <a href="#" onClick={ handleShowDetails }>{strings["select_option"]}</a>
                       : 
-                      // hasStock ?
                       getAvailableStock(product) > 0 ?
                           <div className="d-flex mr-1">
                               <input type="number" className="pro-input" value={ quantity } onChange={ handleChange } min="0"/>

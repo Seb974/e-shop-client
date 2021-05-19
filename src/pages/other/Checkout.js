@@ -1,7 +1,4 @@
 import PropTypes from "prop-types";
-import Flatpickr from 'react-flatpickr';
-import { French } from "flatpickr/dist/l10n/fr.js";
-import { English } from "flatpickr/dist/l10n/de.js";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
@@ -15,24 +12,51 @@ import { getProductsFromIds } from '../../helpers/product';
 import AuthContext from "../../contexts/AuthContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
-import AddressPanel from "../../components/forms/address/AddressPanel";
+import CheckoutMap from "../../components/map/checkout/Map";
 import ContactPanel from "../../components/forms/contact/ContactPanel";
-
-const today = new Date();
-const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1, 9, 0, 0);
+import DatePicker from "../../components/checkout/datePicker";
+import CityActions from "../../services/CityActions";
+import RelaypointActions from "../../services/RelaypointActions";
+import DeliveryContext from "../../contexts/DeliveryContext";
+import { getTotalCost } from '../../helpers/containers';
+import { isInSelectedCountry } from "../../helpers/map";
+import PaymentForm from "../../components/payment/PaymentForm";
+import { deleteAllFromCart } from "../../redux/actions/cartActions";
+import { useToasts } from "react-toast-notifications";
+import PromotionActions from "../../services/PromotionActions";
+import OrderActions from "../../services/OrderActions";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
-  const { pathname } = location;
-  const { country } = useContext(AuthContext);
+  const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
+  const { currentUser, country, settings, selectedCatalog } = useContext(AuthContext);
+  const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
-  const initialInformations =  AddressPanel.getInitialInformations();
+  const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
   const [informations, setInformations] = useState(initialInformations);
-  const [date, setDate] = useState(today.getDay() !== 0 ? today : tomorrow);
+  const [displayedRelaypoints, setDisplayedRelaypoints] = useState([]);
+  const [date, setDate] = useState(new Date());
   const [user, setUser] = useState({name:"", email: ""});
+  const [message, setMessage] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [objectDiscount, setObjectDiscount] = useState(null);
   const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
   let cartTotalPrice = 0;
+
+  useEffect(() => {
+     setCurrentUser();
+     CityActions.findAll()
+                .then(response => setCities(response));
+     RelaypointActions.findAll()
+                      .then(response => {
+                          setRelaypoints(response);
+                          setDisplayedRelaypoints(response.filter(relaypoint => !relaypoint.private))
+                      });
+  }, []);
+
+  useEffect(() => setCurrentUser(), [currentUser]);
 
   useEffect(() => {
       const productSet = getProductsFromIds(cartItems, products);
@@ -40,19 +64,92 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   }, [cartItems, products]);
 
   const onUserInputChange = (newUser) => setUser(newUser);
-  const onInformationsChange = (newInformations) => setInformations(newInformations);
-  const onUpdatePosition = (newInformations) => setInformations(informations => ({...newInformations, address2: informations.address2, phone: informations.phone}));
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
 
-  const onDateChange = date => {
-    const newSelection = new Date(date[0].getFullYear(), date[0].getMonth(), date[0].getDate(), 9, 0, 0);
-    setDate(newSelection);
-};
+  const handleCouponChange = ({ currentTarget }) =>{ 
+      setCoupon(currentTarget.value);
+      if (isDefined(objectDiscount))
+          clearDiscountAndAdvantages();
+  };
+
+  const handleCouponSubmit = e => {
+      e.preventDefault();
+      const privateRelaypoints = relaypoints.filter(relaypoint => relaypoint.accessCode === coupon);
+      if (isDefinedAndNotVoid(privateRelaypoints)) {
+          setDisplayedRelaypoints([...displayedRelaypoints, ...privateRelaypoints]);
+          setObjectDiscount(privateRelaypoints[0].promotion);
+          addToast("Vous avez débloqué l'accès à un point relais privé. Sélectionnez le sur la carte pour profiter de ses avantages.", { appearance: "warning", autoDismiss: true, autoDismissTimeout: 10000 });
+          return ;
+      }
+      PromotionActions.findByCode(coupon)
+          .then(response => {
+                if (response.length > 0) {
+                  setObjectDiscount(response[0]);
+                  setDiscount(response[0].percentage ? response[0].discount / 100 : response[0].discount);
+                } else {
+                  addToast("Le code promo saisi n'existe pas ou n'est plus valide", { appearance: "error", autoDismiss: true });
+                  setCoupon("");
+                }
+          });
+  };
 
   const handleSubmit = e => {
       e.preventDefault();
-      console.log(user);
-      console.log(informations);
+      if (!settings.onlinePayment) {
+        createOrder()
+            .then(response => {
+                addToast(
+                    "Votre commande nous est bien parvenue et nous vous en remercions !", 
+                    { appearance: "success", autoDismiss: true }
+                );
+            });
+      }
+  };
+
+  const clearDiscountAndAdvantages = () => {
+    if (objectDiscount.code === "relaypoint") {
+        setDisplayedRelaypoints(displayedRelaypoints.filter(relaypoint => !isDefined(relaypoint.promotion) || relaypoint.promotion.id !== objectDiscount.id));
+        setInformations({...informations, address: ""});
+    }
+    setObjectDiscount(null);
+    setDiscount(0);
+  };
+
+  const setCurrentUser = () => {
+      if (currentUser.id !== -1) {
+          const { name, email } = currentUser;
+          setUser({ name, email });
+          if (isDefined(currentUser.metas) && JSON.stringify(informations) === JSON.stringify(initialInformations)) {
+              setInformations(currentUser.metas);
+          }
+      }
+  };
+
+  const createOrder = (callBack = null) => {
+    const order = getOrderToWrite();
+    return OrderActions
+        .create(order)
+        .then(response => {
+          if (isDefined(callBack))
+              callBack(response)
+        })
+        .catch(error => addToast(
+            "Une erreur est survenue. Vérifiez l'état de votre connexion internet et que les champs sont correctement remplis.", 
+            { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }
+        ));
+  };
+
+  const getOrderToWrite = () => {
+      return {
+          ...user,
+          deliveryDate: date,
+          metas: {...informations},
+          message: message,
+          catalog: selectedCatalog['@id'],
+          uuid: currentUser.userId,
+          promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
+          items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
+      };
   };
 
   return (
@@ -73,103 +170,169 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(productCart) ?
-              <div className="row">
-                <div className="col-lg-7">
-                  <div className="billing-info-wrap">
-                    <h3 className="mb-0">{strings["shipping_details"]}</h3>
-                    <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                    <AddressPanel informations={ informations } onInformationsChange={ onInformationsChange } onPositionChange={ onUpdatePosition } errors={ errors }/>
-                    <div className="additional-info-wrap">
-                      <h3>{strings["additional_information"]}</h3>
-                      <div className="additional-info">
-                        <label>{strings["order_notes"]}</label>
-                        <textarea
-                          placeholder="Notes about your order, e.g. special notes for delivery. "
-                          name="message"
-                          defaultValue={""}
-                        />
+              <form onSubmit={ handleSubmit }>
+                <div className="row">
+                  <div className="col-lg-7">
+                    <div className="billing-info-wrap">
+                      <h3 className="mb-0">{strings["shipping_details"]}</h3>
+                      <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
+                      <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } displayedRelaypoints={ displayedRelaypoints } setDiscount={ setDiscount } objectDiscount={ objectDiscount } setObjectDiscount={ setObjectDiscount }/>
+                      <div className="additional-info-wrap">
+                        <h3>{strings["additional_information"]}</h3>
+                        <div className="additional-info">
+                          <label>{strings["order_notes"]}</label>
+                          <textarea
+                            className="form-control"
+                            placeholder="Notes about your order, e.g. special notes for delivery. "
+                            name="message"
+                            value={message}
+                            onChange={({currentTarget}) => setMessage(currentTarget.value)}
+                          />
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <div className="col-lg-5">
-                  <div className="your-order-area">
-                  <h3>{strings["delivery_date"]}</h3>
-                  <div className="row">
-                      <div className="col-md-12 row-date mb-5">
-                        {/* <label htmlFor="date" className="date-label">Date de livraison</label> */}
-                        <Flatpickr
-                            name="date"
-                            value={ date }
-                            onChange={ onDateChange }
-                            className="form-control form-control-sm"
-                            options={{
-                                dateFormat: "d/m/Y",
-                                minDate: today.getDay() !== 0 ? today : tomorrow,
-                                locale: French,
-                                disable: [(date) => date.getDay() === 0],
-                            }}
-                        />
-                      </div>
-                  </div>
-                    <h3>{strings["your_order"]}</h3>
-                    <div className="your-order-wrap gray-bg-4">
-                      <div className="your-order-product-info">
-                        <div className="your-order-top">
-                          <ul>
-                            <li>{strings["product"]}</li>
-                            <li>{strings["total"]}</li>
-                          </ul>
+                  <div className="col-lg-5">
+                    <div className="your-order-area">
+                      <DatePicker date={ date } setDate={ setDate } condition={ condition }/>
+                    <h3>{strings["coupon_code"]}</h3>
+                    <div className="discount-code-wrapper mb-5">
+                        <div className="title-wrap">
+                          <h4 className="cart-bottom-title section-bg-gray">{strings["use_coupon_code"]}</h4>
                         </div>
-                        <div className="your-order-middle">
-                          <ul>
-                            { productCart.map((cartItem, key) => {
-                              const taxToApply = isDefined(cartItem) && isDefined(cartItem.product) ? cartItem.product.taxes.find(tax => tax.country === country).rate : 0;
-                              const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount) : 0;
-                              const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
-                              const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                        <div className="discount-code">
+                          <p>{strings["enter_coupon_code"]}</p>
+                          <form>
+                            <input type="text" required name="coupon" value={ coupon } onChange={ handleCouponChange }/>
+                            <button className="cart-btn-2" type="submit" onClick={ handleCouponSubmit } disabled={ coupon.length === 0 }>{strings["apply_coupon"]}</button>
+                          </form>
+                        </div>
+                      </div>
+                      <h3>{strings["your_order"]}</h3>
+                      <div className="discount-code-wrapper your-order-wrap">
+                        <div className="your-order-product-info">
+                          <div className="your-order-top">
+                            <ul>
+                              <li><strong>{strings["product"]}</strong></li>
+                              <li><strong>{strings["total"]}</strong></li>
+                            </ul>
+                          </div>
+                          <div className="your-order-middle">
+                            <ul>
+                              { productCart.map((cartItem, key) => {
+                                const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                                const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount) : 0;
+                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? Math.round(cartItem.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100 : 0;
+                                const finalDiscountedPrice = Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100;
 
-                              cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity
+                                cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
 
-                              return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <></> :
-                                <li key={key}>
-                                  <span className="order-middle-left">
-                                    {cartItem.product.name} X {cartItem.quantity} {cartItem.product.unit}
-                                  </span>{" "}
-                                  <span className="order-price">
-                                    {discountedPrice !== null ? 
-                                      (finalDiscountedPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol :
-                                      (finalProductPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol}
-                                  </span>
+                                return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <div key={key}></div> :
+                                    <li key={key}>
+                                        <span className="order-middle-left">
+                                            {cartItem.product.name} X {cartItem.quantity} {cartItem.product.unit}
+                                        </span>{" "}
+                                        <span className="order-price">
+                                            {discountedPrice !== null ? 
+                                                (finalDiscountedPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol :
+                                                (finalProductPrice * cartItem.quantity).toFixed(2) + " " + currency.currencySymbol}
+                                        </span>
+                                    </li>
+                              })}
+                              { !isDefined(discount) || !isDefined(objectDiscount) || discount <= 0 ? <></> : 
+                                  <li className="text-success">
+                                      <span className="order-middle-left">
+                                          <strong>
+                                              { objectDiscount.percentage ? 
+                                                  "Remise de " + (discount * 100) + "%" :
+                                                  "Remise de " + discount + " " + currency.currencySymbol
+                                              }
+                                          </strong>
+                                      </span>
+                                      <span className="order-price">
+                                          <strong>
+                                               - { objectDiscount.percentage ? 
+                                                    (Math.round(cartTotalPrice * discount * 100) / 100).toFixed(2) + " " + currency.currencySymbol :
+                                                    discount.toFixed(2) + " " + currency.currencySymbol
+                                                  }
+                                          </strong>
+                                      </span>
+                                  </li>
+                              }
+                            </ul>
+                          </div>
+                          <div className="your-order-bottom">
+                            <ul>
+                                <li className="your-order-shipping"><strong>{strings["shipping"]}</strong></li>
+                                <li>
+                                  { selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
+                                    !isDefined(condition) || condition.price === 0 ? strings["free_shipping"] : 
+                                    condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
+                                    condition.price.toFixed(2) + " " + currency.currencySymbol
+                                  }
                                 </li>
-                            })}
-                          </ul>
+                            </ul>
+                          </div>
+                          { !isDefined(condition) && selectedCatalog.needsParcel ? 
+                              <div className="your-order-middle"> 
+                                    <ul>
+                                      { packages.map(_package => {
+                                        const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+                                        return <li>
+                                                <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
+                                                <span className="order-price">
+                                                  { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 " + currency.currencySymbol : 
+                                                    (catalogPrice.amount * _package.quantity).toFixed(2) + " " + currency.currencySymbol 
+                                                  }
+                                                </span>
+                                              </li>
+                                        })
+                                      }
+                                    </ul> 
+                              </div> : <></>
+                          }
+                          <div className={selectedCatalog.needsParcel ? "your-order-top" : "your-order-total"}>
+                            <ul>
+                                <li className="order-total">{strings["total"]}</li>
+                                <li>
+                                    { selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
+                                    
+                                      !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
+                                          !isDefined(objectDiscount) || objectDiscount.percentage ? 
+                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(cartTotalPrice * 100) / 100 - discount).toFixed(2) + " " + currency.currencySymbol
+                                      :
+                                          !isDefined(objectDiscount) || objectDiscount.percentage ? 
+                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + condition.price).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(cartTotalPrice * 100) / 100 - discount + condition.price).toFixed(2) + " " + currency.currencySymbol
+                                    }
+                                </li>
+                            </ul>
+                          </div>
                         </div>
-                        <div className="your-order-bottom">
-                          <ul>
-                            <li className="your-order-shipping">{strings["shipping"]}</li>
-                            <li>{strings["free_shipping"]}</li>
-                          </ul>
-                        </div>
-                        <div className="your-order-total">
-                          <ul>
-                            <li className="order-total">{strings["total"]}</li>
-                            <li>
-                              {currency.currencySymbol +
-                                cartTotalPrice.toFixed(2)}
-                            </li>
-                          </ul>
-                        </div>
+                        <div className="payment-method"></div>
                       </div>
-                      <div className="payment-method"></div>
-                    </div>
-                    <div className="place-order mt-25">
-                      <button className="btn-hover" onClick={ handleSubmit }>{strings["place_order"]}</button>
+                      <div className="place-order mt-25">
+                        { settings.onlinePayment ? 
+                          <PaymentForm
+                              name={ strings["place_order"] }
+                              user={ user }
+                              available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
+                              deleteAllFromCart={ deleteAllFromCart }
+                              objectDiscount={ objectDiscount }
+                              createOrder={ createOrder }
+                          />
+                          :
+                          <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
+                              {strings["place_order"]}
+                          </button>
+                        }
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </form>
             :
               <div className="row">
                 <div className="col-lg-12">
@@ -192,8 +355,21 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   );
 };
 
-Checkout.propTypes = { cartItems: PropTypes.array, currency: PropTypes.object,location: PropTypes.object};
+Checkout.propTypes = { 
+    cartItems: PropTypes.array, 
+    currency: PropTypes.object,
+    location: PropTypes.object,
+    deleteAllFromCart: PropTypes.func,
+};
 
-const mapStateToProps = state => ({cartItems: state.cartData, currency: state.currencyData})
+const mapStateToProps = (state, dispatch) => {
+    return {
+        cartItems: state.cartData, 
+        currency: state.currencyData,
+        deleteAllFromCart: addToast => {
+            dispatch(deleteAllFromCart(addToast));
+        }
+    };
+};
 
 export default connect(mapStateToProps)(multilanguage(Checkout));

@@ -4,5 +4,9 @@ export default React.createContext({
     products: [],
     setProducts: (value) => {},
     navSearch: '',
-    setNavSearch: (value) => {}
+    setNavSearch: (value) => {},
+    categories: [],
+    setCategories: (value) => {},
+    selectedCategory: -1,
+    setSelectedCategory: (value) => {}
 });

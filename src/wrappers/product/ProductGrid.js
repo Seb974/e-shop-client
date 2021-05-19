@@ -8,6 +8,7 @@ import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 import { getElementsFromIds } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const ProductGrid = ({ currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass }) => {    // products,
   
@@ -26,8 +27,8 @@ const ProductGrid = ({ currency, addToCart, addToWishlist, addToCompare, cartIte
             addToWishlist={addToWishlist}
             addToCompare={addToCompare}
             cartItem={ cartItems.filter(cartItem => cartItem.id === product.id)[0] }
-            wishlistItem={ getElementsFromIds(wishlistItems, products).filter(wishlistItem => wishlistItem.id === product.id)[0] }
-            compareItem={ getElementsFromIds(compareItems, products).filter(compareItem => compareItem.id === product.id)[0] }
+            wishlistItem={ !isDefinedAndNotVoid(wishlistItems) || !isDefinedAndNotVoid(products) ? undefined : getElementsFromIds(wishlistItems, products).filter(wishlistItem => isDefined(wishlistItem) && wishlistItem.id === product.id)[0] }
+            compareItem={ !isDefinedAndNotVoid(compareItems) || !isDefinedAndNotVoid(products) ? undefined : getElementsFromIds(compareItems, products).filter(compareItem => isDefined(compareItem) && compareItem.id === product.id)[0] }
             key={product.id}
           />
         );

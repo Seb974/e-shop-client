@@ -8,7 +8,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
 
     return (
         <>
-            <div className="row mb-1">
+            <div className="row mb-0">
                 <div className="col-md-12">
                     <Field 
                         name="name"
@@ -17,10 +17,11 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleUserChange }
                         placeholder="Nom"
                         error={ errors.name }
+                        required={ true }
                     />
                 </div>
             </div>
-            <div className="row mb-4">
+            <div className="row mb-2">
                 <div className="col-md-6">
                     <Field 
                         name="email"
@@ -30,6 +31,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleUserChange }
                         placeholder="Adresse email"
                         error={ errors.email }
+                        required={ true }
                     />
                 </div>
                 <div className="col-md-6">
@@ -41,6 +43,7 @@ const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
                         onChange={ handleChange }
                         placeholder="N° de téléphone"
                         error={ errors.phone }
+                        required={ true }
                     />
                 </div>
             </div>

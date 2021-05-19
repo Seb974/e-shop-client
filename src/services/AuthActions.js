@@ -1,6 +1,7 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import uuid from "uuid/v4";
 import api from '../config/api';
+import jwtDecode from 'jwt-decode';
 import Roles from '../config/Roles';
 import { isDefined } from '../helpers/utils';
 
@@ -47,14 +48,14 @@ function getCurrentUser() {
     if (token) {
         const { exp, id, name, roles, email, metas } = jwtDecode(token);
         if (exp * 1000 > new Date().getTime()) {
-            return {id, email, name, roles: Roles.filterRoles(roles), metas} ;
+            return {id, email, name, roles: Roles.filterRoles(roles), metas, userId: uuid()} ;
         }
     }
     return getDefaultUser();
 }
 
 function getDefaultUser() {
-    return {id:-1, name: "", email: "", roles: Roles.getDefaultRole(), metas: null};
+    return {id:-1, name: "", email: "", roles: Roles.getDefaultRole(), metas: null, userId: uuid()};
 }
 
 function isDefaultUser(user) {
@@ -89,6 +90,34 @@ function getGeolocation() {
             .catch(error => "RE");
 }
 
+function getUserSettings() {
+    return api.get('/api/groups')
+              .then(response => {
+                  const data = response.data['hydra:member'];
+                  if (data.length > 1) {
+                        const superAdmin = data.find(group => group.value === "ROLE_SUPER_ADMIN");
+                        const admin = data.find(group => group.value === "ROLE_ADMIN");
+                        return isDefined(superAdmin) ? superAdmin : admin;
+                  } else {
+                      return data[0];
+                  }
+                });
+}
+
+function updatePassword(user, passwords) {
+    return api.post('/api/reset-password', {username: user.email, passwords})
+              .then(response => response.data);
+}
+
+function deleteAccount(user, password) {
+    return api.post('/api/delete-account', {username: user.email, password})
+              .then(response => response.data);
+}
+
+function refreshUser(user) {
+    return ({...user, uuid: uuid()});
+}
+
 export default {
     authenticate,
     logout,
@@ -97,5 +126,9 @@ export default {
     getCurrentUser,
     isDefaultUser,
     setErrorHandler,
-    getGeolocation
+    getGeolocation,
+    getUserSettings,
+    updatePassword,
+    deleteAccount,
+    refreshUser
 }
