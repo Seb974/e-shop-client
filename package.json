@@ -9,7 +9,7 @@
     "animate.css": "^3.7.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
-    "event-source-polyfill": "^1.0.22",
+    "event-source-polyfill": "^1.0.24",
     "flatpickr": "^4.6.9",
     "google-maps-react": "^2.0.2",
     "jwt-decode": "^3.1.2",
@@ -20,6 +20,7 @@
     "react": "^17.0.1",
     "react-app-polyfill": "^1.0.4",
     "react-bootstrap": "^1.5.2",
+    "react-bootstrap-icons": "^1.4.0",
     "react-breadcrumbs-dynamic": "^1.2.1",
     "react-countdown-now": "^2.1.2",
     "react-countup": "^4.2.3",
@@ -76,6 +77,6 @@
   },
   "devDependencies": {
     "redux-devtools-extension": "^2.13.8",
-    "sass": "^1.29.0"
+    "sass": "^1.32.12"
   }
 }

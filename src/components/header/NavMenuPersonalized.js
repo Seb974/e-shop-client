@@ -25,7 +25,7 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
         <ul>
           <li>
             <Link to={process.env.PUBLIC_URL + "/"}>
-              {strings["home"]}
+            {strings["home"]} 
             </Link>
           </li>
           <li>
