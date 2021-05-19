@@ -5,6 +5,7 @@ import IconGroup from "../../components/header/IconGroup";
 import MobileMenu from "../../components/header/MobileMenu";
 import OffcanvasMenu from "../../components/header/OffcanvasMenu";
 import { useLocation } from 'react-router-dom';
+import * as icons from "react-bootstrap-icons";
 import Logo from "../../components/header/Logo";
 
 const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) => {
@@ -33,17 +34,18 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
 
   return (
     <header
-      className={`header-area sticky-bar header-padding-3 header-res-padding clearfix transparent-bar header-hm-7 
-          ${headerBgClass ? headerBgClass : ""} 
-          ${headerPaddingClass ? headerPaddingClass : ""} 
-          ${scroll > headerTop || stick !== "" ? "stick" : ""}`}
+      className={`header-area sticky-bar  header-padding-3 header-res-padding clearfix transparent-bar header-hm-7
+           ${headerBgClass ? headerBgClass : ""} 
+           ${headerPaddingClass ? headerPaddingClass : ""} 
+           ${scroll > headerTop || stick !== "" ? "stick" : ""}`}
     >
       <div className={layout === "container-fluid" ? layout : "container"}>
         <div className="row">
-          <div className="col-xl-5 col-lg-6 d-flex">
-            <div className="clickable-menu clickable-mainmenu-active align-self-center">
+          <div className="col-xl-5 col-lg-6  d-none d-lg-flex">
+            <div className="clickable-menu clickable-mainmenu-active align-self-center mt-0">
               <button className="my-auto" onClick={() => setOffcanvasActive(true)}>
-              <i className="fas fa-bars fa-sm"></i>
+              {/* <i className="fas fa-bars fa-sm"></i> */}
+              <icons.List/>
                 {/* <i className="pe-7s-menu" /> */}
               </button>
             </div>
@@ -53,18 +55,20 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
             <div className="logo text-center logo-hm5 my-2">
               <Link className="sticky-none" to={process.env.PUBLIC_URL + "/"}>
                 {/* <img src={} alt=""></img> */}
-                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="60"/>
+                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="50"/>
                 {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150" */}
               </Link>
               <Link className="sticky-block" to={process.env.PUBLIC_URL + "/"}>
-                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="60"/>
+                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="50"/>
               {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150"*/}
               </Link>
             </div>
           </div>
-          <div className="col-xl-5 col-lg-4 col-md-6 col-6">
+          <div className="col-xl-5 col-lg-4 col-md-6 col-6 d-flex justify-content-end px-3">
             {/* Icon group */}
-            { pathname !== '/' && <IconGroup iconWhiteClass="header-right-wrap-white" /> }
+            { /*pathname !== '/' && */ }
+            <IconGroup iconWhiteClass="header-right-wrap-white align-self-center m-0" /> 
+            
           </div>
         </div>
       </div>

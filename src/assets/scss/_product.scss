@@ -305,7 +305,6 @@
       flex-wrap: wrap;
 
       width: 100%;
-
       transform: translateX(-50%);
       > div {
         display: flex;
@@ -316,10 +315,10 @@
         height: 48px;
 
         transition: all 0.5s ease;
-        transform: translateY(20px);
+        transform: translateY(25px);
 
         opacity: 0;
-        background-color: $theme-color;
+        //background-color: $theme-color;
         @media #{$lg-layout, $md-layout, $xs-layout} {
           visibility: visible;
           opacity: 1;

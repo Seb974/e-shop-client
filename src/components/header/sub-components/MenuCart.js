@@ -74,8 +74,13 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
+<<<<<<< HEAD
               const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
                 single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+=======
+              const taxToApply = 0;
+              // const taxToApply = isDefined(single) && isDefined(single.product) ? single.product.taxes.find(tax => tax.country === country).rate : 0;
+>>>>>>> feature/custom-layout
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
               const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
               const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
