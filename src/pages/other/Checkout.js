@@ -95,10 +95,15 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
-      console.log(user);
-      console.log(informations);
-      console.log(message);
-      console.log(cartItems);
+      if (!settings.onlinePayment) {
+        createOrder()
+            .then(response => {
+                addToast(
+                    "Votre commande nous est bien parvenue et nous vous en remercions !", 
+                    { appearance: "success", autoDismiss: true }
+                );
+            });
+      }
   };
 
   const clearDiscountAndAdvantages = () => {
@@ -124,24 +129,22 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
     const order = getOrderToWrite();
     return OrderActions
         .create(order)
-        .then(response => callBack(response))
-        .catch(error => {
-          addToast(
+        .then(response => {
+          if (isDefined(callBack))
+              callBack(response)
+        })
+        .catch(error => addToast(
             "Une erreur est survenue. Vérifiez l'état de votre connexion internet et que les champs sont correctement remplis.", 
             { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }
-          );
-        })
-};
+        ));
+  };
 
   const getOrderToWrite = () => {
       return {
           ...user,
           deliveryDate: date,
           metas: {...informations},
-          // user: currentUser.id !== -1 ? '/api/users/' + currentUser.id : null,
           message: message,
-          // isRemains: false,                   // À definir au niveau du serveur
-          // status: "ON_PAYMENT",               // À definir au niveau du serveur, en fonction du group (à rajouter)
           catalog: selectedCatalog['@id'],
           uuid: currentUser.userId,
           promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
@@ -220,8 +223,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               { productCart.map((cartItem, key) => {
                                 const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
                                 const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount) : 0;
-                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? (cartItem.product.price * currency.currencyRate * (1 + taxToApply)) : 0;
-                                const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply));
+                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? Math.round(cartItem.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100 : 0;
+                                const finalDiscountedPrice = Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100;
 
                                 cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
 
@@ -311,15 +314,20 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         <div className="payment-method"></div>
                       </div>
                       <div className="place-order mt-25">
-                        <PaymentForm
-                            name={ strings["place_order"] }
-                            user={ user }
-                            available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
-                            deleteAllFromCart={ deleteAllFromCart }
-                            objectDiscount={ objectDiscount }
-                            createOrder={ createOrder }
-                        />
-                        {/* <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>{strings["place_order"]}</button> */}
+                        { settings.onlinePayment ? 
+                          <PaymentForm
+                              name={ strings["place_order"] }
+                              user={ user }
+                              available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
+                              deleteAllFromCart={ deleteAllFromCart }
+                              objectDiscount={ objectDiscount }
+                              createOrder={ createOrder }
+                          />
+                          :
+                          <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
+                              {strings["place_order"]}
+                          </button>
+                        }
                       </div>
                     </div>
                   </div>

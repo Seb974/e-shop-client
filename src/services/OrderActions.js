@@ -10,7 +10,6 @@ function update(id, owner, order) {
 }
 
 function deleteOrder(order, owner) {
-    console.log('delete with new content-type');
     return api.delete( '/api/order_entities/' + order.id + '?id=' + owner);
 }
 

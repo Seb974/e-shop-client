@@ -56,7 +56,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     },[currentUser]);
 
     useEffect(() => {
-        if (informations.address.length > 0 && !isRelaypoint) {
+        if (informations.address.length > 0 && !isRelaypoint && relaypoints.length > 0) {
             const newCondition = setCityCondition(informations.zipcode);
             const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position, selectedCatalog);
             if (isDefined(alternatives))
@@ -69,7 +69,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
         else if (informations.address.length === 0) {
             onClear()
         }
-    }, [informations.address]);
+    }, [informations.address, relaypoints]);
 
     const updatePosition = suggestion => {
         const { lat, lng } = suggestion.latlng;

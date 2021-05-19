@@ -16,6 +16,7 @@ import DeliveryContext from '../../contexts/DeliveryContext';
 import AuthContext from '../../contexts/AuthContext';
 import OrderActions from '../../services/OrderActions';
 import { useToasts } from 'react-toast-notifications';
+import AuthActions from '../../services/AuthActions';
 
 const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, objectDiscount, createOrder, strings }) => {
 
@@ -23,7 +24,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
     const elements = useElements();
     const { addToast } = useToasts();
     const [show, setShow] = useState(false);
-    const { currentUser, selectedCatalog } = useContext(AuthContext);
+    const { currentUser, selectedCatalog, setCurrentUser } = useContext(AuthContext);
     const { packages } = useContext(DeliveryContext);
     const [succeeded, setSucceeded] = useState(false);
     const [error, setError] = useState(null);
@@ -121,6 +122,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
                     setError(response.error.message);
                     setProcessing(false);
                     deleteOrder(order);
+                    setCurrentUser(AuthActions.refreshUser(currentUser));
                 } else {
                     sendToPreparation(order, clientSecret)
                         .then(response => response === undefined ? handleError() : handlePaymentSuccess())
@@ -148,6 +150,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
             "afin que nous puissions récupérer votre commande et la traiter.";
         setError(errorMessage);
         setProcessing(false);
+        setCurrentUser(AuthActions.refreshUser(currentUser));
     };
 
     const handlePaymentSuccess = () => {
@@ -155,6 +158,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
         setInputError(null);
         setProcessing(false);
         setSucceeded(true);
+        setCurrentUser(AuthActions.refreshUser(currentUser));
     };
 
     return (

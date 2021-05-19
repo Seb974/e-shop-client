@@ -56,8 +56,6 @@ const DataProvider = ({ children }) => {
             .then(response => setSettings(response));
     }, [isAuthenticated]);
 
-    useEffect(() => console.log(currentUser), [currentUser]);
-
     useEffect(() => {
         if (isDefinedAndNotVoid(catalogs) && isDefined(country)) {
             const catalog = catalogs.find(catalogOption => catalogOption.code === country);

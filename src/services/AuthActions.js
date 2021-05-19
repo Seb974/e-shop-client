@@ -114,6 +114,10 @@ function deleteAccount(user, password) {
               .then(response => response.data);
 }
 
+function refreshUser(user) {
+    return ({...user, uuid: uuid()});
+}
+
 export default {
     authenticate,
     logout,
@@ -125,5 +129,6 @@ export default {
     getGeolocation,
     getUserSettings,
     updatePassword,
-    deleteAccount
+    deleteAccount,
+    refreshUser
 }
