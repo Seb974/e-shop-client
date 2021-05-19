@@ -33,7 +33,7 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
               </select> */}
               <select className="form-control" value={ selectedCategory } onChange={ handleCategoryChange }>
                 <option value={-1}>Toutes</option>
-                { categories.map(category => <option value={ category.id }>{ category.name }</option>) }
+                { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
               </select>
             </div>
             {/* <p>

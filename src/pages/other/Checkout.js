@@ -122,25 +122,28 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const createOrder = (callBack = null) => {
     const order = getOrderToWrite();
-    console.log(order);
-    OrderActions
+    return OrderActions
         .create(order)
-        .then(response => {
-            if (isDefined(callBack))
-                callBack();
-        });
-  }
+        .then(response => callBack(response))
+        .catch(error => {
+          addToast(
+            "Une erreur est survenue. Vérifiez l'état de votre connexion internet et que les champs sont correctement remplis.", 
+            { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }
+          );
+        })
+};
 
   const getOrderToWrite = () => {
       return {
           ...user,
           deliveryDate: date,
           metas: {...informations},
-          user: currentUser.id !== -1 ? '/api/users/' + currentUser.id : null,
+          // user: currentUser.id !== -1 ? '/api/users/' + currentUser.id : null,
           message: message,
-          isRemains: false,
-          status: "",
+          // isRemains: false,                   // À definir au niveau du serveur
+          // status: "ON_PAYMENT",               // À definir au niveau du serveur, en fonction du group (à rajouter)
           catalog: selectedCatalog['@id'],
+          uuid: currentUser.userId,
           promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
           items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
       };

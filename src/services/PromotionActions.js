@@ -5,7 +5,6 @@ function findByCode(code) {
         .get('/api/promotions?code=' + code)
         .then(response => response.data['hydra:member']);
 }
-
 export default {
     findByCode
 }

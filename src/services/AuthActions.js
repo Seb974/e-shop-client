@@ -1,6 +1,7 @@
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
+import uuid from "uuid/v4";
 import api from '../config/api';
+import jwtDecode from 'jwt-decode';
 import Roles from '../config/Roles';
 import { isDefined } from '../helpers/utils';
 
@@ -47,14 +48,14 @@ function getCurrentUser() {
     if (token) {
         const { exp, id, name, roles, email, metas } = jwtDecode(token);
         if (exp * 1000 > new Date().getTime()) {
-            return {id, email, name, roles: Roles.filterRoles(roles), metas} ;
+            return {id, email, name, roles: Roles.filterRoles(roles), metas, userId: uuid()} ;
         }
     }
     return getDefaultUser();
 }
 
 function getDefaultUser() {
-    return {id:-1, name: "", email: "", roles: Roles.getDefaultRole(), metas: null};
+    return {id:-1, name: "", email: "", roles: Roles.getDefaultRole(), metas: null, userId: uuid()};
 }
 
 function isDefaultUser(user) {
@@ -106,33 +107,11 @@ function getUserSettings() {
 function updatePassword(user, passwords) {
     return api.post('/api/reset-password', {username: user.email, passwords})
               .then(response => response.data);
-    // const credentials = { username : user.email, password: passwords.current};
-    // return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
-    //         .then(response => {
-    //             if (!response.ok)
-    //                 throw Error({message: response.statusText, status: response.status});
-    //             return response;
-    //         })
-    //         .then(response => {
-    //             return api.put('/api/users/' + user.id, {...user, password: passwords.newPassword, roles: [user.roles]});
-    //         })
 }
 
 function deleteAccount(user, password) {
     return api.post('/api/delete-account', {username: user.email, password})
               .then(response => response.data);
-    // const credentials = { username : user.email, password};
-    // return fetch(api.API_DOMAIN + '/api/login_check', { method: "POST", body: JSON.stringify(credentials), headers: { "Content-Type": "application/json" }})
-    //         .then(response => {
-    //             if (!response.ok)
-    //                 throw Error({message: response.statusText, status: response.status});
-    //             return response;
-    //         })
-    //         .then(response => {
-    //             console.log(response);
-    //             logout();
-    //             return api.delete('/api/users/' + user.id);
-    //         })
 }
 
 export default {

@@ -14,13 +14,16 @@ import { multilanguage } from "redux-multilanguage";
 import { isDefined } from '../../helpers/utils';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import AuthContext from '../../contexts/AuthContext';
+import OrderActions from '../../services/OrderActions';
+import { useToasts } from 'react-toast-notifications';
 
 const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, objectDiscount, createOrder, strings }) => {
 
     const stripe = useStripe();
     const elements = useElements();
+    const { addToast } = useToasts();
     const [show, setShow] = useState(false);
-    const { selectedCatalog } = useContext(AuthContext);
+    const { currentUser, selectedCatalog } = useContext(AuthContext);
     const { packages } = useContext(DeliveryContext);
     const [succeeded, setSucceeded] = useState(false);
     const [error, setError] = useState(null);
@@ -30,6 +33,11 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
     const [clientSecret, setClientSecret] = useState('');
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
+
+    const updateError = "Votre paiement a bien été reçu et votre commande a bien été créée et sauvegardée.\n" +
+        "Toutefois, une erreur est survenue lors de son envoi en préparation.\n" +
+        "Nous vous invitons à contacter nos services sur les horaires d'ouverture, " +
+        "afin que nous puissions récupérer votre commande et la traiter.";
 
     const cardStyle = {
         style: {
@@ -55,14 +63,16 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
 
     const handleShow = () => setShow(true);
     const handleClose = () => {
-        setShow(false);
-        setError(null);
-        setInputError(null);
-        setLoading(false);
-        setProcessing(false);
-        if (succeeded) {
-            // deleteAllFromCart();
-            window.location.replace('/#/shop');
+        if (!processing && !loading) {
+            setShow(false);
+            setError(null);
+            setInputError(null);
+            setLoading(false);
+            setProcessing(false);
+            if (succeeded) {
+                // deleteAllFromCart();
+                window.location.replace('/#/shop');
+            }
         }
     };
 
@@ -102,7 +112,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
             .catch(error => setError(strings["payment_error"]));
     };
 
-    const confirmPayment = () => {
+    const confirmPayment = ( order ) => {
         setProcessing(true);
         stripe
             .confirmCardPayment(clientSecret, { payment_method: { card: elements.getElement(CardNumberElement) } })
@@ -110,20 +120,48 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
                 if (isDefined(response.error)) {
                     setError(response.error.message);
                     setProcessing(false);
+                    deleteOrder(order);
                 } else {
-                    setError(null);
-                    setInputError(null);
-                    setProcessing(false);
-                    setSucceeded(true);
+                    sendToPreparation(order, clientSecret)
+                        .then(response => response === undefined ? handleError() : handlePaymentSuccess())
+                        .catch(error => handleError());
                 }
             });
+    };
+
+    const sendToPreparation = (order, clientSecret) => {
+        return OrderActions
+                .update(order.id, currentUser.userId, {
+                    ...order,
+                    paymentId: clientSecret.substring(3, clientSecret.indexOf('_', 3)),
+                    items: order.items.map(item => ({...item, product: item.product['@id']}))
+                });
+    };
+
+    const deleteOrder = order => OrderActions.delete(order, currentUser.userId);
+
+    const handleError = () => {
+        const errorMessage = 
+            "Votre paiement a bien été reçu et votre commande a bien été créée et sauvegardée.\n" +
+            "Toutefois, une erreur est survenue lors de son envoi en préparation.\n" +
+            "Nous vous invitons à contacter nos services sur les horaires d'ouverture, " +
+            "afin que nous puissions récupérer votre commande et la traiter.";
+        setError(errorMessage);
+        setProcessing(false);
+    };
+
+    const handlePaymentSuccess = () => {
+        setError(null);
+        setInputError(null);
+        setProcessing(false);
+        setSucceeded(true);
     };
 
     return (
         <>
         <Button href="#" onClick={ handleShow } disabled={ !available }>{ name }</Button>
-        <Modal show={ show } onHide={ handleClose } size="md" aria-labelledby="contained-modal-title-vcenter" centered id="payment-modal">
-            <Modal.Header closeButton>
+        <Modal show={ show } onHide={ handleClose } backdrop="static" size="md" aria-labelledby="contained-modal-title-vcenter" centered id="payment-modal">
+            <Modal.Header closeButton={ !processing && !loading }>
                 <Modal.Title>{loading ? "Paiement" : "Paiement de " + amount.toFixed(2).replace('.', ',') + " €"}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
@@ -172,9 +210,11 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
                     <div className="card-error d-flex flex-column align-items-center" role="alert">
                         <p>{ error }</p>
                         <br/>
-                        <p>
-                            <Button variant="secondary" onClick={ handleRetry }>{ strings["retry"] }</Button>
-                        </p>
+                            <p>{ error === updateError ? 
+                                <Button variant="secondary" onClick={ handleClose }>{ "J'ai compris" }</Button>
+                            :
+                                <Button variant="secondary" onClick={ handleRetry }>{ strings["retry"] }</Button>
+                            }</p>
                     </div> 
                 : <></> 
                 }
