@@ -116,7 +116,8 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     };
 
     const isInitialState = (position) => {
-        return JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
+        return !isDefinedAndNotVoid(position) || !isDefinedAndNotVoid(selectedCatalog.center) ||
+               JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
                JSON.stringify(position) === JSON.stringify([0, 0]);
    }
 

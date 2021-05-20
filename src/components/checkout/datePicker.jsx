@@ -7,9 +7,9 @@ import { multilanguage } from "redux-multilanguage";
 import { getDateFrom, isDefined, isDefinedAndNotVoid, isPastHour, isSameDate } from '../../helpers/utils';
 import AuthContext from '../../contexts/AuthContext';
 import DayOffActions from '../../services/DayOffActions';
-import { getWeekDays } from '../../helpers/days';
+import { getWeekDays, getWorstConstraint } from '../../helpers/days';
 
-const DatePicker = ({date, setDate, condition, strings}) => {
+const DatePicker = ({date, setDate, condition, productCart, strings}) => {
 
     const { settings } = useContext(AuthContext);
     const [daysOff, setDaysOff] = useState([]);
@@ -39,7 +39,7 @@ const DatePicker = ({date, setDate, condition, strings}) => {
             setDate(minDate);
             setMinDate(minDate);
         }
-    }, [settings, daysOff, weekConstraints]);
+    }, [settings, daysOff, weekConstraints, productCart]);          // [settings, daysOff, weekConstraints]
 
     const onDateChange = datetime => {
         if (isDefinedAndNotVoid(datetime)) {
@@ -53,8 +53,9 @@ const DatePicker = ({date, setDate, condition, strings}) => {
     const getFirstOpenDay = () => {
         let i = 0;
         const start = isDefined(settings.hourLimit) && isPastHour(settings.hourLimit) ? getDateFrom(new Date(), 1) : new Date();
+        const minDelay = getWorstConstraint(productCart, settings.dayInterval);
         let openDay = start;
-        while (isOffDay(openDay) || i < settings.dayInterval) {
+        while (isOffDay(openDay) || i < minDelay) {     // settings.dayInterval
             i++;
             openDay = getDateFrom(start, i);
         }

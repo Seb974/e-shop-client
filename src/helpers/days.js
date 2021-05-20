@@ -18,3 +18,12 @@ export const isSameAddress = (address1, address2) => {
            address1.zipcode === address2.zipcode &&
            address1.address2 === address2.address2;
 };
+
+export const getWorstConstraint = (items, groupDelay) => {
+    let constraint = groupDelay;
+    items.map(item => {
+        const productConstraint = item.product.seller.delay;
+        constraint = productConstraint > constraint ? productConstraint : constraint;
+    });
+    return constraint;
+}

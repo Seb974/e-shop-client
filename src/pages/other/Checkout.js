@@ -189,7 +189,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
                   <div className="col-lg-5">
                     <div className="your-order-area">
-                      <DatePicker date={ date } setDate={ setDate } condition={ condition }/>
+                      <DatePicker date={ date } setDate={ setDate } condition={ condition } productCart={ productCart }/>
                     <h3>{strings["coupon_code"]}</h3>
                     <div className="discount-code-wrapper mb-5">
                         <div className="title-wrap">
