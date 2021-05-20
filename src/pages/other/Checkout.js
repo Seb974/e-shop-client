@@ -25,11 +25,13 @@ import { deleteAllFromCart } from "../../redux/actions/cartActions";
 import { useToasts } from "react-toast-notifications";
 import PromotionActions from "../../services/PromotionActions";
 import OrderActions from "../../services/OrderActions";
+import { getOrderToWrite, validateForm } from "../../helpers/checkout";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { addToast } = useToasts();
   const { products } = useContext(ProductsContext);
+  const initialErrors = {name:"", email: "", phone: "", address: ""};
   const { currentUser, country, settings, selectedCatalog } = useContext(AuthContext);
   const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
@@ -42,7 +44,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [objectDiscount, setObjectDiscount] = useState(null);
-  const [errors, setErrors] = useState({name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""});
+  const [errors, setErrors] = useState(initialErrors);
   let cartTotalPrice = 0;
 
   useEffect(() => {
@@ -95,14 +97,19 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
-      if (!settings.onlinePayment) {
-        createOrder()
-            .then(response => {
-                addToast(
-                    "Votre commande nous est bien parvenue et nous vous en remercions !", 
-                    { appearance: "success", autoDismiss: true }
-                );
-            });
+      const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
+      if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
+          setErrors({...initialErrors, ...newErrors});
+      } else {
+          if (!settings.onlinePayment) {
+            createOrder()
+                .then(response => {
+                    addToast(
+                        "Votre commande nous est bien parvenue et nous vous en remercions !", 
+                        { appearance: "success", autoDismiss: true }
+                    );
+                });
+          }
       }
   };
 
@@ -126,7 +133,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   };
 
   const createOrder = (callBack = null) => {
-    const order = getOrderToWrite();
+    const order = getOrderToWrite(user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser);
     return OrderActions
         .create(order)
         .then(response => {
@@ -137,19 +144,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
             "Une erreur est survenue. Vérifiez l'état de votre connexion internet et que les champs sont correctement remplis.", 
             { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }
         ));
-  };
-
-  const getOrderToWrite = () => {
-      return {
-          ...user,
-          deliveryDate: date,
-          metas: {...informations},
-          message: message,
-          catalog: selectedCatalog['@id'],
-          uuid: currentUser.userId,
-          promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
-          items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
-      };
   };
 
   return (
@@ -170,7 +164,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(productCart) ?
-              <form onSubmit={ handleSubmit }>
+              <form>
                 <div className="row">
                   <div className="col-lg-7">
                     <div className="billing-info-wrap">
@@ -318,13 +312,17 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                           <PaymentForm
                               name={ strings["place_order"] }
                               user={ user }
+                              informations={ informations }
                               available={ !(!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) }
                               deleteAllFromCart={ deleteAllFromCart }
                               objectDiscount={ objectDiscount }
                               createOrder={ createOrder }
+                              errors={ errors }
+                              initialErrors={ initialErrors }
+                              setErrors={ setErrors }
                           />
                           :
-                          <button type="submit" className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
+                          <button onClick={ handleSubmit } className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
                               {strings["place_order"]}
                           </button>
                         }

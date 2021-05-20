@@ -42,8 +42,10 @@ const DatePicker = ({date, setDate, condition, strings}) => {
     }, [settings, daysOff, weekConstraints]);
 
     const onDateChange = datetime => {
-        const newSelection = new Date(datetime[0].getFullYear(), datetime[0].getMonth(), datetime[0].getDate(), 9, 0, 0);
-        setDate(newSelection);
+        if (isDefinedAndNotVoid(datetime)) {
+            const newSelection = new Date(datetime[0].getFullYear(), datetime[0].getMonth(), datetime[0].getDate(), 9, 0, 0);
+            setDate(newSelection);
+        }
     };
 
     const isOffDay = date => daysOff.find(day => isSameDate(new Date(day.date), date)) !== undefined || weekConstraints.includes(date.getDay());        //  === 0

@@ -5,7 +5,7 @@ import Geocoder from 'react-map-gl-geocoder';
 import { multilanguage } from "redux-multilanguage";
 import { isDefined } from '../../../../helpers/utils';
 
-const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLocationPopup, setRelaypointPopup, setViewport, updatePosition, strings }) => {
+const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLocationPopup, setRelaypointPopup, setViewport, updatePosition, errors, strings }) => {
 
     const { country } = useContext(AuthContext);
 
@@ -44,14 +44,14 @@ const SearchBar = ({ mapRef, containerRef, informations, setIsRelaypoint, setLoc
     }
 
     return (
-        <Geocoder 
-            mapRef={ mapRef } 
-            containerRef={ containerRef } 
-            onResult={ onResult } 
-            inputValue={ "" } 
-            placeholder={ informations.address.length > 0 ? informations.address : strings['address'] } 
-            {...searchParams}
-        />
+            <Geocoder 
+                mapRef={ mapRef } 
+                containerRef={ containerRef } 
+                onResult={ onResult } 
+                inputValue={ "" } 
+                placeholder={ informations.address.length > 0 ? informations.address : strings['address'] } 
+                {...searchParams}
+            />
     );
 }
  

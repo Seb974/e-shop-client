@@ -13,7 +13,7 @@ import SearchBar from './search/searchBar';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount, objectDiscount, setObjectDiscount }) => {
+const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount, objectDiscount, setObjectDiscount, errors }) => {
 
     const map = useRef(null);
     const searchInput = useRef(null);
@@ -101,9 +101,9 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
         setIsRelaypoint(false);
         setCondition(undefined);
         setViewport({
-            latitude: isDefined(selectedCatalog) ? selectedCatalog.center[0] : defaultView.latitude,
-            longitude: isDefined(selectedCatalog) ? selectedCatalog.center[1] : defaultView.longitude,
-            zoom: isDefined(selectedCatalog) ? selectedCatalog.zoom : defaultView.zoom,
+            latitude: isDefined(selectedCatalog) && isDefinedAndNotVoid(selectedCatalog.center) ? selectedCatalog.center[0] : defaultView.latitude,
+            longitude: isDefined(selectedCatalog)&& isDefinedAndNotVoid(selectedCatalog.center) ? selectedCatalog.center[1] : defaultView.longitude,
+            zoom: isDefined(selectedCatalog) && isDefined(selectedCatalog.zoom) ? selectedCatalog.zoom : defaultView.zoom,
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         });
@@ -133,6 +133,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
                     setLocationPopup={ setLocationPopup }
                     setRelaypointPopup={ setRelaypointPopup }
                     setViewport={ setViewport }
+                    errors={ errors }
                 />
                 <RelaypointTools
                     informations={ informations }
@@ -165,6 +166,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
             </ReactMapGL>
             <div className="row mt-3 mb-5">
                 <div className="col-md-12 mt-4" ref={ searchInput }></div>
+                { errors.address && <p className="mapbox-validation-error">{ errors.address }</p> }
             </div>
         </>
     );
