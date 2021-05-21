@@ -126,7 +126,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       if (currentUser.id !== -1) {
           const { name, email } = currentUser;
           setUser({ name, email });
-          if (isDefined(currentUser.metas) && JSON.stringify(informations) === JSON.stringify(initialInformations)) {
+          if (isDefined(currentUser.metas) && isDefinedAndNotVoid(currentUser.metas.position) && JSON.stringify(informations) === JSON.stringify(initialInformations)) {
               setInformations(currentUser.metas);
           }
       }
