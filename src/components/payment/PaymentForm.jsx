@@ -89,7 +89,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
 
     const createPayment = () => {
         setLoading(true);
-         api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount})
+         api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount, condition: condition})
             .then(({data}) => {
                 setClientSecret(data.clientSecret);
                 setAmount(data.amount / 100 );
@@ -122,6 +122,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
         return OrderActions
                 .update(order.id, currentUser.userId, {
                     ...order,
+                    catalog: order.catalog['@id'],
                     paymentId: clientSecret.substring(3, clientSecret.indexOf('_', 3)),
                     items: order.items.map(item => ({...item, product: item.product['@id']}))
                 });

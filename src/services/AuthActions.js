@@ -47,6 +47,7 @@ function getCurrentUser() {
     const token = window.localStorage.getItem("authToken");
     if (token) {
         const { exp, id, name, roles, email, metas } = jwtDecode(token);
+        console.log(roles);
         if (exp * 1000 > new Date().getTime()) {
             return {id, email, name, roles: Roles.filterRoles(roles), metas, userId: uuid()} ;
         }
@@ -55,6 +56,7 @@ function getCurrentUser() {
 }
 
 function getDefaultUser() {
+    console.log(Roles.getDefaultRole());
     return {id:-1, name: "", email: "", roles: Roles.getDefaultRole(), metas: null, userId: uuid()};
 }
 

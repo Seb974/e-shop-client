@@ -23,7 +23,7 @@ export const updateError = "Votre paiement a bien été reçu et votre commande 
     "Nous vous invitons à contacter nos services sur les horaires d'ouverture, " +
     "afin que nous puissions récupérer votre commande et la traiter.";
 
-export const getOrderToWrite = (user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser) => {
+export const getOrderToWrite = (user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser, condition) => {
     return {
         ...user,
         deliveryDate: date,
@@ -31,6 +31,7 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
         message: message,
         catalog: selectedCatalog['@id'],
         uuid: currentUser.userId,
+        appliedCondition: isDefined(condition) ? condition['@id'] : null,
         promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
         items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
     };
@@ -39,6 +40,7 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
 export const validateForm = (user, informations, catalog, condition, relaypoints, addToast) => {
     let errors = {};
     let isCatalogError = false;
+    let notDeliverableAddress = false;
     if (!isValidName(user.name))
         errors['name'] = "Le nom n'est pas renseigné."
     if (!isValidEmail(user.email))
@@ -50,6 +52,9 @@ export const validateForm = (user, informations, catalog, condition, relaypoints
     else if (!isValidCatalog(catalog, informations)) {
         errors['address'] = "Adresse non disponible depuis le catalogue sélectionné."
         isCatalogError = true;
+    } else if (!isDeliverable(catalog, condition)) {
+        errors['address'] = "Pas de livraison à domicile à cette adresse."
+        notDeliverableAddress = true;
     }
 
     if (Object.keys(errors).length > 0) {
@@ -57,6 +62,8 @@ export const validateForm = (user, informations, catalog, condition, relaypoints
         if (Object.keys(errors).length === 1 && Object.keys(errors).includes('address')) {
             message = isCatalogError ? 
                 "L'adresse indiquée n'est pas accessible depuis le catalogue sélectionné. Veuillez s'il vous plaît changer de catalogue ou entrer une autre addresse." :
+            notDeliverableAddress ?
+                "Nous n'assurons pas les livraisons à domicile sur votre commune. Choisissez un point relais sur la carte dans une ville voisine." :
                 "L'adresse indiquée n'est pas valide. Choisissez parmis les propositions lors de la saisie ou sélectionnez un point-relais sur la carte";
         }
         addToast(message, { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 })
@@ -93,6 +100,10 @@ export const isValidAddress = (informations, catalog, condition, relaypoints) =>
 export const isValidCatalog = (catalog, informations) => {
     const { position } = informations;
     return isInSelectedCountry(position[0], position[1], catalog);
+};
+
+const isDeliverable = (catalog, condition) => {
+    return isDefined(catalog) && (catalog.needsParcel || (!catalog.needsParcel && isDefined(condition)));
 };
 
 const isSamePosition = (position1, position2) => JSON.stringify(position1) === JSON.stringify(position2);

@@ -15,8 +15,9 @@ function getRoles() {
 }
 
 function filterRoles(roles) {
-    const unused = ["ROLE_SELLER", "ROLE_DELIVERER", "ROLE_DELIVERY_SELLER"];
-    return roles.length === 1 ? roles[0] : roles.filter(role => !unused.includes(role))[0];
+    return roles[0];
+    // const unused = ["ROLE_SELLER", "ROLE_DELIVERER", "ROLE_DELIVERY_SELLER"];
+    // return roles.length === 1 ? roles[0] : roles.filter(role => !unused.includes(role))[0];
 }
 
 function hasPrivileges(user) {

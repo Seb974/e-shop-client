@@ -97,6 +97,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
+      console.log(condition);
       const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
       if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
           setErrors({...initialErrors, ...newErrors});
@@ -133,7 +134,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   };
 
   const createOrder = (callBack = null) => {
-    const order = getOrderToWrite(user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser);
+    const order = getOrderToWrite(user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser, condition);
     return OrderActions
         .create(order)
         .then(response => {
@@ -144,6 +145,11 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
             "Une erreur est survenue. Vérifiez l'état de votre connexion internet et que les champs sont correctement remplis.", 
             { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }
         ));
+  };
+
+  const getConditionTax = () => {
+      return !isDefined(condition) ? 0 :
+          condition.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.id === selectedCatalog.id).percent;
   };
 
   return (
@@ -263,7 +269,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                   { selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
                                     !isDefined(condition) || condition.price === 0 ? strings["free_shipping"] : 
                                     condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
-                                    condition.price.toFixed(2) + " " + currency.currencySymbol
+                                    (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100).toFixed(2) + " " + currency.currencySymbol
                                   }
                                 </li>
                             </ul>
@@ -298,8 +304,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                               (Math.round(cartTotalPrice * 100) / 100 - discount).toFixed(2) + " " + currency.currencySymbol
                                       :
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + condition.price).toFixed(2) + " " + currency.currencySymbol :
-                                              (Math.round(cartTotalPrice * 100) / 100 - discount + condition.price).toFixed(2) + " " + currency.currencySymbol
+                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100)).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(cartTotalPrice * 100) / 100 - discount + (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100)).toFixed(2) + " " + currency.currencySymbol
                                     }
                                 </li>
                             </ul>
