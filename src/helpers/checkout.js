@@ -33,7 +33,12 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
         uuid: currentUser.userId,
         appliedCondition: isDefined(condition) ? condition['@id'] : null,
         promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
-        items: productCart.map(item => ({product: item.product['@id'], orderedQty: item.quantity})),
+        items: productCart.map(item => ({
+            product: item.product['@id'],
+            variation: isDefined(item.selectedProductColor) ? item.selectedProductColor['@id'] : null,
+            size: isDefined(item.selectedProductSize) ? item.selectedProductSize['@id'] : null,
+            orderedQty: item.quantity,
+        })),
     };
 };
 

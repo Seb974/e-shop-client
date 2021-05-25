@@ -123,6 +123,9 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
                 .update(order.id, currentUser.userId, {
                     ...order,
                     catalog: order.catalog['@id'],
+                    user: isDefined(order.user) ? order.user['@id'] : null,
+                    promotion: isDefined(order.promotion) ? order.promotion['@id'] : null,
+                    appliedCondition: isDefined(order.appliedCondition) ? order.appliedCondition['@id'] : null,
                     paymentId: clientSecret.substring(3, clientSecret.indexOf('_', 3)),
                     items: order.items.map(item => ({...item, product: item.product['@id']}))
                 });
