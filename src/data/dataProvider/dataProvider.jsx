@@ -69,9 +69,9 @@ const DataProvider = ({ children }) => {
         <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight} }>
         <ContainerContext.Provider value={{ containers, setContainers }}>
         <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
-            {/* <MercureHub> */}
+            <MercureHub>
                 { children }
-            {/* </MercureHub> */}
+            </MercureHub>
         </ProductsContext.Provider>
         </ContainerContext.Provider>
         </DeliveryContext.Provider>
