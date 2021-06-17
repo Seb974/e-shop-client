@@ -34,7 +34,7 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
     useEffect(() => setWeekConstraints(getWeekConstraints()), [condition]);
 
     useEffect(() => {
-        if (isDefined(settings.dayInterval) && isDefinedAndNotVoid(daysOff)) {
+        if (isDefined(settings.dayInterval) && isDefined(daysOff) && Array.isArray(daysOff)) {
             const minDate = getFirstOpenDay();
             setDate(minDate);
             setMinDate(minDate);
