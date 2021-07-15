@@ -39,7 +39,7 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
             setDate(minDate);
             setMinDate(minDate);
         }
-    }, [settings, daysOff, weekConstraints, productCart]);          // [settings, daysOff, weekConstraints]
+    }, [settings, daysOff, weekConstraints, productCart]);
 
     const onDateChange = datetime => {
         if (isDefinedAndNotVoid(datetime)) {
@@ -55,7 +55,7 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
         const start = isDefined(settings.hourLimit) && isPastHour(settings.hourLimit) ? getDateFrom(new Date(), 1) : new Date();
         const minDelay = getWorstConstraint(productCart, settings.dayInterval);
         let openDay = start;
-        while (isOffDay(openDay) || i < minDelay) {     // settings.dayInterval
+        while (isOffDay(openDay) || i < minDelay) {
             i++;
             openDay = getDateFrom(start, i);
         }
@@ -93,5 +93,5 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
         </>
     );
 }
- 
+
 export default multilanguage(DatePicker);

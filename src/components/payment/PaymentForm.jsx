@@ -11,7 +11,7 @@ import Col from 'react-bootstrap/Col';
 import '../../assets/css/payment-form.css';
 import { Spinner } from 'react-bootstrap';
 import { multilanguage } from "redux-multilanguage";
-import { isDefined } from '../../helpers/utils';
+import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import AuthContext from '../../contexts/AuthContext';
 import OrderActions from '../../services/OrderActions';
@@ -132,7 +132,8 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
                         product: item.product['@id'],
                         variation: isDefined(item.variation) ? item.variation['@id'] : null,
                         size: isDefined(item.size) ? item.size['@id'] : null
-                    }))
+                    })),
+                    packages: !isDefinedAndNotVoid(order.packages) ? [] : order.packages.map(_package => ({..._package, container: _package.container['@id']}))
                 });
     };
 

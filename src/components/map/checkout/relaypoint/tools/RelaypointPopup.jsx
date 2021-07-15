@@ -21,7 +21,6 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
     }, [relaypoint]);
 
     const onSelect = e => {
-            // const { address, address2, zipcode, city } = relaypoint.metas;
             const { position, phone, user, ...mainMetas } = relaypoint.metas;
             const newCondition = relaypoint.conditions.find(condition => {
                 return condition.userGroups.find(group => group.value === settings.value) !== undefined;
@@ -29,7 +28,6 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
             if (isDefined(objectDiscount) && isDefined(relaypoint.promotion) && relaypoint.promotion.id === objectDiscount.id) {
                 setDiscount(isDefined(relaypoint.promotion.discount) ? relaypoint.promotion.discount : 0);
             }
-            // setInformations({...informations, address, address2, zipcode, city});
             setInformations({...informations, ...mainMetas});
             setCondition(newCondition);
             setViewport({

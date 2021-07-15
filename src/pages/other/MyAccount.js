@@ -48,7 +48,7 @@ const MyAccount = ({ location, strings }) => {
   const handleInformationsSubmit = e => {
       e.preventDefault();
       const { name, email, roles, ...dbUser } = currentUser;
-      const newUser = {...dbUser, ...user, metas: informations };
+      const newUser = {...dbUser, ...user, metas: {...currentUser.metas, ...informations} };
       console.log(newUser);
       UserAactions
           .update(currentUser.id, {...dbUser, ...user, metas: informations })

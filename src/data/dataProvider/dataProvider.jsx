@@ -17,7 +17,7 @@ const DataProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(AuthActions.isAuthenticated());
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
     const [settings, setSettings] = useState({});
-    const [country, setCountry] = useState("RE");
+    const [country, setCountry] = useState("FR");
     const [cities, setCities] = useState([]);
     const [catalogs, setCatalogs] = useState([]);
     const [selectedCatalog, setSelectedCatalog] = useState({});
@@ -35,8 +35,8 @@ const DataProvider = ({ children }) => {
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
-        AuthActions.getGeolocation()
-                   .then(response => setCountry(response));
+        // AuthActions.getGeolocation()
+        //            .then(response => setCountry(response));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
         ProductActions.findAll()

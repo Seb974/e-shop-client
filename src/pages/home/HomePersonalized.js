@@ -42,7 +42,7 @@ const HomePersonalized = () => {
         {/* countdown */}
         <CountDownFour
           spaceBottomClass="pb-100"
-          dateTime="April 29, 2021 23:12:00"
+          dateTime="August 29, 2021 23:12:00"
           countDownImage="/assets/img/banner/deal-7.png"
         />
         
