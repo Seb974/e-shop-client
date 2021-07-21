@@ -62,9 +62,12 @@ const ProductSlider = React.lazy(() => import("./pages/shop-product/ProductSlide
 const ProductFixedImage = React.lazy(() => import("./pages/shop-product/ProductFixedImage"));
 
 // blog pages
-const BlogStandard = React.lazy(() => import("./pages/blog/BlogStandard"));
-const BlogNoSidebar = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
-const BlogRightSidebar = React.lazy(() => import("./pages/blog/BlogRightSidebar"));
+const Articles = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
+const Article = React.lazy(() => import("./pages/blog/BlogDetailsStandard"));
+
+// const BlogStandard = React.lazy(() => import("./pages/blog/BlogStandard"));
+// const BlogNoSidebar = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
+// const BlogRightSidebar = React.lazy(() => import("./pages/blog/BlogRightSidebar"));
 const BlogDetailsStandard = React.lazy(() => import("./pages/blog/BlogDetailsStandard"));
 
 // other pages
@@ -144,9 +147,11 @@ const routes = [
                 { path: process.env.PUBLIC_URL + "/product-fixed-image/:id", name: 'ProductFixedImage', component: ProductFixedImage },
 
                 // {/* Blog pages */}
-                { path: process.env.PUBLIC_URL + "/blog-standard", name: 'BlogStandard', component: BlogStandard },
-                { path: process.env.PUBLIC_URL + "/blog-no-sidebar", name: 'BlogNoSidebar', component: BlogNoSidebar },
-                { path: process.env.PUBLIC_URL + "/blog-right-sidebar", name: 'BlogRightSidebar', component: BlogRightSidebar },
+                { path: process.env.PUBLIC_URL + "/articles/:id", name: 'Article', component: Article },
+                { path: process.env.PUBLIC_URL + "/articles", name: 'Articles', component: Articles },
+                // { path: process.env.PUBLIC_URL + "/blog-standard", name: 'BlogStandard', component: BlogStandard },
+                // { path: process.env.PUBLIC_URL + "/blog-no-sidebar", name: 'BlogNoSidebar', component: BlogNoSidebar },
+                // { path: process.env.PUBLIC_URL + "/blog-right-sidebar", name: 'BlogRightSidebar', component: BlogRightSidebar },
                 { path: process.env.PUBLIC_URL + "/blog-details-standard", name: 'BlogDetailsStandard', component: BlogDetailsStandard },
 
                 // {/* Other pages */}
