@@ -1,6 +1,8 @@
 import React, { Fragment, useEffect, useState } from "react";
+import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
 import api from "../../config/api";
+import { isDefined } from "../../helpers/utils";
 import ArticleActions from "../../services/ArticleActions";
 
 const BlogPostsNoSidebar = () => {
@@ -23,7 +25,17 @@ const BlogPostsNoSidebar = () => {
                       <div className="blog-wrap-2 mb-30">
                           <div className="blog-img-2">
                               <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
-                                  <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt="" />   {/* {process.env.PUBLIC_URL + "/assets/img/blog/blog-9.jpg"}  */}
+                                  {/* <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt="" />   {process.env.PUBLIC_URL + "/assets/img/blog/blog-9.jpg"}  */}
+                                  { isDefined(article.image.imgPath) ?
+                                    <Imgix  src={ article.image.imgPath } className="lazyload" alt={ article.filePath } width="750" disableSrcSet={ true } disableLibraryParam={ true }
+                                            attributeConfig={{
+                                              srcSet: 'data-srcset',
+                                              sizes: 'data-sizes'
+                                            }}
+                                    />
+                                    :
+                                    <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt=""/>
+                                  }
                               </Link>
                           </div>
                           <div className="blog-content-2">

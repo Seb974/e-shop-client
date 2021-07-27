@@ -2,13 +2,24 @@ import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import api from "../../config/api";
 import parse from 'html-react-parser';
+import Imgix from "react-imgix";
+import { isDefined } from "../../helpers/utils";
 
 const BlogPost = ({ article }) => {
   return (
     <Fragment>
       <div className="blog-details-top">
         <div className="blog-details-img">
-          <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt=""/>
+          { isDefined(article.image.imgPath) ?
+            <Imgix  src={ article.image.imgPath } className="lazyload" alt={ article.filePath } width="750" disableSrcSet={ true } disableLibraryParam={ true }
+                    attributeConfig={{
+                      srcSet: 'data-srcset',
+                      sizes: 'data-sizes'
+                    }}
+            />
+            :
+            <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt=""/>
+          }
         </div>
         <div className="blog-details-content mb-4">
           <div className="blog-meta-2">
