@@ -12,6 +12,7 @@ import AuthContext from "../../../contexts/AuthContext";
 import { definePackages, getAvailableWeight, getOrderWeight, formatPackages } from "../../../helpers/containers";
 import ContainerContext from "../../../contexts/ContainerContext";
 import DeliveryContext from "../../../contexts/DeliveryContext";
+import Imgix from "react-imgix";
 
 const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) => {
 
@@ -89,8 +90,19 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
                       { isDefined(single.isPackage) && single.isPackage ?
-                        <img alt="" src={single.product.image.filePath} className="img-fluid"/> :
-                        <img alt="" src={api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath} className="img-fluid"/>
+                            isDefined(single.product.image.imgPath) ?
+                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                        attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                                />
+                                :
+                                <img alt="" src={ single.product.image.filePath } className="img-fluid"/>
+                        :
+                            isDefined(single.product.image.imgPath) ?
+                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                        attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                                />
+                                :
+                                <img alt="" src={ api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath } className="img-fluid"/>
                       }
                     </Link>
                   </div>

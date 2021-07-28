@@ -14,6 +14,7 @@ import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
+import Imgix from "react-imgix";
 
 const ProductGridPersonalizedSingle = ({
   product,
@@ -79,24 +80,30 @@ const ProductGridPersonalizedSingle = ({
         >
           <div className="product-img">
             <a href="#" onClick={handleShowDetails}>
-              <img
-                className="default-img"
-                src={
-                  api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath
-                }
-                alt=""
-                height="500"
-                width="600"
-              />
-              <img
-                className="hover-img"
-                src={
-                  api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath
-                }
-                alt=""
-                height="500"
-                width="600"
-              />
+              { isDefined(product.image.imgPath) ?
+                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                  />
+                  :
+                  <img className="default-img"
+                    src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath } 
+                    alt=""
+                    height="500"
+                    width="600"
+                  />
+              }
+              { isDefined(product.image.imgPath) ?
+                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                  />
+                  :
+                  <img className="hover-img"
+                    src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
+                    alt=""
+                    height="500"
+                    width="600"
+                />
+              }
             </a>
             {!(product.discount || product.new) ? (
               ""
@@ -170,28 +177,30 @@ const ProductGridPersonalizedSingle = ({
               <div className="product-list-image-wrap">
                 <div className="product-img">
                   <a href="#" onClick={handleShowDetails}>
-                    <img
-                      className="default-img img-fluid"
-                      src={
-                        api.API_DOMAIN +
-                        "/uploads/pictures/" +
-                        product.image.filePath
-                      }
-                      alt=""
-                      height="800"
-                      width="600"
-                    />
-                    <img
-                      className="hover-img img-fluid"
-                      src={
-                        api.API_DOMAIN +
-                        "/uploads/pictures/" +
-                        product.image.filePath
-                      }
-                      alt=""
-                      height="800"
-                      width="600"
-                    />{" "}
+                    { isDefined(product.image.imgPath) ?
+                        <Imgix  src={ product.image.imgPath } className="lazyload default-img img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   // height="800"
+                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                        />
+                        :
+                        <img className="default-img img-fluid"
+                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
+                          alt=""
+                          height="800"
+                          width="600"
+                        />
+                    }
+                    { isDefined(product.image.imgPath) ?
+                        <Imgix  src={ product.image.imgPath } className="lazyload hover-img img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }  // height="800"
+                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                        />
+                        :
+                        <img className="hover-img img-fluid"
+                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
+                          alt=""
+                          height="800"
+                          width="600"
+                        />
+                    }{" "}
                     :
                   </a>
                   {!(product.discount || product.new) ? (
