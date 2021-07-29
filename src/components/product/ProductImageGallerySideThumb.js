@@ -2,6 +2,8 @@ import PropTypes from "prop-types";
 import React, { Fragment, useEffect, useState } from "react";
 import { LightgalleryProvider, LightgalleryItem } from "react-lightgallery";
 import Swiper from "react-id-swiper";
+import { isDefined } from "../../helpers/utils";
+import Imgix from "react-imgix";
 
 const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
   const [gallerySwiper, getGallerySwiper] = useState(null);
@@ -100,11 +102,13 @@ const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
                           </button>
                         </LightgalleryItem>
                         <div className="single-image">
-                          <img
-                            src={process.env.PUBLIC_URL + single}
-                            className="img-fluid"
-                            alt=""
-                          />
+                          { isDefined(single.imgPath) ?
+                            <Imgix  src={ single.imgPath } className="lazyload img-fluid" alt={ single.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                    attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                            />
+                            :
+                            <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt=""/>
+                        }
                         </div>
                       </div>
                     );
@@ -122,16 +126,17 @@ const ProductImageGalleryLeftThumb = ({ product, thumbPosition }) => {
         >
           <div className="product-small-image-wrapper product-small-image-wrapper--side-thumb">
             <Swiper {...thumbnailSwiperParams}>
-              {product.image &&
-                product.image.map((single, key) => {
+              { product.image && product.image.map((single, key) => {
                   return (
                     <div key={key}>
                       <div className="single-image">
-                        <img
-                          src={process.env.PUBLIC_URL + single}
-                          className="img-fluid"
-                          alt=""
-                        />
+                        { isDefined(single.imgPath) ?
+                            <Imgix  src={ single.imgPath } className="lazyload img-fluid" alt={ single.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                    attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                            />
+                            :
+                            <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" />
+                        }
                       </div>
                     </div>
                   );

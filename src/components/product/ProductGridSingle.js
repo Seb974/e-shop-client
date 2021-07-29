@@ -45,30 +45,30 @@ const ProductGridSingle = ({
             <Link to={process.env.PUBLIC_URL + "/product/" + product.id}>
               {Array.isArray(product.image) ? 
                 isDefined(product.image[0].imgPath) ?
-                  <Imgix  src={ product.image[0].imgPath } className="lazyload" alt={ product.image[0].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "default-img" }}
+                  <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
                   <img className="default-img" src={process.env.PUBLIC_URL + product.image[0] } alt="" />
               :
                 isDefined(product.image.imgPath) ?
-                  <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "default-img" }}
+                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
                   <img className="default-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" />
               }
               { !Array.isArray(product.image) || product.image.length <= 1 ? 
                 isDefined(product.image.imgPath) ?
-                  <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "hover-img" }}
+                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
                   <img className="hover-img" src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} alt="" />
               :
                 isDefined(product.image[1].imgPath) ?
-                  <Imgix  src={ product.image[1].imgPath } className="lazyload" alt={ product.image[1].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "hover-img" }}
+                  <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
                   <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1] } alt="" />

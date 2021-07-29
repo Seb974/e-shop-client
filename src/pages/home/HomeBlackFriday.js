@@ -9,6 +9,8 @@ import NewsletterThree from "../../wrappers/newsletter/NewsletterThree";
 import TestimonialOne from "../../wrappers/testimonial/TestimonialOne";
 import BannerThirtyThree from "../../wrappers/banner/BannerThirtyThree";
 import CountDownSeven from "../../wrappers/countdown/CountDownSeven";
+import TabProductThirteen from "../../wrappers/product/TabProductThirteen";
+import BrandLogoSliderOne from "../../wrappers/brand-logo/BrandLogoSliderOne";
 
 const HomeBlackFriday = () => {
   return (
@@ -36,18 +38,19 @@ const HomeBlackFriday = () => {
           bgColorClass="bg-black-2"
         />
         {/* tab product */}
-        <TabProductTwentyOne
-          category="black friday"
-          productTabClass="product-tab-pink product-tab-white"
-          bgColorClass="bg-black-2"
-          spaceBottomClass="pb-100"
-        />
+        {/* <TabProductThirteen
+          spaceBottomClass="pb-60"
+          spaceTopClass="pt-100"
+          category="auto parts"
+        /> */}
         {/* feature icon */}
-        <FeatureIconNine
+        {/* <FeatureIconNine
           containerClass="container"
           gutterClass="padding-10-row-col"
           bgColorClass="bg-black-2"
-        />
+        /> */}
+        <BrandLogoSliderOne spaceBottomClass="pb-95" spaceTopClass="pt-100" />
+        
         {/* newsletter */}
         <NewsletterThree
           spaceTopClass="pt-100"
@@ -59,11 +62,11 @@ const HomeBlackFriday = () => {
         {/* banner */}
         <BannerThirtyThree spaceBottomClass="pb-70" bgColorClass="bg-black-2" />
         {/* testimonial */}
-        <TestimonialOne
+        {/* <TestimonialOne
           spaceBottomClass="pb-95"
           bgColorClass="bg-black-2"
           testimonialClass="single-testimonial-2"
-        />
+        /> */}
       </LayoutTen>
     </Fragment>
   );

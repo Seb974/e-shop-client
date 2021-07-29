@@ -67,8 +67,6 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
       }
   }, [packages, selectedCatalog]);
 
-  // useEffect(() => console.log(availableWeight), [availableWeight]);
-
   return (
     <div className={"shopping-cart-content " + active}>
       { isDefinedAndNotVoid(productCart) ?

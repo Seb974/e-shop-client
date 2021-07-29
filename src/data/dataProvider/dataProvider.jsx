@@ -4,12 +4,14 @@ import AuthContext from '../../contexts/AuthContext';
 import ContainerContext from '../../contexts/ContainerContext';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import ProductsContext from '../../contexts/ProductsContext';
+import HomeContext from '../../contexts/HomeContext';
 import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 import AuthActions from '../../services/AuthActions';
 import CatalogActions from '../../services/CatalogActions';
 import ContainerActions from '../../services/ContainerActions';
 import CategoryActions from '../../services/CategoryActions';
 import ProductActions from '../../services/ProductActions';
+import HomepageActions from '../../services/HomepageActions';
 import dbProducts from "../products.json";
 
 const DataProvider = ({ children }) => {
@@ -32,6 +34,7 @@ const DataProvider = ({ children }) => {
     const [packages, setPackages] = useState([]);
     const [totalWeight, setTotalWeight] = useState(null);
     const [availableWeight, setAvailableWeight] = useState(null);
+    const [homepage, setHomepage] = useState(null);
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
@@ -47,6 +50,11 @@ const DataProvider = ({ children }) => {
                       .then(response => setCatalogs(response));
         CategoryActions.findAll()
                        .then(response => setCategories(response));
+        HomepageActions.findAll()
+                        .then(response => {
+                            console.log(response);
+                            setHomepage(response.find(h => h.selected));
+                        });
     }, []);
 
     useEffect(() => {
@@ -69,9 +77,11 @@ const DataProvider = ({ children }) => {
         <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight} }>
         <ContainerContext.Provider value={{ containers, setContainers }}>
         <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
+        <HomeContext.Provider value={{ homepage, setHomepage }}>
             {/* <MercureHub> */}
                 { children }
             {/* </MercureHub> */}
+        </HomeContext.Provider>
         </ProductsContext.Provider>
         </ContainerContext.Provider>
         </DeliveryContext.Provider>

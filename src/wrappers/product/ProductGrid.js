@@ -16,7 +16,7 @@ const ProductGrid = ({ currency, addToCart, addToWishlist, addToCompare, cartIte
 
   return (
     <Fragment>
-      { products.map(product => {
+      { products.filter((p, i) => i < 4).map(product => {
         return (
           <ProductGridSingle
             sliderClassName={sliderClassName}

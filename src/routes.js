@@ -1,6 +1,7 @@
 import React from 'react';
 
 // home pages
+const HomeWrapper = React.lazy(() => import("./pages/home/HomeWrapper"));
 const HomePersonalized = React.lazy(() => import("./pages/home/HomePersonalized"));
 const HomeFashion = React.lazy(() => import("./pages/home/HomeFashion"));
 const HomeFashionTwo = React.lazy(() => import("./pages/home/HomeFashionTwo"));
@@ -84,7 +85,8 @@ const Checkout = React.lazy(() => import("./pages/other/Checkout"));
 const NotFound = React.lazy(() => import("./pages/other/NotFound"));
 
 const routes = [
-                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
+                // { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
+                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomeWrapper },
                 { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },
 
                 // {/* Homepages */}
