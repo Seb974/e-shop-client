@@ -1,20 +1,27 @@
 import PropTypes from "prop-types";
 import React from "react";
+import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
+import api from "../../config/api";
+import { isDefined } from "../../helpers/utils";
 
 const BannerThirtyFiveSingle = ({ data, spaceBottomClass }) => {
   return (
     <div className="col-lg-4 col-md-4">
-      <div
-        className={`single-banner ${spaceBottomClass ? spaceBottomClass : ""}`}
-      >
-        <Link to={process.env.PUBLIC_URL + data.url}>
-          <img src={process.env.PUBLIC_URL + data.image} alt="" />
+      <div className={`single-banner ${spaceBottomClass ? spaceBottomClass : ""}`}>
+        <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}>
+          { isDefined(data.image.imgPath) ?
+                <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width="370" disableSrcSet={ true } disableLibraryParam={ true }
+                        attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                />
+                :
+                <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + data.image.filePath } alt="" />
+          }
         </Link>
         <div className="banner-content-5">
-          <span>{data.title}</span>
-          <h3>{data.subtitle}</h3>
-          <Link to={process.env.PUBLIC_URL + data.url}>
+          <span>{ data.title }</span>
+          <h3>{ data.subtitle }</h3>
+          <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}>
             <i className="fa fa-long-arrow-right" />
           </Link>
         </div>

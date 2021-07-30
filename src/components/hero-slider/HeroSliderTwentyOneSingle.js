@@ -1,22 +1,21 @@
 import PropTypes from "prop-types";
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Background } from 'react-imgix'
+import { Background } from 'react-imgix';
 import { isDefined } from "../../helpers/utils";
 
 const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
 
   return (
-    // <div
-    //   className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${
-    //     sliderClass ? sliderClass : ""
-    //   }`}
-    //   // style={{ backgroundImage: `url(${process.env.PUBLIC_URL + data.image})` }}
-    //   style={{ backgroundImage: `url(${data.image.imgPath})` }}
-    // >
-    <Background src={ data.image.imgPath } className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${sliderClass ? sliderClass : ""}`}
-      imgixParams={{ w: 1920, h: 775 }} disableLibraryParam={ true }    // disableQualityByDPR={ false }
+    <div
+      className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${
+        sliderClass ? sliderClass : ""
+      }`}
+      style={{ backgroundImage: `url(${data.image.imgPath})` }}
     >
+    {/* // <Background src={ data.image.imgPath } className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${sliderClass ? sliderClass : ""}`}
+    //   imgixParams={{ w: 1920, h: 775 }} disableLibraryParam={ true }    // disableQualityByDPR={ false }
+    // > */}
         <div className="container">
           <div className="row">
             <div className="col-xl-6 col-lg-7 col-md-8 col-12">
@@ -39,8 +38,8 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
             </div>
           </div>
         </div>
-    </Background>
-    // </div>
+    {/* </Background> */}
+    </div>
   );
 };
 
