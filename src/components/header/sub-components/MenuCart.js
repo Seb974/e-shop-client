@@ -32,17 +32,18 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData, products]);
 
   useEffect(() => {
-    // console.log("update");
-    // console.log(productCart);
-    // console.log(packageUpdate);
-    // console.log(containers);
-    // console.log(selectedCatalog);
-    // console.log(products);
     if (isDefinedAndNotVoid(productCart) && !packageUpdate && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
         setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
         setPackageUpdate(false);
     }
   }, [productCart, containers, selectedCatalog]);
+
+  useEffect(() => {
+    if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
+        setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
+        setPackageUpdate(false);
+    }
+  }, [containers]);
 
   useEffect(() => {
       if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {

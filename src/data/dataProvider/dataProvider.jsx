@@ -13,6 +13,8 @@ import CategoryActions from '../../services/CategoryActions';
 import ProductActions from '../../services/ProductActions';
 import HomepageActions from '../../services/HomepageActions';
 import dbProducts from "../products.json";
+import Mercure from '../../mercure/Mercure';
+import Roles from '../../config/Roles';
 
 const DataProvider = ({ children }) => {
 
@@ -51,10 +53,7 @@ const DataProvider = ({ children }) => {
         CategoryActions.findAll()
                        .then(response => setCategories(response));
         HomepageActions.findAll()
-                        .then(response => {
-                            console.log(response);
-                            setHomepage(response.find(h => h.selected));
-                        });
+                        .then(response => setHomepage(response.find(h => h.selected)));
     }, []);
 
     useEffect(() => {
@@ -78,9 +77,9 @@ const DataProvider = ({ children }) => {
         <ContainerContext.Provider value={{ containers, setContainers }}>
         <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
         <HomeContext.Provider value={{ homepage, setHomepage }}>
-            {/* <MercureHub> */}
+            <Mercure>
                 { children }
-            {/* </MercureHub> */}
+            </Mercure>
         </HomeContext.Provider>
         </ProductsContext.Provider>
         </ContainerContext.Provider>

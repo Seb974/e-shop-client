@@ -92,7 +92,7 @@ const MyAccount = ({ location, strings }) => {
       if (currentUser.id !== -1) {
           const { name, email } = currentUser;
           setUser({ name, email });
-          if (isDefined(currentUser.metas) && isDefined(currentUser.metas.address) && JSON.stringify(informations) === JSON.stringify(initialInformations)) {
+          if (isDefined(currentUser.metas) && isDefined(currentUser.metas.address) && (JSON.stringify(informations) === JSON.stringify(initialInformations) || JSON.stringify(informations) !== JSON.stringify(currentUser.metas))) {
               setInformations(currentUser.metas);
           }
       }

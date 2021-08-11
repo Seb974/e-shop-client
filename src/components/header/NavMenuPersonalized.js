@@ -55,7 +55,7 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
           </li>
           <li>
               { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
-                <a className="nav-link ml-2" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
+                <a href="#" onClick={ handleLogout }>{strings["logout"]}</a>
               }
           </li>
         </ul>

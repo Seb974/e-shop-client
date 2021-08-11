@@ -1,4 +1,4 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { useEffect } from "react";
 import MetaTags from "react-meta-tags";
 import HomeContext from "../../contexts/HomeContext";
@@ -11,7 +11,8 @@ import ValentinesDayContent from "./ValentinesDayContent";
 
 const HomeWrapper = () => {
 
-    const { homepage } = useContext(HomeContext);
+    const { homepage, setHomepage } = useContext(HomeContext);
+    const [mercureOpering, setMercureOpering] = useState(false);
 
     return (
         <Fragment>
@@ -29,7 +30,8 @@ const HomeWrapper = () => {
                 homepage.name.toUpperCase() === "VALENTINES DAY" ? 
                     <ValentinesDayContent /> :
                 homepage.name.toUpperCase() === "BLACK FRIDAY" ?
-                    <BlackFridayContent /> : <BlackFridayTwoContent />
+                    <BlackFridayContent /> : 
+                    <BlackFridayTwoContent />
             }
         </Fragment>
     );

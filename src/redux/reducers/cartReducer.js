@@ -11,8 +11,8 @@ import { isDefinedAndNotVoid } from '../../helpers/utils';
 const initState = [];
 
 const cartReducer = (state = initState, action) => {
-  const cartItems = state,
-    product = action.payload;
+
+  const cartItems = state, product = action.payload;
 
   if (action.type === ADD_TO_CART) {
     // for non variant products

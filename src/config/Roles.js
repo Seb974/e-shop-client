@@ -42,6 +42,19 @@ function getRoleLabel(userRoles) {
     return roles.find(role => userRole === role.value).label;
 }
 
+function isRelaypoint(roles) {
+    return (Array.isArray(roles) && roles.includes("ROLE_RELAYPOINT")) || roles === "ROLE_RELAYPOINT";
+}
+
+function hasAdminAccess(user) {
+    const adminAccessRoles = ["ROLE_SELLER", "ROLE_DELIVERER", "ROLE_TEAM", "ROLE_PICKER", "ROLE_RELAYPOINT", "ROLE_SUPERVISOR"];
+    return adminAccessRoles.includes(user.roles);
+}
+
+function isBasicUser(user) {
+    return ["ROLE_USER"].includes(user.roles);
+}
+
 export default {
     getRoles,
     filterRoles,
@@ -49,5 +62,8 @@ export default {
     hasPrivileges,
     hasAdminPrivileges,
     hasAllPrivileges,
-    getRoleLabel
+    getRoleLabel,
+    isRelaypoint,
+    hasAdminAccess,
+    isBasicUser
 }
