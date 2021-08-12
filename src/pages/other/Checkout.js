@@ -52,11 +52,18 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
      CityActions.findAll()
                 .then(response => setCities(response));
      RelaypointActions.findAll()
-                      .then(response => {
-                          setRelaypoints(response);
-                          setDisplayedRelaypoints(response.filter(relaypoint => !relaypoint.private))
-                      });
+                      .then(response => setRelaypoints(response));
   }, []);
+
+  useEffect(() => setActiveRelaypoints(), [relaypoints]);
+
+  const setActiveRelaypoints = () => {
+      if (isDefinedAndNotVoid(relaypoints)) {
+        const actives = relaypoints.filter(relaypoint => !relaypoint.private);
+        const privates = isDefinedAndNotVoid(displayedRelaypoints) ? displayedRelaypoints.filter(r => r.private) : [];
+        setDisplayedRelaypoints([...actives, ...privates]);
+      }
+  };
 
   useEffect(() => setCurrentUser(), [currentUser]);
 
@@ -97,7 +104,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
-      console.log(condition);
       const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
       if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
           setErrors({...initialErrors, ...newErrors});

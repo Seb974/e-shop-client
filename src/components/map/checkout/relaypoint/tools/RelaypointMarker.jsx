@@ -1,4 +1,5 @@
 import React from 'react';
+import { useEffect } from 'react';
 import { Marker } from 'react-map-gl';
 
 const RelaypointMarker = ({ position, relaypoint, setTooltip, setPopup }) => {
@@ -8,6 +9,11 @@ const RelaypointMarker = ({ position, relaypoint, setTooltip, setPopup }) => {
         setTooltip(undefined);
         setPopup(relaypoint);
     };
+
+    useEffect(() => {
+        if ('@context' in relaypoint && JSON.stringify(relaypoint.metas.position) === JSON.stringify(position))
+            setPopup(relaypoint);
+    }, [relaypoint]);
 
     return position === null ? null : (
         <Marker key={ relaypoint.id } latitude={ position[0] } longitude={ position[1] } offsetLeft={10} offsetTop={-35}>

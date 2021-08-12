@@ -15,4 +15,8 @@ export default React.createContext({
     setUpdatedContainers: (value) => {},
     updatedHomepages: [],
     setUpdatedHomepages: (value) => {},
+    updatedRelaypoints: [],
+    setUpdatedRelaypoints: (value) => {},
+    updatedCities: [],
+    setUpdatedCities: (value) => {},
 });

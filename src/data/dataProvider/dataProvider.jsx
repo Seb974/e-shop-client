@@ -21,7 +21,7 @@ const DataProvider = ({ children }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(AuthActions.isAuthenticated());
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
     const [settings, setSettings] = useState({});
-    const [country, setCountry] = useState("FR");
+    const [country, setCountry] = useState("RE");
     const [cities, setCities] = useState([]);
     const [catalogs, setCatalogs] = useState([]);
     const [selectedCatalog, setSelectedCatalog] = useState({});

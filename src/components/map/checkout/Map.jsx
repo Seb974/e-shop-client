@@ -119,7 +119,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
         return !isDefinedAndNotVoid(position) || !isDefinedAndNotVoid(selectedCatalog.center) ||
                JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
                JSON.stringify(position) === JSON.stringify([0, 0]);
-   }
+    };
 
     return (
         <>
