@@ -15,7 +15,7 @@ const MercureHub = ({ children }) => {
     const { packages, setPackages, tourings, setTourings, relaypoints, setRelaypoints } = useContext(DeliveryContext);
     const { updatedOrders, setUpdatedOrders, updatedProducts, setUpdatedProducts, updatedCategories, setUpdatedCategories } = useContext(MercureContext);
     const { updatedUsers, setUpdatedUsers, updatedContainers, setUpdatedContainers, updatedHomepages, setUpdatedHomepages } = useContext(MercureContext);
-    const { updatedRelaypoints, setUpdatedRelaypoints, updatedCities, setUpdatedCities } = useContext(MercureContext);
+    const { updatedRelaypoints, setUpdatedRelaypoints, updatedCities, setUpdatedCities, updatedArticles, setUpdatedArticles } = useContext(MercureContext);
 
     useEffect(() => {
         closeIfExists();
@@ -36,6 +36,7 @@ const MercureHub = ({ children }) => {
         url.searchParams.append('topic', api.API_DOMAIN + '/api/heroes/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/banners/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/countdowns/{id}');
+        url.searchParams.append('topic', api.API_DOMAIN + '/api/articles/{id}');
         setEventSource(new EventSourcePolyfill(url, { withCredentials: true }));
     }, [currentUser]);
 
@@ -64,7 +65,7 @@ const MercureHub = ({ children }) => {
         if (data['@id'].includes('users') || (data['@id'].includes('metas') && (!isDefined(data.isRelaypoint) || !data.isRelaypoint)))
             setUpdatedUsers([...updatedUsers, data]);
 
-        if (data['@id'].includes('order_entities') && updatedOrders.findIndex(o => o.id === data.id) === -1)
+        if (data['@id'].includes('order_entities'))     // && updatedOrders.findIndex(o => o.id === data.id) === -1
             setUpdatedOrders([...updatedOrders, data]);
 
         if (data['@id'].includes('products') || (data['@id'].includes('prices') && !data['@id'].includes('catalog_prices')) || data['@id'].includes('stocks'))
@@ -78,6 +79,9 @@ const MercureHub = ({ children }) => {
 
         if (data['@id'].includes('cities') || (data['@id'].includes('conditions') && isDefined(data.isRelaypoint) && !data.isRelaypoint))
             setUpdatedCities([...updatedCities, data]);
+        
+        if (data['@id'].includes('articles'))
+            setUpdatedArticles([...updatedArticles, data]);
     };
 
     return <>{ children }</>

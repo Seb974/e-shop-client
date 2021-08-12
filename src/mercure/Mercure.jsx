@@ -31,6 +31,7 @@ const Mercure = ({ children }) => {
     const [updatedHomepages, setUpdatedHomepages] = useState([]);
     const [updatedRelaypoints, setUpdatedRelaypoints] = useState([]);
     const [updatedCities, setUpdatedCities] = useState([]);
+    const [updatedArticles, setUpdatedArticles] = useState([]);
 
     const [productOpering, setProductOpering] = useState(false);
     const [categoryOpering, setCategoryOpering] = useState(false);
@@ -105,7 +106,8 @@ const Mercure = ({ children }) => {
                 updatedContainers, setUpdatedContainers,
                 updatedHomepages, setUpdatedHomepages,
                 updatedRelaypoints, setUpdatedRelaypoints,
-                updatedCities, setUpdatedCities
+                updatedCities, setUpdatedCities,
+                updatedArticles, setUpdatedArticles
             }}
         >
             <MercureHub>

@@ -1,25 +1,37 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
 import api from "../../config/api";
-import { isDefined } from "../../helpers/utils";
 import ArticleActions from "../../services/ArticleActions";
+import MercureContext from "../../contexts/MercureContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { updateArticles } from "../../data/dataProvider/eventHandlers/articleEvents";
 
 const BlogPostsNoSidebar = () => {
 
+  const { updatedArticles, setUpdatedArticles } = useContext(MercureContext);
+  const [articlesOpering, setArticlesOpering] = useState(false);
   const [articles, setArticles] = useState([]);
 
   useEffect(() => fetchArticles(), []);
 
+  useEffect(() => {
+      if (isDefinedAndNotVoid(updatedArticles) && !articlesOpering) {
+          setArticlesOpering(true);
+          updateArticles(articles, setArticles, updatedArticles, setUpdatedArticles)
+              .then(response => setArticlesOpering(response));
+      }
+  }, [updatedArticles]);
+
   const fetchArticles = () => {
       ArticleActions
           .findAll()
-          .then(response => setArticles(response));
+          .then(response => setArticles(response.filter(a => a.visible)));
   };
 
   return (
     <Fragment>
-      {   articles.map(article => {
+      { articles.map(article => {
               return (
                   <div className="col-lg-4 col-md-6 col-sm-12">
                       <div className="blog-wrap-2 mb-30">
@@ -41,12 +53,12 @@ const BlogPostsNoSidebar = () => {
                           <div className="blog-content-2">
                               <div className="blog-meta-2">
                                   <ul>
-                                      <li>22 April, 2020</li>
-                                      <li>
+                                      <li>Le { (new Date(article.publishedAt)).toLocaleDateString('fr-FR', { timeZone: 'UTC'}) }</li>
+                                      {/* <li>
                                           <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
                                             4 <i className="fa fa-comments-o" />
                                           </Link>
-                                      </li>
+                                      </li> */}
                                   </ul>
                               </div>
                             <h4>

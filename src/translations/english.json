@@ -168,5 +168,20 @@
   "confirm_deletion": "Please confirm for deleting account",
   "confirm": "Confirm",
   "cancel": "Cancel",
-  "error_occured": "An error occured. Please try later."
+  "error_occured": "An error occured. Please try later.",
+  "my_orders": "My orders",
+  "order_number": "Order number",
+  "status": "Status",
+  "ON_PAYMENT": "On payment",
+  "WAITING": "Waiting for preparation",
+  "PRE-PREPARED": "Preparing",
+  "PREPARED": "Prepared",
+  "READY": "Ready to go",
+  "ON_TRUCK": "On truck",
+  "COLLECTABLE": "On relaypoint", 
+  "DELIVERED": "Delivered", 
+  "SHIPPED": "Shipped",
+  "ABORTED": "Aborted",
+  "date": "Date",
+  "no_order": "No order"
 }

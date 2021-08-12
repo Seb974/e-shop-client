@@ -22,7 +22,7 @@ const Map = ({ informations, setInformations }) => {
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
 
     useEffect(() => {
-        if (isDefined(informations)) {
+        if (isDefined(informations) && isDefinedAndNotVoid(informations.position)) {
             setViewport({
                 ...viewport, 
                 latitude: informations.position[0] , 
@@ -59,18 +59,13 @@ const Map = ({ informations, setInformations }) => {
             city: ''
         }));
         setViewport({
-            latitude: isDefined(selectedCatalog) ? selectedCatalog.center[0] : defaultView.latitude,
-            longitude: isDefined(selectedCatalog) ? selectedCatalog.center[1] : defaultView.longitude,
-            zoom: isDefined(selectedCatalog) ? selectedCatalog.zoom : defaultView.zoom,
+            latitude: defaultView.latitude,
+            longitude: defaultView.longitude,
+            zoom: defaultView.zoom,
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         });
     };
-
-    const isInitialState = (position) => {
-        return !isDefinedAndNotVoid(position) || (JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
-               JSON.stringify(position) === JSON.stringify([0, 0]));
-   }
 
     return (
         <>

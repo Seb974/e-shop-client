@@ -39,6 +39,11 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </Link>
           </li>
           <li>
+            <Link to={process.env.PUBLIC_URL + "/my-orders"}>
+              {strings["my_orders"]}
+            </Link>
+          </li>
+          <li>
             <Link to={process.env.PUBLIC_URL + "/articles"}>
               {strings["blog"]}
             </Link>

@@ -119,4 +119,4 @@ const isRelaypoint = (condition, relaypoints) => {
     }
     const selectedRelaypoint = relaypoints.find(relaypoint => relaypoint.conditions.find(c => c.id === condition.id) !== undefined);
     return isDefined(selectedRelaypoint);
-}
+};

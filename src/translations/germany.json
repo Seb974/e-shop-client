@@ -168,5 +168,20 @@
   "confirm_deletion": "Bitte bestätigen Sie das Löschen des Kontos",
   "confirm": "Bestätigen",
   "cancel": "Stornieren",
-  "error_occured": "Ein Fehler ist aufgetreten. Bitte versuch es später."
+  "error_occured": "Ein Fehler ist aufgetreten. Bitte versuch es später.",
+  "my_orders": "Meine Bestellungen",
+  "order_number": "Bestellnummer",
+  "status": "Status",
+  "ON_PAYMENT": "Auf Zahlung",
+  "WAITING": "warten auf die Vorbereitung",
+  "PRE-PREPARED": "Vorbereitung",
+  "PREPARED": "Bereit",
+  "READY": "Bereit zu gehen",
+  "ON_TRUCK": "Auf LKW",
+  "COLLECTABLE": "Am Relaispunkt", 
+  "DELIVERED": "Geliefert", 
+  "SHIPPED": "Versand",
+  "ABORTED": "Abgebrochen",
+  "date": "Datiert",
+  "no_order": "Kein Kommentar"
 }

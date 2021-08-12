@@ -6,7 +6,7 @@ import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
 import AccountMap from "../../components/map/account/Map";
@@ -49,7 +49,6 @@ const MyAccount = ({ location, strings }) => {
       e.preventDefault();
       const { name, email, roles, ...dbUser } = currentUser;
       const newUser = {...dbUser, ...user, metas: {...currentUser.metas, ...informations} };
-      console.log(newUser);
       UserAactions
           .update(currentUser.id, {...dbUser, ...user, metas: informations })
           .then(response => setUpdateInformationsSuccess(response))
@@ -117,13 +116,12 @@ const MyAccount = ({ location, strings }) => {
   };
 
   const setUpdateInformationsSuccess = (response) => {
-      console.log(response);
       addToast(strings["update_informations_successful"], { appearance: "success", autoDismiss: true});
       setInformationsErrors(defaultInformationsErrors);
       setCurrentUser(response);
   };
 
-  return (
+  return !isDefinedAndNotVoid(selectedCatalog.center) ? <></> : (
     <Fragment>
       <MetaTags>
         <title>Flone | My Account</title>
@@ -133,16 +131,11 @@ const MyAccount = ({ location, strings }) => {
         />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>My Account</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="myaccount-area pb-80 pt-100 mt-3">
           <div className="container">
             <div className="row">
-              <div className="ml-auto mr-auto col-lg-9">
+              <div className="ml-auto mr-auto col-lg-12">
                 <div className="myaccount-wrapper">
                   <Accordion defaultActiveKey="0">
                     <Card className="single-my-account mb-20">

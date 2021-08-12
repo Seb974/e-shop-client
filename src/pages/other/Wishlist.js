@@ -40,12 +40,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
         />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Wishlist</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(favourites) ?

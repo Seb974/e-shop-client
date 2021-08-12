@@ -24,12 +24,12 @@ const BlogPost = ({ article }) => {
         <div className="blog-details-content mb-4">
           <div className="blog-meta-2">
             <ul>
-              <li>22 April, 2018</li>
-              <li>
+              <li>Le { (new Date(article.publishedAt)).toLocaleDateString('fr-FR', { timeZone: 'UTC'}) }</li>
+              {/* <li>
                 <Link to={process.env.PUBLIC_URL + "/blog-details-standard"}>
                   4 <i className="fa fa-comments-o" />
                 </Link>
-              </li>
+              </li> */}
             </ul>
           </div>
           <h3>{ article.title }</h3>

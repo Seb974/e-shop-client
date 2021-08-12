@@ -19,4 +19,6 @@ export default React.createContext({
     setUpdatedRelaypoints: (value) => {},
     updatedCities: [],
     setUpdatedCities: (value) => {},
+    updatedArticles: [],
+    setUpdatedArticles: (value) => {},
 });
