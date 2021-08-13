@@ -61,12 +61,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
         />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Cart</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
             { isDefined(productCart) && productCart.length >= 1 ? (

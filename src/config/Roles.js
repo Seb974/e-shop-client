@@ -52,7 +52,7 @@ function hasAdminAccess(user) {
 }
 
 function isBasicUser(user) {
-    return ["ROLE_USER"].includes(user.roles);
+    return ["ROLE_USER", "ROLE_USER_VIP"].includes(user.roles);
 }
 
 export default {

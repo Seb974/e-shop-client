@@ -183,5 +183,6 @@
   "SHIPPED": "Expédié",
   "ABORTED": "Abandonné",
   "date": "Date",
-  "no_order": "Aucune commande"
+  "no_order": "Aucune commande",
+  "order_again": "Réenvoyer"
 }

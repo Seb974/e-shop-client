@@ -10,6 +10,7 @@
     "animate.css": "^3.7.2",
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
+    "deck.gl": "^8.5.3",
     "event-source-polyfill": "^1.0.24",
     "flatpickr": "^4.6.9",
     "google-maps-react": "^2.0.2",

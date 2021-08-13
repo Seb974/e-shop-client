@@ -3,16 +3,10 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
-import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../redux/actions/wishlistActions";
-import { addToCart } from "../../redux/actions/cartActions";
+import { addToCart, deleteAllFromCart, cartItemStock } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import ProductsContext from "../../contexts/ProductsContext";
-import { getElementsFromIds } from '../../helpers/product';
-import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
@@ -20,14 +14,16 @@ import Imgix from "react-imgix";
 import OrderActions from "../../services/OrderActions";
 import MercureContext from "../../contexts/MercureContext";
 import { updateOrders } from "../../data/dataProvider/eventHandlers/orderEvents";
+import Roles from "../../config/Roles";
 
-const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, strings }) => {
+const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, deleteAllFromCart, strings }) => {
   
   const { addToast } = useToasts();
   const { pathname } = location;
+  const successMessage = "Le contenu de votre précédente commande a bien été ajoutée à votre panier.";
+  const partialMessage = 'Le contenu de votre précédente commande a été ajouté à votre panier dans les quantités présentes en stock.'
   const { updatedOrders, setUpdatedOrders } = useContext(MercureContext);
-  const { currentUser, isAuthenticated, country, settings } = useContext(AuthContext);
-  const { products } = useContext(ProductsContext);
+  const { currentUser, isAuthenticated } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [orderOpering, setOrderOpering] = useState(false);
 
@@ -43,12 +39,33 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
   }, [isAuthenticated]);
 
   useEffect(() => {
-    if (isDefinedAndNotVoid(updatedOrders) && !orderOpering) {
-        setOrderOpering(true);
-        updateOrders(orders, setOrders, currentUser, updatedOrders, setUpdatedOrders)
-            .then(response => setOrderOpering(response));
-    }
-}, [updatedOrders]);
+      if (isDefinedAndNotVoid(updatedOrders) && !orderOpering) {
+          setOrderOpering(true);
+          updateOrders(orders, setOrders, currentUser, updatedOrders, setUpdatedOrders)
+              .then(response => setOrderOpering(response));
+      }
+  }, [updatedOrders]);
+
+  const handleResendOrder = ({ currentTarget }, items) => {
+      // deleteAllFromCart();
+      let isComplete = true;
+      items.map(item => {
+          const stock = getStock(item);
+          const itemInCart = !isDefined(item.size) ? cartItems.find(i => i.product.id === item.product.id) :
+                             cartItemStock.find(i => i.product.id === item.product.id && i.selectedProductColor.id === item.variation.id && i.selectedProductSize.id === item.size.id);
+          const qtyToConsider = isDefined(itemInCart) ? itemInCart.quantity + item.orderedQty : item.orderedQty;
+          const availableQty = stock.quantity <= stock.security ? 0 : stock.quantity - qtyToConsider > stock.security ? item.orderedQty : stock.quantity - qtyToConsider - stock.security;
+          const isUserAllowed = !Roles.isBasicUser(currentUser) || (Roles.isBasicUser(currentUser) && availableQty > 0);
+          if (item.product.available && isUserAllowed) {
+              isComplete = isComplete && availableQty === item.orderedQty;
+              addToCart(item.product, null, availableQty);
+          }
+      });
+      const message = isComplete ? successMessage : partialMessage;
+      addToast(message, { appearance: isComplete ? "success" : "warning", autoDismiss: true });
+  };
+
+  const getStock = item => isDefined(item.size) ? item.size.stock : item.product.stock;
 
   return (
     <Fragment>
@@ -95,26 +112,12 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
                                       <td className="product-price-cart">
                                           <span className="amount">
                                             { strings[order.status] }
+                                            {order.status === "ON_TRUCK" && <><br/><Link to={ '/my-touring/' + order.id } ><small><i>Suivre en temps réel</i></small></Link></> }   {/* target="_blank" */}
                                           </span>
                                       </td>
 
                                       <td className="product-wishlist-cart">
-                                        { 
-                                        // isDefinedAndNotVoid(wishlistItem.variations) ?
-                                        //   <Link to={`${process.env.PUBLIC_URL}/product/${wishlistItem.id}`}>
-                                        //       { strings["select_option"] }
-                                        //   </Link>
-                                        // : getAvailableStock(wishlistItem) > 0 ?
-                                        //   <button
-                                        //     onClick={() => addToCart(wishlistItem, addToast)}
-                                        //     className={cartItem !== undefined && cartItem.quantity > 0 ? "active" : ""}
-                                        //     disabled={cartItem !== undefined && cartItem.quantity > 0 }
-                                        //     title={wishlistItem !== undefined ? strings["added_to_cart"] : strings["add_to_cart"]}
-                                        //   >
-                                        //     {cartItem !== undefined && cartItem.quantity > 0 ? strings["added"] : strings["add_to_cart"]}</button>
-                                        // :
-                                          <button disabled className="active">{ strings["out_of_stock"] }</button>
-                                        }
+                                          <button title={ strings["add_to_cart"] } disabled={ false } onClick={e => handleResendOrder(e, order.items)}>{ strings["order_again"] }</button>
                                       </td>
                                   </tr>
                             );
@@ -165,7 +168,8 @@ MyOrders.propTypes = {
   location: PropTypes.object,
   deleteAllFromWishlist: PropTypes.func,
   deleteFromWishlist: PropTypes.func,
-  wishlistItems: PropTypes.array
+  wishlistItems: PropTypes.array,
+  deleteAllFromCart: PropTypes.func
 };
 
 const mapStateToProps = state => {
@@ -189,6 +193,9 @@ const mapDispatchToProps = dispatch => {
     },
     deleteAllFromWishlist: addToast => {
       dispatch(deleteAllFromWishlist(addToast));
+    },
+    deleteAllFromCart: addToast => {
+      dispatch(deleteAllFromCart(addToast));
     }
   };
 };

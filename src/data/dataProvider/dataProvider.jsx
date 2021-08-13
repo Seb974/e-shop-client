@@ -34,6 +34,7 @@ const DataProvider = ({ children }) => {
     const [containers, setContainers] = useState([]);
     const [categories, setCategories] = useState([]);
     const [packages, setPackages] = useState([]);
+    const [tourings, setTourings] = useState([]);
     const [totalWeight, setTotalWeight] = useState(null);
     const [availableWeight, setAvailableWeight] = useState(null);
     const [homepage, setHomepage] = useState(null);
@@ -71,9 +72,11 @@ const DataProvider = ({ children }) => {
         }
     }, [catalogs, country]);
 
+    useEffect(() => console.log(selectedCatalog), [selectedCatalog]);
+
     return (
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog} }>
-        <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight} }>
+        <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
         <ContainerContext.Provider value={{ containers, setContainers }}>
         <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
         <HomeContext.Provider value={{ homepage, setHomepage }}>

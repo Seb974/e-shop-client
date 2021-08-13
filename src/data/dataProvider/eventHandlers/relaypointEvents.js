@@ -42,6 +42,6 @@ const getUpdatedRelaypoints = (newRelaypoint, updatedRelaypoints) => {
 };
 
 const updateCurrentConditionIfNeeded = (newCondition, condition, setCondition) => {
-    if (newCondition.id === condition.id)
+    if (isDefined(condition) && newCondition.id === condition.id)
         setCondition(newCondition);
 };

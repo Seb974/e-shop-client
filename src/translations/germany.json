@@ -183,5 +183,6 @@
   "SHIPPED": "Versand",
   "ABORTED": "Abgebrochen",
   "date": "Datiert",
-  "no_order": "Kein Kommentar"
+  "no_order": "Kein Kommentar",
+  "order_again": "Bestelle Erneut"
 }

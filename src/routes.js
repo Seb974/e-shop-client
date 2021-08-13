@@ -76,6 +76,7 @@ const About = React.lazy(() => import("./pages/other/About"));
 const Contact = React.lazy(() => import("./pages/other/Contact"));
 const MyAccount = React.lazy(() => import("./pages/other/MyAccount"));
 const MyOrders = React.lazy(() => import("./pages/other/MyOrders"));
+const MyTouring = React.lazy(() => import("./pages/other/MapVisualization"));
 const DeliveryNote = React.lazy(() => import("./pages/other/DeliveryNote"));
 const LoginRegister = React.lazy(() => import("./pages/other/LoginRegister"));
 
@@ -163,6 +164,7 @@ const routes = [
                 { path: process.env.PUBLIC_URL + "/contact", name: 'Contact', component: Contact },
                 { path: process.env.PUBLIC_URL + "/my-account", name: 'MyAccount', component: MyAccount },
                 { path: process.env.PUBLIC_URL + "/my-orders", name: 'MyOrders', component: MyOrders },
+                { path: process.env.PUBLIC_URL + "/my-touring/:id", name: 'MyTouring', component: MyTouring },
                 { path: process.env.PUBLIC_URL + "/delivery-note/:id", name: 'DeliveryNote', component: DeliveryNote },
                 { path: process.env.PUBLIC_URL + "/login-register", name: 'LoginRegister', component: LoginRegister },
                 { path: process.env.PUBLIC_URL + "/cart", name: 'Cart', component: Cart },

@@ -183,5 +183,6 @@
   "SHIPPED": "Shipped",
   "ABORTED": "Aborted",
   "date": "Date",
-  "no_order": "No order"
+  "no_order": "No order",
+  "order_again": "Order again"
 }
