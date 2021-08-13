@@ -1,6 +1,7 @@
 import React from 'react';
 
 // home pages
+const HomeWrapper = React.lazy(() => import("./pages/home/HomeWrapper"));
 const HomePersonalized = React.lazy(() => import("./pages/home/HomePersonalized"));
 const HomeFashion = React.lazy(() => import("./pages/home/HomeFashion"));
 const HomeFashionTwo = React.lazy(() => import("./pages/home/HomeFashionTwo"));
@@ -62,15 +63,21 @@ const ProductSlider = React.lazy(() => import("./pages/shop-product/ProductSlide
 const ProductFixedImage = React.lazy(() => import("./pages/shop-product/ProductFixedImage"));
 
 // blog pages
-const BlogStandard = React.lazy(() => import("./pages/blog/BlogStandard"));
-const BlogNoSidebar = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
-const BlogRightSidebar = React.lazy(() => import("./pages/blog/BlogRightSidebar"));
+const Articles = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
+const Article = React.lazy(() => import("./pages/blog/BlogDetailsStandard"));
+
+// const BlogStandard = React.lazy(() => import("./pages/blog/BlogStandard"));
+// const BlogNoSidebar = React.lazy(() => import("./pages/blog/BlogNoSidebar"));
+// const BlogRightSidebar = React.lazy(() => import("./pages/blog/BlogRightSidebar"));
 const BlogDetailsStandard = React.lazy(() => import("./pages/blog/BlogDetailsStandard"));
 
 // other pages
 const About = React.lazy(() => import("./pages/other/About"));
 const Contact = React.lazy(() => import("./pages/other/Contact"));
 const MyAccount = React.lazy(() => import("./pages/other/MyAccount"));
+const MyOrders = React.lazy(() => import("./pages/other/MyOrders"));
+const MyTouring = React.lazy(() => import("./pages/other/MapVisualization"));
+const DeliveryNote = React.lazy(() => import("./pages/other/DeliveryNote"));
 const LoginRegister = React.lazy(() => import("./pages/other/LoginRegister"));
 
 const Cart = React.lazy(() => import("./pages/other/Cart"));
@@ -81,7 +88,8 @@ const Checkout = React.lazy(() => import("./pages/other/Checkout"));
 const NotFound = React.lazy(() => import("./pages/other/NotFound"));
 
 const routes = [
-                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
+                // { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
+                { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomeWrapper },
                 { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },
 
                 // {/* Homepages */}
@@ -144,15 +152,20 @@ const routes = [
                 { path: process.env.PUBLIC_URL + "/product-fixed-image/:id", name: 'ProductFixedImage', component: ProductFixedImage },
 
                 // {/* Blog pages */}
-                { path: process.env.PUBLIC_URL + "/blog-standard", name: 'BlogStandard', component: BlogStandard },
-                { path: process.env.PUBLIC_URL + "/blog-no-sidebar", name: 'BlogNoSidebar', component: BlogNoSidebar },
-                { path: process.env.PUBLIC_URL + "/blog-right-sidebar", name: 'BlogRightSidebar', component: BlogRightSidebar },
+                { path: process.env.PUBLIC_URL + "/articles/:id", name: 'Article', component: Article },
+                { path: process.env.PUBLIC_URL + "/articles", name: 'Articles', component: Articles },
+                // { path: process.env.PUBLIC_URL + "/blog-standard", name: 'BlogStandard', component: BlogStandard },
+                // { path: process.env.PUBLIC_URL + "/blog-no-sidebar", name: 'BlogNoSidebar', component: BlogNoSidebar },
+                // { path: process.env.PUBLIC_URL + "/blog-right-sidebar", name: 'BlogRightSidebar', component: BlogRightSidebar },
                 { path: process.env.PUBLIC_URL + "/blog-details-standard", name: 'BlogDetailsStandard', component: BlogDetailsStandard },
 
                 // {/* Other pages */}
                 { path: process.env.PUBLIC_URL + "/about", name: 'About', component: About },
                 { path: process.env.PUBLIC_URL + "/contact", name: 'Contact', component: Contact },
                 { path: process.env.PUBLIC_URL + "/my-account", name: 'MyAccount', component: MyAccount },
+                { path: process.env.PUBLIC_URL + "/my-orders", name: 'MyOrders', component: MyOrders },
+                { path: process.env.PUBLIC_URL + "/my-touring/:id", name: 'MyTouring', component: MyTouring },
+                { path: process.env.PUBLIC_URL + "/delivery-note/:id", name: 'DeliveryNote', component: DeliveryNote },
                 { path: process.env.PUBLIC_URL + "/login-register", name: 'LoginRegister', component: LoginRegister },
                 { path: process.env.PUBLIC_URL + "/cart", name: 'Cart', component: Cart },
                 { path: process.env.PUBLIC_URL + "/wishlist", name: 'Wishlist', component: Wishlist },

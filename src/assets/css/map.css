@@ -192,6 +192,13 @@
   animation: rotate 0.8s infinite cubic-bezier(0.45, 0.05, 0.55, 0.95);
 }
 
+#deckgl-wrapper, #view-default-view {
+  position: relative!important;
+  width: 99%!important;
+  height: 345px!important;
+  margin: auto!important;
+}
+
 /* Animation */
 @-webkit-keyframes rotate {
   from {
@@ -269,6 +276,19 @@
     padding: 6px 12px;
     font-size: 16px;
     text-align: center
+  }
+
+  .mapbox-validation-error {
+    width: 100%;
+    margin-top: 0.25rem;
+    margin-left: 16px;
+    font-size: 80%;
+    color: #dc3545;
+  }
+
+  #deckgl-wrapper, #view-default-view {
+    height: 680px!important;
+    /* position: relative!important; */
   }
 
 }

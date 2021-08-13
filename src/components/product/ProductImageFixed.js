@@ -1,5 +1,7 @@
 import PropTypes from "prop-types";
 import React from "react";
+import Imgix from "react-imgix";
+import { isDefined } from "../../helpers/utils";
 
 const ProductImageFixed = ({ product }) => {
   return (
@@ -19,11 +21,12 @@ const ProductImageFixed = ({ product }) => {
 
       <div className="product-fixed-image">
         {product.image ? (
-          <img
-            src={process.env.PUBLIC_URL + product.image[0]}
-            alt=""
-            className="img-fluid"
-          />
+            isDefined(product.image.imgPath) ?
+              <Imgix  src={ product.image.imgPath } className="lazyload img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                      attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+              />
+              :
+              <img src={ process.env.PUBLIC_URL + product.image } alt="" className="img-fluid"/>
         ) : (
           ""
         )}

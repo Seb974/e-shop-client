@@ -16,6 +16,7 @@ import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
+import Imgix from "react-imgix";
 
 const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, strings }) => {
   
@@ -39,12 +40,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
         />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Wishlist</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(favourites) ?
@@ -74,7 +70,13 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                               <tr key={key}>
                                 <td className="product-thumbnail">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + wishlistItem.id}>
-                                    <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + wishlistItem.image.filePath} alt=""/>
+                                    { isDefined(wishlistItem.image.imgPath) ?
+                                        <Imgix  src={ wishlistItem.image.imgPath } className="lazyload img-fluid" alt={ wishlistItem.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                                        />
+                                        :
+                                        <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + wishlistItem.image.filePath} alt=""/>
+                                      }
                                   </Link>
                                 </td>
 

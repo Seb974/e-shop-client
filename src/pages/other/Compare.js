@@ -17,6 +17,7 @@ import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import api from "../../config/api";
 import AuthContext from "../../contexts/AuthContext";
+import Imgix from "react-imgix";
 
 const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompare, currency, strings }) => {
   
@@ -68,7 +69,13 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                                     </button>
                                   </div>
                                   <Link to={process.env.PUBLIC_URL + "/product/" + compareItem.id} className="image">
-                                    <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + compareItem.image.filePath} alt=""/>
+                                    { isDefined(compareItem.image.imgPath) ?
+                                        <Imgix  src={ compareItem.image.imgPath } className="lazyload img-fluid" alt={ compareItem.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                                        />
+                                        :
+                                        <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + compareItem.image.filePath} alt=""/>
+                                      }
                                   </Link>
                                   <div className="product-title">
                                     <Link to={ process.env.PUBLIC_URL + "/product/" + compareItem.id }>

@@ -1,15 +1,33 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
-import LayoutOne from "../../layouts/LayoutOne";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import BlogSidebar from "../../wrappers/blog/BlogSidebar";
 import BlogComment from "../../wrappers/blog/BlogComment";
 import BlogPost from "../../wrappers/blog/BlogPost";
+import LayoutSeven from "../../layouts/LayoutSeven";
+import ArticleActions from "../../services/ArticleActions";
+import { isDefined } from "../../helpers/utils";
 
-const BlogDetailsStandard = ({ location }) => {
-  const { pathname } = location;
+const BlogDetailsStandard = ({ match, history }) => {
+
+  const { id = "new" } = match.params;
+  const [article, setArticle] = useState(null);
+
+  useEffect(() => fetchArticle(id), []);
+  useEffect(() => fetchArticle(id), [id]);
+
+  const fetchArticle = id => {
+    if (id !== "new") {
+        ArticleActions.find(id)
+            .then(response => {
+                setArticle(response);
+            })
+            .catch(error => {
+                console.log(error);
+                // TODO : Notification flash d'une erreur
+                history.replace("/");
+            });
+    }
+};
 
   return (
     <Fragment>
@@ -20,33 +38,24 @@ const BlogDetailsStandard = ({ location }) => {
           content="Blog post page of flone react minimalist eCommerce template."
         />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Blog Post
-      </BreadcrumbsItem>
-      <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb />
+      <LayoutSeven stick="stick">
+
         <div className="blog-area pt-100 pb-100">
           <div className="container">
             <div className="row flex-row-reverse">
-              <div className="col-lg-9">
                 <div className="blog-details-wrapper ml-20">
-                  {/* blog post */}
-                  <BlogPost />
-
-                  {/* blog post comment */}
-                  <BlogComment />
+                  { isDefined(article) &&
+                    <>
+                        <BlogPost article={ article }/>
+                        {/* blog post comment */}
+                        {/* <BlogComment /> */}
+                    </>
+                  }
                 </div>
-              </div>
-              <div className="col-lg-3">
-                {/* blog sidebar */}
-                <BlogSidebar />
-              </div>
             </div>
           </div>
         </div>
-      </LayoutOne>
+        </LayoutSeven>
     </Fragment>
   );
 };

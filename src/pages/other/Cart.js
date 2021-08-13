@@ -19,6 +19,7 @@ import AuthContext from "../../contexts/AuthContext";
 import Packages from "../../components/cartPage/packages";
 import { getTotalCost } from "../../helpers/containers";
 import DeliveryContext from "../../contexts/DeliveryContext";
+import Imgix from "react-imgix";
 
 const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, deleteFromCart, deleteAllFromCart, strings }) => {
 
@@ -60,12 +61,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
         />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Cart</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="cart-main-area pt-90 pb-100 mt-5">
           <div className="container">
             { isDefined(productCart) && productCart.length >= 1 ? (
@@ -100,11 +96,13 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                               <tr key={key}>
                                 <td className="product-thumbnail">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id}>
-                                      <img 
-                                        className="img-fluid" 
-                                        src={api.API_DOMAIN + '/uploads/pictures/' + cartItem.product.image.filePath}
-                                        alt=""
-                                      />
+                                      { isDefined(cartItem.product.image.imgPath) ?
+                                        <Imgix  src={ cartItem.product.image.imgPath } className="lazyload img-fluid" alt={ cartItem.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                                        />
+                                        :
+                                        <img className="img-fluid" src={api.API_DOMAIN + '/uploads/pictures/' + cartItem.product.image.filePath} alt=""/>
+                                      }
                                   </Link>
                                 </td>
 

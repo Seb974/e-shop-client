@@ -39,7 +39,12 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
             </Link>
           </li>
           <li>
-            <Link to={process.env.PUBLIC_URL + "/blog-no-sidebar"}>
+            <Link to={process.env.PUBLIC_URL + "/my-orders"}>
+              {strings["my_orders"]}
+            </Link>
+          </li>
+          <li>
+            <Link to={process.env.PUBLIC_URL + "/articles"}>
               {strings["blog"]}
             </Link>
           </li>
@@ -55,7 +60,7 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
           </li>
           <li>
               { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
-                <a className="nav-link" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
+                <a href="#" onClick={ handleLogout }>{strings["logout"]}</a>
               }
           </li>
         </ul>

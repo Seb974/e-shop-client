@@ -34,7 +34,7 @@ const ProductGridHomePersonalized = ({
 
   return (
     <Fragment>
-      {displayedProducts.map(product => {
+      { displayedProducts.map(product => {
         return (
           <ProductGridHomePersonalizedSingle
             sliderClassName={sliderClassName}

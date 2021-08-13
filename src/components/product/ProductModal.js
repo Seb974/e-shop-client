@@ -9,6 +9,7 @@ import api from '../../config/api';
 import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { useToasts } from "react-toast-notifications";
+import Imgix from "react-imgix";
 
 const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, strings}) => {
 
@@ -73,7 +74,13 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                   { !isDefined(product.image) ? <></> :
                       <div>
                         <div className="single-image">
-                          <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
+                          { isDefined(product.image.imgPath) ?
+                            <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                    attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "img-fluid" }}
+                            />
+                            :
+                            <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
+                          }
                         </div>
                       </div>
                   }
@@ -81,7 +88,13 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                       return !isDefined(single.image) ? <></> : 
                           <div key={key}>
                             <div className="single-image">
-                                <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
+                                { isDefined(product.image.imgPath) ?
+                                  <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "img-fluid" }}
+                                  />
+                                  :
+                                  <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
+                                }
                             </div>
                           </div>
                       })
@@ -94,11 +107,13 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                     {isDefined(product.image) && 
                         <div>
                           <div className="single-image">
-                            <img
-                              src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
-                              className="img-fluid"
-                              alt=""
-                            />
+                            { isDefined(product.image.imgPath) ?
+                              <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                      attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "img-fluid" }}
+                              />
+                              :
+                              <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
+                            }
                           </div>
                         </div>
                     }
@@ -106,7 +121,13 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                       return !isDefined(single.image) ? <></> : 
                           <div key={key}>
                               <div className="single-image">
-                                  <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt=""/>
+                                  { isDefined(product.image.imgPath) ?
+                                    <Imgix  src={ product.image.imgPath } className="lazyload" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}} htmlAttributes={{className: "img-fluid" }}
+                                    />
+                                    :
+                                    <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt=""/>
+                                  }
                               </div>
                           </div>
                       })

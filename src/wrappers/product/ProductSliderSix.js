@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Swiper from "react-id-swiper";
 import SectionTitle from "../../components/section-title/SectionTitle";
+import ProductGrid from "./ProductGrid";
 import ProductGridTwo from "./ProductGridTwo";
 
 const ProductSliderSix = ({ spaceBottomClass, spaceTopClass, category }) => {
@@ -42,11 +43,17 @@ const ProductSliderSix = ({ spaceBottomClass, spaceTopClass, category }) => {
         />
         <div className="row">
           <Swiper {...settings}>
-            <ProductGridTwo
+            {/* <ProductGridTwo
               category={category}
               limit={6}
               sliderClassName="swiper-slide"
-            />
+            /> */}
+            <ProductGrid
+                  category={category}
+                  type="new"
+                  limit={4}
+                  spaceBottomClass="mb-25"
+                />
           </Swiper>
         </div>
       </div>

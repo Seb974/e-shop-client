@@ -4,6 +4,7 @@ import { LightgalleryProvider, LightgalleryItem } from "react-lightgallery";
 import Swiper from "react-id-swiper";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import api from "../../config/api";
+import Imgix from "react-imgix";
 
 const ProductImageGallery = ({ product }) => {
   const [gallerySwiper, getGallerySwiper] = useState(null);
@@ -73,11 +74,14 @@ const ProductImageGallery = ({ product }) => {
                     return (
                       <div key={key}>
                         <div className="single-image">
-                          <img
-                            src={process.env.PUBLIC_URL + single}
-                            className="img-fluid"
-                            alt=""
-                          />
+                          {/* <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" /> */}
+                          { isDefined(single.imgPath) ?
+                              <Imgix  src={ single.imgPath } className="lazyload img-fluid" alt={ single.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                      attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                              />
+                              :
+                              <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" />
+                          }
                         </div>
                       </div>
                     );
@@ -85,11 +89,13 @@ const ProductImageGallery = ({ product }) => {
                 :
                 <div>
                   <div className="single-image">
-                    <img
-                      src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
-                      className="img-fluid"
-                      alt=""
-                    />
+                    { isDefined(product.image.imgPath) ?
+                        <Imgix  src={ product.image.imgPath } className="lazyload img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                        />
+                        :
+                        <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
+                    }
                   </div>
                 </div>
             }
@@ -97,11 +103,7 @@ const ProductImageGallery = ({ product }) => {
                 return !isDefined(single.image) ? <></> : 
                     <div key={key}>
                       <div className="single-image">
-                        <img
-                          src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath}
-                          className="img-fluid"
-                          alt=""
-                        />
+                        <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
                       </div>
                     </div>
                 })
@@ -115,11 +117,14 @@ const ProductImageGallery = ({ product }) => {
               {isDefined(product.image) && 
                   <div>
                     <div className="single-image">
-                      <img
-                        src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath}
-                        className="img-fluid"
-                        alt=""
-                      />
+                      {
+                        isDefined(product.image.imgPath) ?
+                          <Imgix  src={ product.image.imgPath } className="lazyload img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                  attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                          />
+                          :
+                          <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
+                      }
                     </div>
                   </div>
               }
@@ -127,11 +132,13 @@ const ProductImageGallery = ({ product }) => {
                 return !isDefined(single.image) ? <></> : 
                     <div key={key}>
                       <div className="single-image">
-                        <img
-                          src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath}
-                          className="img-fluid"
-                          alt=""
-                        />
+                        { isDefined(single.image.imgPath) ?
+                          <Imgix  src={ single.image.imgPath } className="lazyload img-fluid" alt={ single.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                  attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                          />
+                          :
+                          <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
+                      }
                       </div>
                     </div>
                 })

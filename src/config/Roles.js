@@ -15,19 +15,9 @@ function getRoles() {
 }
 
 function filterRoles(roles) {
-    if (roles.length >= 1) {
-        return roles.includes("ROLE_SUPER_ADMIN")  ? "ROLE_SUPER_ADMIN" : 
-               roles.includes("ROLE_ADMIN")        ? "ROLE_ADMIN" :
-               roles.includes("ROLE_TEAM")         ? "ROLE_TEAM" :
-               roles.includes("ROLE_VIP")          ? "ROLE_VIP" :
-               roles.includes("ROLE_GC")           ? "ROLE_GC" :
-               roles.includes("ROLE_CHR")          ? "ROLE_CHR" :
-               roles.includes("ROLE_PRO")          ? "ROLE_PRO" :
-               roles.includes("ROLE_USER_EXT_VIP") ? "ROLE_USER_EXT_VIP" :
-               roles.includes("ROLE_USER_VIP")     ? "ROLE_USER_VIP" :
-               roles.includes("ROLE_USER_EXT")     ? "ROLE_USER_EXT" : "ROLE_USER";
-    }
-    return "ROLE_USER";
+    return roles[0];
+    // const unused = ["ROLE_SELLER", "ROLE_DELIVERER", "ROLE_DELIVERY_SELLER"];
+    // return roles.length === 1 ? roles[0] : roles.filter(role => !unused.includes(role))[0];
 }
 
 function hasPrivileges(user) {
@@ -52,6 +42,19 @@ function getRoleLabel(userRoles) {
     return roles.find(role => userRole === role.value).label;
 }
 
+function isRelaypoint(roles) {
+    return (Array.isArray(roles) && roles.includes("ROLE_RELAYPOINT")) || roles === "ROLE_RELAYPOINT";
+}
+
+function hasAdminAccess(user) {
+    const adminAccessRoles = ["ROLE_SELLER", "ROLE_DELIVERER", "ROLE_TEAM", "ROLE_PICKER", "ROLE_RELAYPOINT", "ROLE_SUPERVISOR"];
+    return adminAccessRoles.includes(user.roles);
+}
+
+function isBasicUser(user) {
+    return ["ROLE_USER", "ROLE_USER_VIP"].includes(user.roles);
+}
+
 export default {
     getRoles,
     filterRoles,
@@ -59,5 +62,8 @@ export default {
     hasPrivileges,
     hasAdminPrivileges,
     hasAllPrivileges,
-    getRoleLabel
+    getRoleLabel,
+    isRelaypoint,
+    hasAdminAccess,
+    isBasicUser
 }

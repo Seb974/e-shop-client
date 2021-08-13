@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import Swiper from "react-id-swiper";
 import sliderData from "../../data/hero-sliders/hero-slider-twenty-one.json";
 import HeroSliderTwentyOneSingle from "../../components/hero-slider/HeroSliderTwentyOneSingle.js";
+import HomeContext from "../../contexts/HomeContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const HeroSliderTwentyOne = () => {
+
+  const { homepage } = useContext(HomeContext);
+
   const params = {
     effect: "fade",
     loop: true,
@@ -28,12 +33,15 @@ const HeroSliderTwentyOne = () => {
       </button>
     )
   };
+
   return (
     <div className="slider-area">
       <div className="slider-active nav-style-1">
         <Swiper {...params}>
-          {sliderData &&
-            sliderData.map((single, key) => {
+          {
+          // sliderData &&
+          //   sliderData.map((single, key) => {
+          isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && homepage.heroes.map((single, key) => {
               return (
                 <HeroSliderTwentyOneSingle
                   data={single}

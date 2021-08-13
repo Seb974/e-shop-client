@@ -8,6 +8,7 @@ import ProductSliderSix from "../../wrappers/product/ProductSliderSix";
 import BrandLogoSliderFive from "../../wrappers/brand-logo/BrandLogoSliderFive";
 import BannerThirtySeven from "../../wrappers/banner/BannerThirtySeven";
 import HeroSliderThirtySix from "../../wrappers/hero-slider/HeroSliderThirtySix";
+import TabProductThirteen from "../../wrappers/product/TabProductThirteen";
 
 const HomeValentinesDay = () => {
   return (
@@ -25,7 +26,7 @@ const HomeValentinesDay = () => {
         {/* banner */}
         <BannerThirtyEight spaceBottomClass="pb-70" spaceTopClass="pt-100" />
         {/* tab product */}
-        <TabProductTwentyTwo spaceBottomClass="pb-60" category="fashion" />
+        {/* <TabProductTwentyTwo spaceBottomClass="pb-60" category="fashion" /> */}
         {/* deal counter */}
         <CountDownEight
           spaceTopClass="pt-100"
@@ -39,6 +40,11 @@ const HomeValentinesDay = () => {
           spaceBottomClass="pb-100"
           spaceTopClass="pt-100"
         />
+        {/* <TabProductThirteen
+          spaceBottomClass="pb-60"
+          spaceTopClass="pt-100"
+          category="auto parts"
+        /> */}
         {/* banner */}
         <BannerThirtySeven spaceBottomClass="pb-85" />
         {/* brand logo */}

@@ -1,25 +1,27 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import Countdown from "react-countdown-now";
 import Renderer from "../../components/countdown/Renderer";
+import HomeContext from "../../contexts/HomeContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const CountDownSeven = ({ bgColorClass, spaceTopClass, dateTime }) => {
+
+  const { homepage } = useContext(HomeContext);
+
   return (
-    <div
-      className={`black-friday-deal-area ${bgColorClass ? bgColorClass : ""} ${
-        spaceTopClass ? spaceTopClass : ""
-      }`}
-    >
+    <div className={`black-friday-deal-area ${bgColorClass ? bgColorClass : ""} ${spaceTopClass ? spaceTopClass : ""}`}>
       <div className="container">
         <div className="black-friday-deal-content text-center">
           <h2>Black Friday Offer!</h2>
           <div className="dealy-style-2">
-            <Countdown date={new Date(dateTime)} renderer={Renderer} />
+            <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
           </div>
           <div className="slider-btn-12 btn-hover">
-            <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-              MORE OFFER
+            <Link to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}>
+              {/* MORE OFFER */}
+              EN VOIR PLUS
             </Link>
           </div>
         </div>

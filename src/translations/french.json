@@ -168,5 +168,21 @@
   "confirm_deletion": "Veuillez confirmer la suppression du compte",
   "confirm": "Confirmer",
   "cancel": "Annuler",
-  "error_occured": "Une erreur est survenue. Veuillez s'il vous plaît réessayer ultérieurement."
+  "error_occured": "Une erreur est survenue. Veuillez s'il vous plaît réessayer ultérieurement.",
+  "my_orders": "Mes commandes",
+  "order_number": "N° de commande",
+  "status": "Statut",
+  "ON_PAYMENT": "En paiement",
+  "WAITING": "En attente",
+  "PRE-PREPARED": "En cours de préparation",
+  "PREPARED": "Préparé",
+  "READY": "Sur le départ",
+  "ON_TRUCK": "En cours de livraison",
+  "COLLECTABLE": "En point relais", 
+  "DELIVERED": "Livré", 
+  "SHIPPED": "Expédié",
+  "ABORTED": "Abandonné",
+  "date": "Date",
+  "no_order": "Aucune commande",
+  "order_again": "Réenvoyer"
 }

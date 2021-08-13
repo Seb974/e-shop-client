@@ -7,9 +7,9 @@ import { multilanguage } from "redux-multilanguage";
 import { getDateFrom, isDefined, isDefinedAndNotVoid, isPastHour, isSameDate } from '../../helpers/utils';
 import AuthContext from '../../contexts/AuthContext';
 import DayOffActions from '../../services/DayOffActions';
-import { getWeekDays } from '../../helpers/days';
+import { getWeekDays, getWorstConstraint } from '../../helpers/days';
 
-const DatePicker = ({date, setDate, condition, strings}) => {
+const DatePicker = ({date, setDate, condition, productCart, strings}) => {
 
     const { settings } = useContext(AuthContext);
     const [daysOff, setDaysOff] = useState([]);
@@ -34,16 +34,18 @@ const DatePicker = ({date, setDate, condition, strings}) => {
     useEffect(() => setWeekConstraints(getWeekConstraints()), [condition]);
 
     useEffect(() => {
-        if (isDefined(settings.dayInterval) && isDefinedAndNotVoid(daysOff)) {
+        if (isDefined(settings.dayInterval) && isDefined(daysOff) && Array.isArray(daysOff)) {
             const minDate = getFirstOpenDay();
             setDate(minDate);
             setMinDate(minDate);
         }
-    }, [settings, daysOff, weekConstraints]);
+    }, [settings, daysOff, weekConstraints, productCart]);
 
     const onDateChange = datetime => {
-        const newSelection = new Date(datetime[0].getFullYear(), datetime[0].getMonth(), datetime[0].getDate(), 9, 0, 0);
-        setDate(newSelection);
+        if (isDefinedAndNotVoid(datetime)) {
+            const newSelection = new Date(datetime[0].getFullYear(), datetime[0].getMonth(), datetime[0].getDate(), 9, 0, 0);
+            setDate(newSelection);
+        }
     };
 
     const isOffDay = date => daysOff.find(day => isSameDate(new Date(day.date), date)) !== undefined || weekConstraints.includes(date.getDay());        //  === 0
@@ -51,8 +53,9 @@ const DatePicker = ({date, setDate, condition, strings}) => {
     const getFirstOpenDay = () => {
         let i = 0;
         const start = isDefined(settings.hourLimit) && isPastHour(settings.hourLimit) ? getDateFrom(new Date(), 1) : new Date();
+        const minDelay = getWorstConstraint(productCart, settings.dayInterval);
         let openDay = start;
-        while (isOffDay(openDay) || i < settings.dayInterval) {
+        while (isOffDay(openDay) || i < minDelay) {
             i++;
             openDay = getDateFrom(start, i);
         }
@@ -90,5 +93,5 @@ const DatePicker = ({date, setDate, condition, strings}) => {
         </>
     );
 }
- 
+
 export default multilanguage(DatePicker);

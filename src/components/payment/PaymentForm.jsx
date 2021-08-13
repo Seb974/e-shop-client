@@ -11,21 +11,22 @@ import Col from 'react-bootstrap/Col';
 import '../../assets/css/payment-form.css';
 import { Spinner } from 'react-bootstrap';
 import { multilanguage } from "redux-multilanguage";
-import { isDefined } from '../../helpers/utils';
+import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import AuthContext from '../../contexts/AuthContext';
 import OrderActions from '../../services/OrderActions';
 import { useToasts } from 'react-toast-notifications';
 import AuthActions from '../../services/AuthActions';
+import { cardStyle, updateError, validateForm } from '../../helpers/checkout';
 
-const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, objectDiscount, createOrder, strings }) => {
+const PaymentForm = ({ name, available, user, informations, cartItems, deleteAllFromCart, objectDiscount, createOrder, errors, initialErrors, setErrors, strings }) => {
 
     const stripe = useStripe();
     const elements = useElements();
     const { addToast } = useToasts();
     const [show, setShow] = useState(false);
     const { currentUser, selectedCatalog, setCurrentUser } = useContext(AuthContext);
-    const { packages } = useContext(DeliveryContext);
+    const { condition, packages, relaypoints } = useContext(DeliveryContext);
     const [succeeded, setSucceeded] = useState(false);
     const [error, setError] = useState(null);
     const [inputError, setInputError] = useState(null);
@@ -35,34 +36,20 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
 
-    const updateError = "Votre paiement a bien été reçu et votre commande a bien été créée et sauvegardée.\n" +
-        "Toutefois, une erreur est survenue lors de son envoi en préparation.\n" +
-        "Nous vous invitons à contacter nos services sur les horaires d'ouverture, " +
-        "afin que nous puissions récupérer votre commande et la traiter.";
-
-    const cardStyle = {
-        style: {
-            base: {
-                fontSize: "16px",
-                color: "#424770",
-                letterSpacing: "0.025em",
-                fontFamily: "Source Code Pro, monospace",
-                "::placeholder": {
-                color: "#aab7c4"
-                }
-            },
-            invalid: {
-                color: "#9e2146"
-            }
-        }
-    };
-
     useEffect(() => {
         if (show)
             createPayment();
     }, [show]);
 
-    const handleShow = () => setShow(true);
+    const handleShow = () => {
+        const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
+        if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
+            setErrors({...initialErrors, ...newErrors});
+        } else {
+            setShow(true)
+        }
+    };
+
     const handleClose = () => {
         if (!processing && !loading) {
             setShow(false);
@@ -102,7 +89,7 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
 
     const createPayment = () => {
         setLoading(true);
-         api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount})
+         api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount, condition: condition})
             .then(({data}) => {
                 setClientSecret(data.clientSecret);
                 setAmount(data.amount / 100 );
@@ -135,20 +122,25 @@ const PaymentForm = ({ name, available, user, cartItems, deleteAllFromCart, obje
         return OrderActions
                 .update(order.id, currentUser.userId, {
                     ...order,
+                    catalog: order.catalog['@id'],
+                    user: isDefined(order.user) ? order.user['@id'] : null,
+                    promotion: isDefined(order.promotion) ? order.promotion['@id'] : null,
+                    appliedCondition: isDefined(order.appliedCondition) ? order.appliedCondition['@id'] : null,
                     paymentId: clientSecret.substring(3, clientSecret.indexOf('_', 3)),
-                    items: order.items.map(item => ({...item, product: item.product['@id']}))
+                    items: order.items.map(item => ({
+                        ...item, 
+                        product: item.product['@id'],
+                        variation: isDefined(item.variation) ? item.variation['@id'] : null,
+                        size: isDefined(item.size) ? item.size['@id'] : null
+                    })),
+                    packages: !isDefinedAndNotVoid(order.packages) ? [] : order.packages.map(_package => ({..._package, container: _package.container['@id']}))
                 });
     };
 
     const deleteOrder = order => OrderActions.delete(order, currentUser.userId);
 
     const handleError = () => {
-        const errorMessage = 
-            "Votre paiement a bien été reçu et votre commande a bien été créée et sauvegardée.\n" +
-            "Toutefois, une erreur est survenue lors de son envoi en préparation.\n" +
-            "Nous vous invitons à contacter nos services sur les horaires d'ouverture, " +
-            "afin que nous puissions récupérer votre commande et la traiter.";
-        setError(errorMessage);
+        setError(updateError);
         setProcessing(false);
         setCurrentUser(AuthActions.refreshUser(currentUser));
     };

@@ -9,6 +9,7 @@ import api from '../../config/api';
 import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
+import Imgix from "react-imgix";
 
 const ProductGridHomePersonalizedSingle = ({
   product,
@@ -68,44 +69,36 @@ const ProductGridHomePersonalizedSingle = ({
           <div className="product-img">
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
-                <img
-                  className="default-img"
-                  src={process.env.PUBLIC_URL + product.image[0]}
-                  alt=""
-                />
+                  isDefined(product.image[0].imgPath) ?
+                    <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                    />
+                    :
+                    <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
+                
               ) : (
-                <img
-                  className="default-img"
-                  src={
-                    api.API_DOMAIN +
-                    "/uploads/pictures/" +
-                    product.image.filePath
-                  }
-                  alt=""
-                />
+                isDefined(product.image.imgPath) ?
+                    <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                    />
+                    :
+                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath } alt="" />
               )}
               {!Array.isArray(product.image) || product.image.length <= 1 ? (
-                <img
-                  className="hover-img"
-                  src={
-                    api.API_DOMAIN +
-                    "/uploads/pictures/" +
-                    product.image.filePath
-                  }
-                  alt=""
-                />
+                isDefined(product.image.imgPath) ?
+                    <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                    />
+                    :
+                    <img className="hover-img" src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath } alt="" />
               ) : (
-                <img
-                  className="hover-img"
-                  src={process.env.PUBLIC_URL + product.image[1]}
-                  alt=""
-                />
+                isDefined(product.image[1].imgPath) ?
+                    <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                    />
+                    :
+                    <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
               )}
-
-              {/* <img className="default-img" src={process.env.PUBLIC_URL + product.image[0]} alt=""/>
-              {product.image.length <= 1 ? "" :
-                <img className="hover-img" src={process.env.PUBLIC_URL + product.image[1]} alt=""/>
-              } */}
             </a>
             <div className="product-img-action input-group">
               {wishlistItem !== undefined ? (
