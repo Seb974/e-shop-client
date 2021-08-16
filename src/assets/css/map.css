@@ -194,7 +194,7 @@
 
 #deckgl-wrapper, #view-default-view {
   position: relative!important;
-  width: 99%!important;
+  width: 100%!important;
   height: 345px!important;
   margin: auto!important;
 }

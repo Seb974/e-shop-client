@@ -33,16 +33,20 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
               {strings["shop"]}
             </Link>
           </li>
-          <li>
-            <Link to={process.env.PUBLIC_URL + "/my-account"}>
-              {strings["my_account"]}
-            </Link>
-          </li>
-          <li>
-            <Link to={process.env.PUBLIC_URL + "/my-orders"}>
-              {strings["my_orders"]}
-            </Link>
-          </li>
+          { isAuthenticated && 
+              <>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/my-account"}>
+                    {strings["my_account"]}
+                  </Link>
+                </li>
+                <li>
+                  <Link to={process.env.PUBLIC_URL + "/my-orders"}>
+                    {strings["my_orders"]}
+                  </Link>
+                </li>
+              </>
+          }
           <li>
             <Link to={process.env.PUBLIC_URL + "/articles"}>
               {strings["blog"]}

@@ -8,9 +8,7 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
 
   return (
     <div
-      className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${
-        sliderClass ? sliderClass : ""
-      }`}
+      className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${ sliderClass ? sliderClass : ""}`}
       style={{ backgroundImage: `url(${data.image.imgPath})` }}
     >
     {/* // <Background src={ data.image.imgPath } className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${sliderClass ? sliderClass : ""}`}

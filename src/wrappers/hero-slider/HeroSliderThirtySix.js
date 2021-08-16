@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Swiper from "react-id-swiper";
 import heroSliderData from "../../data/hero-sliders/hero-slider-thirty-six.json";
 import HeroSliderThirtySixSingle from "../../components/hero-slider/HeroSliderThirtySixSingle.js";
+import HomeContext from "../../contexts/HomeContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const HeroSliderThirtySix = () => {
+
+  const { homepage } = useContext(HomeContext);
+  const [heroes, setHeroes] = useState([]);
+
+  useEffect(() => refreshHeroes(), []);
+  useEffect(() => refreshHeroes(), [homepage]);
+
+  const refreshHeroes = () => {
+      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes))
+        setHeroes(homepage.heroes); 
+  };
+
   const params = {
     effect: "fade",
     loop: true,
@@ -33,8 +47,7 @@ const HeroSliderThirtySix = () => {
     <div className="slider-area">
       <div className="slider-active nav-style-1">
         <Swiper {...params}>
-          {heroSliderData &&
-            heroSliderData.map((single, key) => {
+          { isDefinedAndNotVoid(heroes) && heroes.map((single, key) => {
               return (
                 <HeroSliderThirtySixSingle
                   sliderClassName="swiper-slide"

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Login from './Login';
 import Register from './Register';
@@ -7,6 +7,8 @@ const Identification = ({ name }) => {
 
     const [show, setShow] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
+
+    useEffect(() => setIsLogin(true), [show]);
 
     const handleClose = () => setShow(false);
     const handleShow = e => {
