@@ -1,16 +1,13 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
+import { isDefined } from "../../helpers/utils";
 
 const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
   return (
     <div
-      className={`single-slider-2 slider-height-2 res-white-overly-xs d-flex valentine-slider-bg align-items-center bg-img ${
-        sliderClassName ? sliderClassName : ""
-      }`}
-      style={{
-        backgroundImage: `url(${process.env.PUBLIC_URL + data.backgroundImage})`
-      }}
+      className={`single-slider-2 slider-height-2 res-white-overly-xs d-flex valentine-slider-bg align-items-center bg-img ${ sliderClassName ? sliderClassName : ""}`}
+      style={{ backgroundImage: `url(${data.image.imgPath})` }}
     >
       <div className="container">
         <div className="row">
@@ -19,7 +16,7 @@ const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
               <div className="content-img">
                 <img
                   className="animated"
-                  src={process.env.PUBLIC_URL + data.image}
+                  src={process.env.PUBLIC_URL + "/assets/img/icon-img/coeur-valentin.png"}
                   alt=""
                 />
               </div>
@@ -30,9 +27,9 @@ const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
               <div className="valentine-btn btn-hover">
                 <Link
                   className="animated"
-                  to={process.env.PUBLIC_URL + "/shop-grid-standard"}
+                  to={ isDefined(data.product) ? "/product/" + data.product.id : "/shop" }
                 >
-                  SHOP NOW
+                  J'en profite !
                 </Link>
               </div>
             </div>

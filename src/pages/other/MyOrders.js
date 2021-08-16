@@ -51,7 +51,7 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
       let isComplete = true;
       items.map(item => {
           const stock = getStock(item);
-          const itemInCart = !isDefined(item.size) ? cartItems.find(i => i.product.id === item.product.id) :
+          const itemInCart = !isDefinedAndNotVoid(cartItems) ? null : !isDefined(item.size) ? cartItems.find(i => i.product.id === item.product.id) :
                              cartItemStock.find(i => i.product.id === item.product.id && i.selectedProductColor.id === item.variation.id && i.selectedProductSize.id === item.size.id);
           const qtyToConsider = isDefined(itemInCart) ? itemInCart.quantity + item.orderedQty : item.orderedQty;
           const availableQty = stock.quantity <= stock.security ? 0 : stock.quantity - qtyToConsider > stock.security ? item.orderedQty : stock.quantity - qtyToConsider - stock.security;

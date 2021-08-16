@@ -72,8 +72,6 @@ const DataProvider = ({ children }) => {
         }
     }, [catalogs, country]);
 
-    useEffect(() => console.log(selectedCatalog), [selectedCatalog]);
-
     return (
         <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog} }>
         <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
