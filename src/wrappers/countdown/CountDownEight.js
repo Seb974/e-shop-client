@@ -20,13 +20,24 @@ const CountDownEight = ({ backgroundImage, dateTime, spaceTopClass, spaceBottomC
         <div className="row">
           <div className="col-lg-6 ml-auto mr-auto">
             <div className="funfact-content text-center">
-              <h2>Deal of the day</h2>
+              <h2 style={{ 
+                  color: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
+                  shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+              }}>
+                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].title) ? homepage.countdowns[0].title : "Deal of the day"}
+              </h2>
               <div className="timer">
                 <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
               </div>
               <div className="funfact-btn btn-only-round funfact-btn-red-2 btn-hover">
-                <Link to={process.env.PUBLIC_URL + "/shop-grid-standard"}>
-                  SHOP NOW
+                <Link 
+                    to={process.env.PUBLIC_URL + "/shop-grid-standard"}
+                    style={{ 
+                      backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    }}
+                >
+                    {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].buttonText) ? homepage.countdowns[0].buttonText.toUpperCase() : "J'EN PROFITE"}
                 </Link>
               </div>
             </div>

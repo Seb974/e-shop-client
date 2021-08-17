@@ -24,7 +24,13 @@ const HeroSliderThirtyFive = () => {
           <div className="row">
             <div className="col-xl-12 col-lg-12 col-md-12 col-12 align-self-center">
               <div className="slider-content-15 slider15-mrg-nrg text-center">
-                <h1 dangerouslySetInnerHTML={{ __html: homepage.heroes[0].title }}/>
+                <h1 
+                    dangerouslySetInnerHTML={{ __html: homepage.heroes[0].title }}
+                    style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].titleColor) ? homepage.heroes[0].titleColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none",
+                  }}
+                />
                 <div className="timer dealy-style-2 wow zoomIn">
                   <Countdown
                     date={ new Date(homepage.countdowns[0].date) }
@@ -35,6 +41,10 @@ const HeroSliderThirtyFive = () => {
                   <Link
                     className="animated"
                     to={isDefined(homepage.heroes[0].product) ? "/product/" + homepage.heroes[0].product.id : "/shop"}
+                    style={{
+                      border: 'none',
+                      backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textColor) ? homepage.heroes[0].textColor : "#ED59A0",
+                    }}
                   >
                     MORE OFFER
                   </Link>

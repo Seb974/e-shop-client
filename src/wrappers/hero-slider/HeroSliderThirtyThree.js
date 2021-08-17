@@ -35,18 +35,32 @@ const HeroSliderThirtyThree = () => {
             process.env.PUBLIC_URL + sliderData.backgroundImage
           })`
         }}
-        // style={{
-        //   backgroundImage: `url(${homepage.heroes[index].image.imgPath})`
-        // }}
       >
         <div className="container">
           <div className="row">
             <div className="col-xl-6 col-lg-6 col-md-6 col-12 col-sm-6 align-self-center">
               <div className="slider-content-14">
-                <h3>{homepage.heroes[index].title}</h3>
-                <h1 dangerouslySetInnerHTML={{ __html: homepage.heroes[index].subtitle }} />
+                <h3 style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[index].titleColor) ? homepage.heroes[index].titleColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[index].textShadow) && homepage.heroes[index].textShadow ? "0.1em 0.1em 0.2em black" : "none",
+                  }}
+                >
+                  {homepage.heroes[index].title}
+                </h3>
+                <h1 dangerouslySetInnerHTML={{ __html: homepage.heroes[index].subtitle }}
+                    style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[index].textColor) ? homepage.heroes[index].textColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[index].textShadow) && homepage.heroes[index].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    }}
+                />
                 <div className="slider-btn btn-hover">
-                  <Link to={isDefined(homepage.heroes[index].product) ? "/product/" + homepage.heroes[index].product.id : "/shop"}>
+                  <Link 
+                      to={isDefined(homepage.heroes[index].product) ? "/product/" + homepage.heroes[index].product.id : "/shop"}
+                      style={{
+                        border: 'none',
+                        backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[index].titleColor) ? homepage.heroes[index].titleColor : "#ED59A0",
+                      }}
+                  >
                     SHOP NOW
                   </Link>
                 </div>

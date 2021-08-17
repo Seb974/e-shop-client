@@ -1,9 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
 import { Link } from "react-router-dom";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
+  
   return (
     <div
       className={`single-slider-2 slider-height-2 res-white-overly-xs d-flex valentine-slider-bg align-items-center bg-img ${ sliderClassName ? sliderClassName : ""}`}
@@ -21,13 +22,20 @@ const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
                 />
               </div>
               <h1
-                className="animated"
                 dangerouslySetInnerHTML={{ __html: data.title }}
+                style={{ 
+                  color: isDefined(data) ? data.titleColor : "white",
+                  shadow: isDefined(data) ? "0.1em 0.1em 0.2em black" : "none"
+                }}
               />
               <div className="valentine-btn btn-hover">
                 <Link
                   className="animated"
                   to={ isDefined(data.product) ? "/product/" + data.product.id : "/shop" }
+                  style={{
+                    border: 'none',
+                    backgroundColor: isDefined(data) ? data.textColor : "#ED59A0",
+                  }}
                 >
                   J'en profite !
                 </Link>

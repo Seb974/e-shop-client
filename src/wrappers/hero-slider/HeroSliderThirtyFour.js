@@ -22,11 +22,41 @@ const HeroSliderThirtyFour = () => {
           <div className="row">
             <div className="col-xl-12 col-lg-12 col-md-12 col-12">
               <div className="slider-content-3 slider-content-3-white slider-animated-1 text-center">
-                <h3 className="animated">{ homepage.heroes[0].title }</h3>
-                <h1 className="animated">{ homepage.heroes[0].subtitle }</h1>
-                <p className="animated">{ homepage.heroes[0].text }</p>
+                <h3 
+                    className="animated"
+                    style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].titleColor) ? homepage.heroes[0].titleColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                  }}
+                >
+                    { homepage.heroes[0].title }
+                </h3>
+                <h1 
+                    className="animated"
+                    style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textColor) ? homepage.heroes[0].textColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    }}
+                >
+                    { homepage.heroes[0].subtitle }
+                </h1>
+                <p 
+                    className="animated"
+                    style={{ 
+                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textColor) ? homepage.heroes[0].textColor : "white",
+                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    }}
+                >
+                    { homepage.heroes[0].text }
+                </p>
                 <div className="slider-btn btn-hover">
-                  <Link className="animated" to={isDefined(homepage.heroes[0].product) ? "/product/" + homepage.heroes[0].product.id : "/shop"}>
+                  <Link 
+                      className="animated" 
+                      to={isDefined(homepage.heroes[0].product) ? "/product/" + homepage.heroes[0].product.id : "/shop"}
+                      style={{ 
+                        backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].titleColor) ? homepage.heroes[0].titleColor : "#ED59A0",
+                    }}
+                  >
                     J'EN PROFITE
                   </Link>
                 </div>
