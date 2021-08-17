@@ -19,12 +19,28 @@ const BannerThirtyThreeSingle = ({ data, spaceBottomClass }) => {
           }
         </Link>
         <div className="banner-content-2 banner-content-2-black">
-          <h3>{ data.title }</h3>
-          <h4>
+          <h3 style={{ 
+              color: isDefined(data) && isDefined(data.titleColor) ? data.titleColor : "white",
+              shadow: isDefined(data) && isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+          }}>
+              { data.title }
+          </h3>
+          <h4 style={{ 
+              color: isDefined(data) && isDefined(data.textColor) ? data.textColor : "white",
+              shadow: isDefined(data) && isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none",
+              fontSize: '1.7em'
+          }}>
             { data.subtitle } 
             {/* <span>{ data.price }</span> */}
           </h4>
-          <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}>
+          <Link 
+              to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}
+              style={{ 
+                  color: isDefined(data) && isDefined(data.titleColor) ? data.titleColor : "red",
+                  border: '3px solid ' + (isDefined(data) && isDefined(data.titleColor) ? data.titleColor : "red"), 
+                  shadow: isDefined(data) && isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+              }}
+          >
             <i className="fa fa-long-arrow-right" />
           </Link>
         </div>

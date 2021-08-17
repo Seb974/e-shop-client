@@ -14,8 +14,8 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
 
   useEffect(() => {
     if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const main = homepage.banners.find(b => b.main && b.bannerNumber === 2);
-        const others = homepage.banners.filter(b => !b.main && b.bannerNumber === 2).filter((b, i) => i < 2);
+        const main = homepage.banners.find(b => b.isMain && b.bannerNumber === 2);
+        const others = homepage.banners.filter(b => !b.isMain && b.bannerNumber === 2).filter((b, i) => i < 2);
         setMainBanner(main);
         setBanners(others);
     }
@@ -39,8 +39,21 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
                 }
               </Link>
               <div className="banner-content-6">
-                <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
-                  SHOP NOW
+                <h2 style={{ 
+                    color: isDefined(mainBanner) && isDefined(mainBanner.textColor) ? mainBanner.textColor : "red",
+                    shadow: isDefined(mainBanner) && isDefined(mainBanner.textShadow) && mainBanner.textShadow ? "0.1em 0.1em 0.2em black" : "none",
+                    fontSize: '2.2em'
+                }}>
+                    { mainBanner.subtitle }
+                </h2>
+                <Link 
+                    to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}
+                    style={{ 
+                      border: 'none',
+                      backgroundColor: isDefined(mainBanner) && isDefined(mainBanner.titleColor) ? mainBanner.titleColor : "#ED59A0",
+                    }}
+                >
+                  { isDefined(mainBanner) && isDefined(mainBanner.buttonText) ? mainBanner.buttonText.toUpperCase() : "J'EN PROFITE !"}
                 </Link>
               </div>
             </div>
@@ -59,9 +72,27 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
                               }
                           </Link>
                           <div className="banner-content-7">
-                            <span>{ banner.title }</span>
-                            <h2>{ banner.subtitle }</h2>
-                            <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
+                            <span style={{ 
+                                color: isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "black",
+                                shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                            }}>
+                                { banner.title }
+                            </span>
+                            <h2 style={{ 
+                                color: isDefined(banner) && isDefined(banner.textColor) ? banner.textColor : "red",
+                                shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none",
+                                fontSize: '2.8em'
+                            }}>
+                                { banner.subtitle }
+                            </h2>
+                            <Link 
+                              to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}
+                              style={{ 
+                                color: isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "red",
+                                border: '3px solid ' + (isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "red"), 
+                                shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                            }}
+                            >
                               <i className="fa fa-long-arrow-right" />
                             </Link>
                           </div>

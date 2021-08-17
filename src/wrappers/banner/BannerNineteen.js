@@ -14,8 +14,11 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
 
   useEffect(() => {
     if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const main = homepage.banners.find(b => b.main);
-        const others = homepage.banners.filter(b => !b.main).filter((b, i) => i < 2);
+        const main = homepage.banners.find(b => b.isMain);
+        const others = homepage.banners.filter(b => !b.isMain).filter((b, i) => i < 2);
+        console.log(homepage.banners);
+        console.log(main);
+        console.log(others);
         setMainBanner(main);
         setBanners(others);
     }
@@ -44,9 +47,24 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
               </Link>
               <div className="banner-content-4 banner-position-hm15-2 pink-banner">
                 <span>-20% Off</span>
-                <h2>{ isDefined(mainBanner) && mainBanner.title }</h2>
-                <h5>{ isDefined(mainBanner) && mainBanner.subtitle }</h5>
-                <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
+                <h2 style={{ 
+                    color: isDefined(mainBanner) && isDefined(mainBanner.titleColor) ? mainBanner.titleColor : "#ED59A0",
+                    shadow: isDefined(mainBanner) && isDefined(mainBanner.textShadow) && mainBanner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}>
+                    { isDefined(mainBanner) && mainBanner.title }
+                </h2>
+                <h5 style={{ 
+                    color: isDefined(mainBanner) && isDefined(mainBanner.textColor) ? mainBanner.textColor : "black",
+                    shadow: isDefined(mainBanner) && isDefined(mainBanner.textShadow) && mainBanner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}>
+                    { isDefined(mainBanner) && mainBanner.subtitle }
+                </h5>
+                <Link 
+                    to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}
+                    style={{ 
+                      backgroundColor: isDefined(mainBanner) && isDefined(mainBanner.titleColor) ? mainBanner.titleColor : "#ED59A0",
+                  }}
+                >
                   J'EN PROFITE
                 </Link>
               </div>
@@ -66,9 +84,27 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
                             }
                         </Link>
                         <div className="banner-content-3 banner-position-hm15-2 pink-banner">
-                            <h3>{ banner.title }</h3>
-                            <p>{ banner.subtitle }<span>$99.00</span></p>
-                            <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
+                            <h3 style={{ 
+                                color: isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "black",
+                                shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                            }}>
+                                { banner.title }
+                            </h3>
+                            <p style={{ 
+                                color: isDefined(banner) && isDefined(banner.textColor) ? banner.textColor : "#ED59A0",
+                                shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                            }}>
+                                { banner.subtitle }
+                                <span>$99.00</span>
+                            </p>
+                            <Link 
+                                to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}
+                                style={{ 
+                                    color: isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "#ED59A0",
+                                    border: '3px solid ' + (isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "#ED59A0"), 
+                                    shadow: isDefined(banner) && isDefined(banner.textShadow) && banner.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                                }}
+                            >
                                 <i className="fa fa-long-arrow-right" />
                             </Link>
                         </div>
@@ -76,22 +112,6 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
 
                 )
               }) }
-
-            {/* <div className="single-banner mb-20">
-              <Link to={process.env.PUBLIC_URL + "/shop"}>
-                <img src={ process.env.PUBLIC_URL + "/assets/img/banner/banner26.jpg" } alt="" />
-              </Link>
-              <div className="banner-content-3 banner-position-hm17-1 pink-banner">
-                <h3>Cup Cake </h3>
-                <p>
-                  Starting At <span>$99.00</span>
-                </p>
-                <Link to={process.env.PUBLIC_URL + "/shop"}>
-                  <i className="fa fa-long-arrow-right" />
-                </Link>
-              </div>
-            </div> */}
-
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@ import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import Imgix from "react-imgix";
 import api from "../../config/api";
 
-const CountDownFour = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage }) => {
+const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
 
   const { homepage } = useContext(HomeContext);
 
@@ -18,14 +18,24 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, dateTime, countDownImag
         <div className="row align-items-center">
           <div className="col-md-8 col-lg-6">
             <div className="funfact-content funfact-res text-center">
-              <h2>Deal of the day</h2>
+              <h2 style={{ 
+                    color: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
+                    shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}>
+                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].title) ? homepage.countdowns[0].title : "Deal of the day"}
+              </h2>
               <div className="timer">
                 <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
               </div>
               <div className="funfact-btn funfact-btn--round-shape funfact-btn-violet btn-hover">
-                <Link to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}>
-                  {/* SHOP NOW */}
-                  J'EN PROFITE
+                <Link 
+                  to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}
+                  style={{ 
+                    backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
+                    shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}
+                >
+                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].buttonText) ? homepage.countdowns[0].buttonText.toUpperCase() : "J'EN PROFITE"}
                 </Link>
               </div>
             </div>

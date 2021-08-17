@@ -18,15 +18,28 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
           <div className="row">
             <div className="col-xl-6 col-lg-7 col-md-8 col-12">
               <div className="slider-content-2 slider-content-2--white slider-animated-1">
-                <h3 className="animated no-style">{data.title}</h3>
+                <h3 className="animated no-style" style={{ 
+                    color: isDefined(data.titleColor) ? data.titleColor : "black",
+                    shadow: isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}>
+                      {data.title}
+                </h3>
                 <h1
                   className="animated"
                   dangerouslySetInnerHTML={{ __html: data.subtitle }}
+                  style={{ 
+                    color: isDefined(data.textColor) ? data.textColor : "black",
+                    shadow: isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                }}
                 />
                 <div className="slider-btn btn-hover">
                   <Link
                     className="animated rounden-btn"
                     to={isDefined(data.product) ? "/product/" + data.product.id : "/shop"}
+                    style={{ 
+                        color: isDefined(data.titleColor) ? data.titleColor : "black",
+                        shadow: isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    }}
                   >
                     {/* SHOP NOW */}
                     J'en profite !
