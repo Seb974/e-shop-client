@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from 'react-bootstrap/Modal';
+import ForgotPassword from './ForgotPassword';
 import Login from './Login';
 import Register from './Register';
 
@@ -7,6 +8,7 @@ const Identification = ({ name }) => {
 
     const [show, setShow] = useState(false);
     const [isLogin, setIsLogin] = useState(true);
+    const [forgetPassword, setForgetPassword] = useState(false);
 
     useEffect(() => setIsLogin(true), [show]);
 
@@ -19,7 +21,14 @@ const Identification = ({ name }) => {
     const onIsLoginChange = event => {
         event.preventDefault();
         setIsLogin(!isLogin);
+        if (!isLogin) 
+            setForgetPassword(false);
     };
+
+    const handleForgetPassword = e => {
+        e.preventDefault();
+        setForgetPassword(!forgetPassword);
+    }
 
     return (
         <>
@@ -29,9 +38,16 @@ const Identification = ({ name }) => {
                     <Modal.Title>{ isLogin ? "Connexion" : "Inscription" }</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    { isLogin ? <Login onEnd={ handleClose }/> : <Register onEnd={ handleClose }/> }
+                    { isLogin ?
+                        !forgetPassword ? 
+                            <Login onEnd={ handleClose } forgetPassword={ forgetPassword }/>
+                        :
+                            <ForgotPassword onEnd={ handleClose }/>
+                    : 
+                        <Register onEnd={ handleClose }/> }
                 </Modal.Body>
                 <Modal.Footer>
+                    { isLogin && !forgetPassword && <a href="#" onClick={ handleForgetPassword }>Mot de passe oublié ?</a> }
                     <a href="#" onClick={ onIsLoginChange }>{ isLogin ? "Créer un compte" : "J'ai déjà un compte" }</a>
                 </Modal.Footer>
             </Modal>

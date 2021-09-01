@@ -184,5 +184,8 @@
   "ABORTED": "Abandonné",
   "date": "Date",
   "no_order": "Aucune commande",
-  "order_again": "Réenvoyer"
+  "order_again": "Réenvoyer",
+  "email_not_found": "L'adresse email saisie n'est associée à aucun compte sur ce site.",
+  "reset_password_success": "Vérifiez vos emails. Nous vous avons envoyé un lien pour réinitialiser votre mot de passe.",
+  "size_passwords": "Le mot de passe doit contenir au moins 6 caractères"
 }

@@ -75,6 +75,7 @@ const BlogDetailsStandard = React.lazy(() => import("./pages/blog/BlogDetailsSta
 const About = React.lazy(() => import("./pages/other/About"));
 const Contact = React.lazy(() => import("./pages/other/Contact"));
 const MyAccount = React.lazy(() => import("./pages/other/MyAccount"));
+const ResetPassword = React.lazy(() => import("./pages/other/ResetPassword"));
 const MyOrders = React.lazy(() => import("./pages/other/MyOrders"));
 const MyTouring = React.lazy(() => import("./pages/other/MapVisualization"));
 const DeliveryNote = React.lazy(() => import("./pages/other/DeliveryNote"));
@@ -163,6 +164,7 @@ const routes = [
                 { path: process.env.PUBLIC_URL + "/about", name: 'About', component: About },
                 { path: process.env.PUBLIC_URL + "/contact", name: 'Contact', component: Contact },
                 { path: process.env.PUBLIC_URL + "/my-account", name: 'MyAccount', component: MyAccount },
+                { path: process.env.PUBLIC_URL + "/reset-password/:id", name: 'ResetPassword', component: ResetPassword },
                 { path: process.env.PUBLIC_URL + "/my-orders", name: 'MyOrders', component: MyOrders },
                 { path: process.env.PUBLIC_URL + "/my-touring/:id", name: 'MyTouring', component: MyTouring },
                 { path: process.env.PUBLIC_URL + "/delivery-note/:id", name: 'DeliveryNote', component: DeliveryNote },

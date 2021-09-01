@@ -184,5 +184,8 @@
   "ABORTED": "Abgebrochen",
   "date": "Datiert",
   "no_order": "Kein Kommentar",
-  "order_again": "Bestelle Erneut"
+  "order_again": "Bestelle Erneut",
+  "email_not_found": "The address email entered is not linked to an account on this website.",
+  "reset_password_success": "Check yout email, we sent you a link to reset your password",
+  "size_passwords": "The password must have at least 6 characters"
 }

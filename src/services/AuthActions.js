@@ -114,8 +114,21 @@ function deleteAccount(user, password) {
               .then(response => response.data);
 }
 
+function resetPassword(email) {
+    return api.post('/api/forgot-password', {username: email})
+              .then(response => response.data);
+}
+
 function refreshUser(user) {
     return ({...user, uuid: uuid()});
+}
+
+function findResetByToken(token) {
+    return api.get('/api/reset_passwords?isUsed=false&token=' + token)
+}
+
+function resetAccountPassword(reset, password) {
+    return api.post('/api/reset_account_password/' + reset.id, {password: password});
 }
 
 export default {
@@ -130,5 +143,8 @@ export default {
     getUserSettings,
     updatePassword,
     deleteAccount,
-    refreshUser
+    refreshUser,
+    resetPassword,
+    findResetByToken,
+    resetAccountPassword
 }

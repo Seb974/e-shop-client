@@ -184,5 +184,8 @@
   "ABORTED": "Aborted",
   "date": "Date",
   "no_order": "No order",
-  "order_again": "Order again"
+  "order_again": "Order again",
+  "email_not_found": "The address email entered is not linked to an account on this website.",
+  "reset_password_success": "Check yout email, we sent you a link to reset your password",
+  "size_passwords": "The password must have at least 6 characters"
 }
