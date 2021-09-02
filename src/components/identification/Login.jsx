@@ -5,7 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Field from '../../components/forms/Field';
 import AuthActions from '../../services/AuthActions';
 import AuthContext from '../../contexts/AuthContext';
-import FacebookLogin from 'react-facebook-login';
+// import FacebookLogin from 'react-facebook-login';
 
 const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
 
@@ -31,13 +31,9 @@ const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
                     });
     }
 
-    const componentClicked = e => {
-        console.log('click');
-    }
-
-    const responseFacebook = response => {
-        console.log(response);
-      }
+    // const responseFacebook = response => {
+    //     console.log(response);
+    //   }
 
     return forgetPassword ? <></> : (
         <>
@@ -64,23 +60,7 @@ const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
                 </Form.Group>
                 <Form.Row>
                     <Form.Group as={Col} md={12} className="text-center" >
-                        <Button variant="primary" type="submit">S'IDENTIFIER</Button>
-                    </Form.Group>
-                </Form.Row>
-                <hr className="mb-3"/>
-                <Form.Row>
-                    <Form.Group as={Col} md={12} className="text-center" >
-                    <FacebookLogin
-                        appId="630008714635405"
-                        autoLoad={ true }
-                        fields="name,email,picture"
-                        size="small"
-                        textButton="Se connecter avec Facebook"
-                        language="fr_FR"
-                        icon={ <i className="fa fa-facebook-square" aria-hidden="true"></i> }
-                        // onClick={ componentClicked }
-                        callback={ responseFacebook }
-                    />
+                        <Button variant="success" type="submit">S'IDENTIFIER</Button>  {/* variant="primary" style={{ backgroundColor: '#4C69B9' }} */}
                     </Form.Group>
                 </Form.Row>
             </Form>

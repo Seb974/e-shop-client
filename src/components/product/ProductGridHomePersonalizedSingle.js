@@ -153,7 +153,7 @@ const ProductGridHomePersonalizedSingle = ({
               ""
             ) : (
               <div className="product-img-badges">
-                {product.discount ? (
+                {product.discount && product.discount > 0 ? (
                   <span className="bg-danger  py-2 rounded-pill text-center">
                     -{product.discount}%
                   </span>
