@@ -109,7 +109,7 @@ const ProductGridPersonalizedSingle = ({
               ""
             ) : (
               <div className="product-img-badges">
-                {product.discount ? (
+                {product.discount && product.discount > 0 ? (
                   <span className="pink">-{product.discount}%</span>
                 ) : (
                   ""
@@ -207,7 +207,7 @@ const ProductGridPersonalizedSingle = ({
                     ""
                   ) : (
                     <div className="product-img-badges">
-                      {product.discount ? (
+                      {product.discount && product.discount > 0 ? (
                         <span className="pink">-{product.discount}%</span>
                       ) : (
                         ""

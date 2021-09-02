@@ -14,6 +14,15 @@ function authenticate(credentials) {
                 })
 }
 
+function authenticateWithFacebook(credentials) {
+    return api.post('/api/facebook_login', credentials)
+                .then(response => response.data.token)
+                .then(token => {
+                    window.localStorage.setItem("authToken", token);
+                    return true;
+                })
+}
+
 function logout() {
     return api.get('/logout')
                 .then(response => {
@@ -146,5 +155,6 @@ export default {
     refreshUser,
     resetPassword,
     findResetByToken,
-    resetAccountPassword
+    resetAccountPassword,
+    authenticateWithFacebook
 }

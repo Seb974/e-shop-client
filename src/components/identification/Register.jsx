@@ -107,7 +107,7 @@ const Register = ({ onEnd }) => {
             </Form.Group>
             <Form.Row>
                 <Col className="col-md-12 text-center">
-                    <Button variant="primary" type="submit">S'INSCRIRE</Button>
+                    <Button variant="success" type="submit">S'INSCRIRE</Button>    {/* variant="primary" style={{ backgroundColor: '#4C69B9' }} */}
                 </Col>
             </Form.Row>
         </Form>
