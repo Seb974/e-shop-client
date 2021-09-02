@@ -25,8 +25,8 @@ export const getProducts = (products, category, type, limit) => {
 };
 
 // get product discount price
-export const getDiscountPrice = (price, discount) => {
-  return discount && discount > 0 ? price - price * (discount / 100) : null;
+export const getDiscountPrice = (price, discount, offerEnd = new Date()) => {
+  return isDefined(discount) && discount > 0 && isDefined(offerEnd) && (new Date(offerEnd)).getTime() >= (new Date()).getTime() ? price - price * (discount / 100) : null;
 };
 
 // get product cart quantity

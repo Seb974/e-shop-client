@@ -30,7 +30,7 @@ const ProductGridHomePersonalizedSingle = ({
   const quantityInput = useRef();
 
   const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
-  const discountedPrice = getDiscountPrice(product.price, product.discount);
+  const discountedPrice = getDiscountPrice(product.price, product.discount, product.offerEnd);
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
@@ -153,9 +153,9 @@ const ProductGridHomePersonalizedSingle = ({
               ""
             ) : (
               <div className="product-img-badges">
-                {product.discount && product.discount > 0 ? (
+                {isDefined(product.discount) && product.discount > 0 && isDefined(product.offerEnd) && new Date(product.offerEnd) >= new Date()? (
                   <span className="bg-danger  py-2 rounded-pill text-center">
-                    -{product.discount}%
+                    -{product.discount} %
                   </span>
                 ) : (
                   ""

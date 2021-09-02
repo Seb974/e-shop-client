@@ -84,7 +84,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                         <tbody>
                           { productCart.map((cartItem, key) => {
                             const taxToApply = !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
-                            const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount);
+                            const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount, cartItem.product.offerEnd);
                             const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 

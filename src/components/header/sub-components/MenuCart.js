@@ -76,7 +76,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
             { productCart.map((single, key) => {
               const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
                 single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
-              const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount) : 0;
+              const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount, single.product.offerEnd) : 0;
               const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
               const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
 

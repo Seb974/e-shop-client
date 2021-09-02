@@ -108,7 +108,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                             <th className="title-column">{ strings["price"] }</th>
                             {compareList.map((compareItem, key) => {
                               const taxToApply = !isDefined(compareItem) || !settings.subjectToTaxes ? 0 : compareItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
-                              const discountedPrice = isDefined(compareItem) ? getDiscountPrice(compareItem.price, compareItem.discount) : 0;
+                              const discountedPrice = isDefined(compareItem) ? getDiscountPrice(compareItem.price, compareItem.discount, compareItem.offerEnd) : 0;
                               const finalProductPrice = isDefined(compareItem) ? (compareItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
                               const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                               return !isDefined(compareItem) ? <></> : (
