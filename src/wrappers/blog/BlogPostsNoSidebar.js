@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import api from "../../config/api";
 import ArticleActions from "../../services/ArticleActions";
 import MercureContext from "../../contexts/MercureContext";
+import {FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton} from "react-share";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { updateArticles } from "../../data/dataProvider/eventHandlers/articleEvents";
 
@@ -78,13 +79,58 @@ const BlogPostsNoSidebar = () => {
                                     <div className="share-social">
                                         <ul>
                                             <li>
-                                                <a className="facebook" href="//facebook.com"><i className="fa fa-facebook" /></a>
+                                                {/* <a className="facebook" href="//facebook.com"><i className="fa fa-facebook" /></a> */}
+                                                <FacebookShareButton 
+                                                    url={ process.env.PUBLIC_URL + "/articles/" + article.id }  // api.CLIENT_DOMAIN
+                                                    quote={"Frais Pei"}
+                                                    hashtag="#fraispei"
+                                                    className="facebook"
+                                                    // className={classes.socialMediaButton}
+                                                  >
+                                                      <FacebookIcon size={36} round={true}/>
+                                                </FacebookShareButton>
                                             </li>
                                             <li>
-                                                <a className="twitter" href="//twitter.com"><i className="fa fa-twitter" /></a>
+                                                {/* <a className="twitter" href="//twitter.com"><i className="fa fa-twitter" /></a> */}
+                                                <FacebookMessengerShareButton
+                                                    appId={ process.env.FACEBOOK_APP_ID }
+                                                    // url={ process.env.PUBLIC_URL + "/articles/" + article.id }  // api.CLIENT_DOMAIN
+                                                    // quote={"Frais Pei"}
+                                                    // hashtag="#fraispei"
+                                                    className="facebook"
+                                                    // className={classes.socialMediaButton}
+                                                  >
+                                                      <FacebookMessengerIcon size={36} round={true}/>
+                                                </FacebookMessengerShareButton>
                                             </li>
                                             <li>
-                                                <a className="instagram" href="//instagram.com"><i className="fa fa-instagram" /></a>
+                                                {/* <a className="instagram" href="//instagram.com"><i className="fa fa-instagram" /></a> */}
+                                                <TwitterShareButton
+                                                    // appId={ process.env.FACEBOOK_APP_ID }
+                                                    // url={ process.env.PUBLIC_URL + "/articles/" + article.id }  // api.CLIENT_DOMAIN
+                                                    title={"Frais Pei"}
+                                                    // description="#fraispei"
+                                                    // className="instagram"
+                                                    // className={classes.socialMediaButton}
+                                                  >
+                                                      {/* <FacebookMessengerIcon size={36} round={true}/> */}
+                                                      <TwitterIcon size={36} round={true}/> 
+                                                </TwitterShareButton>
+                                            </li>
+                                            <li>
+                                                {/* <a className="instagram" href="//instagram.com"><i className="fa fa-instagram" /></a> */}
+                                                <LinkedinShareButton
+                                                    // appId={ process.env.FACEBOOK_APP_ID }
+                                                    // url={ process.env.PUBLIC_URL + "/articles/" + article.id }  // api.CLIENT_DOMAIN
+                                                    title={"Frais Pei"}
+                                                    summary="#fraispei"
+                                                    source={ api.CLIENT_DOMAIN }
+                                                    // className="instagram"
+                                                    // className={classes.socialMediaButton}
+                                                  >
+                                                      {/* <FacebookMessengerIcon size={36} round={true}/> */}
+                                                      <LinkedinIcon size={36} round={true}/> 
+                                                </LinkedinShareButton>
                                             </li>
                                         </ul>
                                     </div>

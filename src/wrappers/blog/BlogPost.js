@@ -4,6 +4,7 @@ import api from "../../config/api";
 import parse from 'html-react-parser';
 import Imgix from "react-imgix";
 import { isDefined } from "../../helpers/utils";
+import {FacebookShareButton, FacebookIcon} from "react-share";
 
 const BlogPost = ({ article }) => {
   return (
@@ -102,9 +103,18 @@ const BlogPost = ({ article }) => {
           <div className="share-social">
             <ul>
               <li className="d-inline mx-2">
-                <a className="facebook" href="//facebook.com">
+                {/* <a className="facebook" href="//facebook.com">
                   <i className="fa fa-facebook" />
-                </a>
+                </a> */}
+                <FacebookShareButton 
+                  url={ api.CLIENT_DOMAIN }
+                  quote={"Frais Péi"}
+                  hashtag="#fraispei"
+                  className="facebook"
+                  // className={classes.socialMediaButton}
+                  >
+                      <FacebookIcon size={36} />
+                </FacebookShareButton>
               </li>
               <li className="d-inline mx-2">
                 <a className="twitter" href="//twitter.com">
