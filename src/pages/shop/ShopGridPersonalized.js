@@ -8,6 +8,7 @@ import LayoutSeven from "../../layouts/LayoutSeven";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
+import api from "../../config/api";
 
 const ShopGridNoSidebar = ({ location }) => {
 
