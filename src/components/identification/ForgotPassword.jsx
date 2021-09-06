@@ -49,7 +49,7 @@ const ForgotPassword = ({ onEnd, strings }) => {
             </Form.Group>
             <Form.Row>
                 <Form.Group as={Col} md={12} className="text-center" >
-                    <Button variant="primary" type="submit">RÉINITIALISER</Button>
+                    <Button variant="success" type="submit">RÉINITIALISER</Button>
                 </Form.Group>
             </Form.Row>
         </Form>
