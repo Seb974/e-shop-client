@@ -1,14 +1,12 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
-import LocationMap from "../../components/contact/LocationMap";
 import PlatformActions from "../../services/PlatformActions";
 import { isDefined } from "../../helpers/utils";
 import ContactMap from "../../components/map/contact/Map";
 import AuthContext from "../../contexts/AuthContext";
+import api from "../../config/api";
 
 const Contact = ({ location }) => {
 
@@ -34,19 +32,17 @@ const Contact = ({ location }) => {
   return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-        <title>Flone | Contact</title>
-        <meta name="description"
-              content="Contact of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Contact" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Contact" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Contact" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="contact-area pt-100 pb-100 mt-3">
           <div className="container">
             <div className="contact-map mb-10">
-              {/* <LocationMap latitude="47.444" longitude="-122.176" /> */}
               <ContactMap
                   informations={ informations }
                   setInformations={ setInformations }

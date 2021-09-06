@@ -8,8 +8,9 @@ import { Fragment } from 'react';
 import { MetaTags } from 'react-meta-tags';
 import LayoutSeven from '../../layouts/LayoutSeven';
 import { multilanguage } from "redux-multilanguage";
+import api from '../../config/api';
 
-const MapVisualization = ({ match, strings }) => {
+const MapVisualization = ({ match, location, strings }) => {
     
     const { id = "new" } = match.params;
     const { tourings, setTourings } = useContext(DeliveryContext);
@@ -28,10 +29,11 @@ const MapVisualization = ({ match, strings }) => {
     return (
         <Fragment>
             <MetaTags>
-                <title>Flone | Wishlist</title>
-                <meta name="description"
-                    content="Wishlist page of flone react minimalist eCommerce template."
-                />
+                <title>{ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" }</title>
+                <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" } />
+                <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" } />
+                <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+                <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
             </MetaTags>
 
             <LayoutSeven stick="stick">
@@ -41,17 +43,7 @@ const MapVisualization = ({ match, strings }) => {
                         <Row>
                             <Col xs="12" lg="12">
                                 <Card>
-                                    {/* <Card.Header>
-                                        Votre commande N°{ id.padStart(10, '0')} en temps réel
-                                    </Card.Header> */}
-                                            <TouringLocation tourings={ tourings }/>
-                                    {/* <Card.Body>
-                                        <Row>
-                                        </Row>
-                                    </Card.Body> */}
-                                    {/* <Card.Footer>
-                                        <Link to="/my-orders" className="btn btn-link">Retour à la liste</Link>
-                                    </Card.Footer> */}
+                                    <TouringLocation tourings={ tourings }/>
                                 </Card>
                             </Col>
                         </Row>

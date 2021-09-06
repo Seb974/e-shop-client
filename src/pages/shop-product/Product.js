@@ -1,17 +1,16 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useContext } from "react";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
 import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined } from "../../helpers/utils";
+import api from "../../config/api";
 
-const Product = ({ location, match }) => {      // product: storedProduct,
+const Product = ({ location, match }) => {
 
   const { id = "new" } = match.params;
   const { pathname } = location;
@@ -21,19 +20,22 @@ const Product = ({ location, match }) => {      // product: storedProduct,
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Product Page</title>
-        <meta
-          name="description"
-          content="Product page of flone react minimalist eCommerce template."
-        />
+        <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+        { isDefined(product) && 
+            <>
+              <title>{ product.name }</title>
+              <meta property="title" content={ product.name } />
+              <meta property="og:title" content={ product.name } />
+              <meta name="description" content={ product.description } />
+              <meta property="og:description" content={ product.description } />
+              <meta property="image" content={ product.image.imgPath } />
+              <meta property="og:image" content={ product.image.imgPath } />
+              <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
+            </>
+        }
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Shop Product</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
 
         {/* product description with image */}
         <ProductImageDescription

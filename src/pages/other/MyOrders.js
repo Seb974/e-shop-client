@@ -15,6 +15,7 @@ import OrderActions from "../../services/OrderActions";
 import MercureContext from "../../contexts/MercureContext";
 import { updateOrders } from "../../data/dataProvider/eventHandlers/orderEvents";
 import Roles from "../../config/Roles";
+import api from "../../config/api";
 
 const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, deleteAllFromCart, strings }) => {
   
@@ -70,10 +71,11 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Wishlist</title>
-        <meta name="description"
-              content="Wishlist page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Mes commandes" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes commandes" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes commandes" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">

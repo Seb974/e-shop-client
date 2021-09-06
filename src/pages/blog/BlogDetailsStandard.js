@@ -6,8 +6,9 @@ import BlogPost from "../../wrappers/blog/BlogPost";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import ArticleActions from "../../services/ArticleActions";
 import { isDefined } from "../../helpers/utils";
+import api from "../../config/api";
 
-const BlogDetailsStandard = ({ match, history }) => {
+const BlogDetailsStandard = ({ match, history, location }) => {
 
   const { id = "new" } = match.params;
   const [article, setArticle] = useState(null);
@@ -32,11 +33,19 @@ const BlogDetailsStandard = ({ match, history }) => {
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Blog Post</title>
-        <meta
-          name="description"
-          content="Blog post page of flone react minimalist eCommerce template."
-        />
+        <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+        { isDefined(article) && 
+            <>
+              <title>{ article.title }</title>
+              <meta property="title" content={ article.title } />
+              <meta property="og:title" content={ article.title } />
+              <meta name="description" content={ article.summary } />
+              <meta property="og:description" content={ article.summary } />
+              <meta property="image" content={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } />
+              <meta property="og:image" content={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } />
+              <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
+            </>
+        }
       </MetaTags>
       <LayoutSeven stick="stick">
 

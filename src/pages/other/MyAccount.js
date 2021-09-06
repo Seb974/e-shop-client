@@ -1,11 +1,9 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useContext, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Card from "react-bootstrap/Card";
 import Accordion from "react-bootstrap/Accordion";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
@@ -16,6 +14,7 @@ import AuthActions from "../../services/AuthActions";
 import UserAactions from "../../services/UserActions";
 import { useToasts } from "react-toast-notifications";
 import DeleteAccount from "../../components/account/deleteAccount";
+import api from "../../config/api";
 
 const MyAccount = ({ location, strings }) => {
 
@@ -124,11 +123,11 @@ const MyAccount = ({ location, strings }) => {
   return !isDefinedAndNotVoid(selectedCatalog.center) ? <></> : (
     <Fragment>
       <MetaTags>
-        <title>Flone | My Account</title>
-        <meta
-          name="description"
-          content="Compare page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Mon compte" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mon compte" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mon compte" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">

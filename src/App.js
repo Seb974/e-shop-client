@@ -16,6 +16,7 @@ import { loadStripe } from '@stripe/stripe-js';
 import en from "./translations/english.json";
 import fn from "./translations/french.json";
 import de from "./translations/germany.json";
+// import HelmetMetaData from "./config/helmetMetadata";
 
 const loading = (
     <div className="flone-preloader-wrapper">
@@ -42,6 +43,7 @@ const App = (props) => {
                         <HashRouter>
                             <ScrollToTop>
                                 <Suspense fallback={ loading }>
+                                    {/* <HelmetMetaData></HelmetMetaData> */}
                                     <Switch>
                                         { routes.map((route, index) => {
                                             return route.component && (

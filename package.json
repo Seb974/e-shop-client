@@ -32,6 +32,7 @@
     "react-facebook-login": "^4.1.1",
     "react-flatpickr": "^3.10.7",
     "react-fullpage": "^0.1.1",
+    "react-helmet": "^6.1.0",
     "react-hooks-paginator": "^0.4.0",
     "react-id-swiper": "2.4.0",
     "react-imgix": "^9.2.0",
@@ -55,6 +56,7 @@
     "redux-localstorage-simple": "^2.4.1",
     "redux-multilanguage": "^0.1.2",
     "redux-thunk": "^2.3.0",
+    "save": "^2.4.0",
     "swiper": "^6.8.4",
     "uuid": "^3.3.3",
     "worker-loader": "^3.0.8"

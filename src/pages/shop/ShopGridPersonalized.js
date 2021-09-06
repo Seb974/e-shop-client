@@ -2,16 +2,14 @@ import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import MetaTags from "react-meta-tags";
 import Paginator from "react-hooks-paginator";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getSortedProducts } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
 
-const ShopGridNoSidebar = ({ location }) => {   // products 
+const ShopGridNoSidebar = ({ location }) => {
 
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
@@ -47,19 +45,14 @@ const ShopGridNoSidebar = ({ location }) => {   // products
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Shop Page</title>
-        <meta
-          name="description"
-          content="Shop page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - La boutique" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - La boutique" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - La boutique" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Shop</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
 
         <div className="shop-area pt-95 pb-100 mt-50">
           <div className="container">

@@ -9,6 +9,8 @@ import { addToCompare } from "../../redux/actions/compareActions";
 import Rating from "./sub-components/ProductRating";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
+import {FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton} from "react-share";
+import api from "../../config/api";
 
 const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscountedPrice, finalProductPrice, cartItems, wishlistItem, compareItem, addToast, addToCart, addToWishlist, addToCompare, strings}) => {
   
@@ -162,13 +164,53 @@ const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscou
       }
 
       <div className="pro-details-social">
-        <ul>
+        {/* <ul>
           <li><a href="//facebook.com"><i className="fa fa-facebook" /></a></li>
           <li><a href="//dribbble.com"><i className="fa fa-dribbble" /></a></li>
           <li><a href="//pinterest.com"><i className="fa fa-pinterest-p" /></a></li>
           <li><a href="//twitter.com"><i className="fa fa-twitter" /></a></li>
           <li><a href="//linkedin.com"><i className="fa fa-linkedin" /></a></li>
-        </ul>
+        </ul> */}
+        <ul>
+              <li className="d-inline mx-2">
+                  <FacebookShareButton 
+                      url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                      quote={"Frais Pei"}
+                      hashtag="#fraispei"
+                      className="facebook"
+                  >
+                      <FacebookIcon size={36} round={true}/>
+                  </FacebookShareButton>
+              </li>
+              <li className="d-inline mx-2">
+                  <FacebookMessengerShareButton
+                      url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                      appId="630008714635405"
+                      redirectUri={ api.CLIENT_DOMAIN + "/products" }
+                      className="facebook"
+                  >
+                      <FacebookMessengerIcon size={36} round={true}/>
+                  </FacebookMessengerShareButton>
+              </li>
+              <li className="d-inline mx-2">
+                  <TwitterShareButton
+                      url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                      title={"Frais Pei"}
+                  >
+                      <TwitterIcon size={36} round={true}/> 
+                  </TwitterShareButton>
+              </li>
+              <li className="d-inline mx-2">
+                  <LinkedinShareButton
+                      url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                      title={"Frais Pei"}
+                      summary="#fraispei"
+                      source={ api.CLIENT_DOMAIN }
+                  >
+                      <LinkedinIcon size={36} round={true}/> 
+                  </LinkedinShareButton>
+              </li>
+          </ul>
       </div>
     </div>
   );

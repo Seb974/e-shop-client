@@ -3,10 +3,8 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { getDiscountPrice } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getProductsFromIds } from '../../helpers/product';
 import AuthContext from "../../contexts/AuthContext";
@@ -26,6 +24,7 @@ import { useToasts } from "react-toast-notifications";
 import PromotionActions from "../../services/PromotionActions";
 import OrderActions from "../../services/OrderActions";
 import { getOrderToWrite, validateForm } from "../../helpers/checkout";
+import api from "../../config/api";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
@@ -161,18 +160,14 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Checkout</title>
-        <meta name="description"
-              content="Checkout page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Mes informations" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes informations" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes informations" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
-
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Checkout</BreadcrumbsItem> */}
       
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(productCart) ?

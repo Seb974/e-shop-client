@@ -2,11 +2,10 @@ import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import LayoutOne from "../../layouts/LayoutOne";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import api from "../../config/api";
 
 const LoginRegister = ({ location }) => {
   const { pathname } = location;
@@ -14,19 +13,14 @@ const LoginRegister = ({ location }) => {
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Login</title>
-        <meta
-          name="description"
-          content="Compare page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Connexion" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Connexion" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Connexion" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        Login Register
-      </BreadcrumbsItem>
+
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb />
         <div className="login-register-area pt-100 pb-100">
           <div className="container">
             <div className="row">

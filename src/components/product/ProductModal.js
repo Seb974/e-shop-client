@@ -10,6 +10,7 @@ import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { useToasts } from "react-toast-notifications";
 import Imgix from "react-imgix";
+import {FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton} from "react-share";
 
 const ProductModal = ({product, currency, discountedprice, finalproductprice, finaldiscountedprice, wishlistItem, compareItem, addtocart: addToCart, addtowishlist: addToWishlist, addtocompare: addToCompare, cartitems: cartItems, show, onHide, strings}) => {
 
@@ -267,6 +268,48 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                         <i className="pe-7s-shuffle" />
                       </button>
                     </div>
+                  </div>
+                  <div className="pro-details-social">
+                    <ul>
+                          <li className="d-inline mx-2">
+                              <FacebookShareButton 
+                                  url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                                  quote={"Frais Pei"}
+                                  hashtag="#fraispei"
+                                  className="facebook"
+                              >
+                                  <FacebookIcon size={36} round={true}/>
+                              </FacebookShareButton>
+                          </li>
+                          <li className="d-inline mx-2">
+                              <FacebookMessengerShareButton
+                                  url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                                  appId="630008714635405"
+                                  redirectUri={ api.CLIENT_DOMAIN + "/products" }
+                                  className="facebook"
+                              >
+                                  <FacebookMessengerIcon size={36} round={true}/>
+                              </FacebookMessengerShareButton>
+                          </li>
+                          <li className="d-inline mx-2">
+                              <TwitterShareButton
+                                  url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                                  title={"Frais Pei"}
+                              >
+                                  <TwitterIcon size={36} round={true}/> 
+                              </TwitterShareButton>
+                          </li>
+                          <li className="d-inline mx-2">
+                              <LinkedinShareButton
+                                  url={ api.CLIENT_DOMAIN + "/products/" + product.id }
+                                  title={"Frais Pei"}
+                                  summary="#fraispei"
+                                  source={ api.CLIENT_DOMAIN }
+                              >
+                                  <LinkedinIcon size={36} round={true}/> 
+                              </LinkedinShareButton>
+                          </li>
+                      </ul>
                   </div>
               </div>
             </div>

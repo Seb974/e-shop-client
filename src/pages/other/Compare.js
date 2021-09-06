@@ -3,13 +3,11 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { addToCart } from "../../redux/actions/cartActions";
 import { deleteFromCompare } from "../../redux/actions/compareActions";
 import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import Rating from "../../components/product/sub-components/ProductRating";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getElementsFromIds } from '../../helpers/product';
@@ -35,19 +33,14 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Compare</title>
-        <meta
-          name="description"
-          content="Compare page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Comparaison" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Comparaison" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Comparaison" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
   
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Compare</BreadcrumbsItem> */}
-  
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="compare-main-area pt-90 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(compareList) ? (

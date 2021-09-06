@@ -98,11 +98,11 @@ const ResetPassword = ({ location, strings, match, history }) => {
   return email === defaultEmail ? <Redirect to="/"/> : (
     <Fragment>
       <MetaTags>
-        <title>Flone | My Account</title>
-        <meta
-          name="description"
-          content="Compare page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">

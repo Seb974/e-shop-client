@@ -2,9 +2,8 @@ import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import LayoutOne from "../../layouts/LayoutOne";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
+import api from "../../config/api";
 
 const NotFound = ({ location }) => {
   const { pathname } = location;
@@ -12,19 +11,14 @@ const NotFound = ({ location }) => {
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Not Found</title>
-        <meta
-          name="description"
-          content="404 page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Page introuvable" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Page introuvable" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Page introuvable" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>
-        404 page
-      </BreadcrumbsItem>
+
       <LayoutOne headerTop="visible">
-        {/* breadcrumb */}
-        <Breadcrumb />
         <div className="error-area pt-40 pb-100">
           <div className="container">
             <div className="row justify-content-center">

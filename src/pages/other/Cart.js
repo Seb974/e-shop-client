@@ -3,12 +3,10 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import { addToCart, decreaseQuantity, deleteFromCart, cartItemStock, deleteAllFromCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getProductsFromIds } from '../../helpers/product';
 import ProductActions from "../../services/ProductActions";
@@ -55,10 +53,11 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
   return !isDefined(productCart) ? <></> : (
     <Fragment>
       <MetaTags>
-        <title>Flone | Cart</title>
-        <meta name="description"
-              content="Cart page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Panier" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Panier" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Panier" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">

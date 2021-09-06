@@ -1,6 +1,7 @@
 import React, { Fragment, useContext, useState } from "react";
 import { useEffect } from "react";
 import MetaTags from "react-meta-tags";
+import api from "../../config/api";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined } from "../../helpers/utils";
 import BlackFridayContent from "./BlackFridayContent";
@@ -9,7 +10,7 @@ import ChristmasContent from "./ChristmasContent";
 import DefaultContent from "./DefaultContent";
 import ValentinesDayContent from "./ValentinesDayContent";
 
-const HomeWrapper = () => {
+const HomeWrapper = ({ location }) => {
 
     const { homepage, setHomepage } = useContext(HomeContext);
     const [mercureOpering, setMercureOpering] = useState(false);
@@ -17,12 +18,13 @@ const HomeWrapper = () => {
     return (
         <Fragment>
             <MetaTags>
-                <title>Flone | Auto parts Home</title>
-                <meta
-                name="description"
-                content="Auto parts home of flone react minimalist eCommerce template."
-                />
+                <title>{ "Frais Péi, votre maraîcher en ligne" }</title>
+                <meta property="title" content={ "Frais Péi, votre maraîcher en ligne" } />
+                <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne" } />
+                <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+                <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
             </MetaTags>
+
             { !isDefined(homepage) || homepage.name.toUpperCase() === "DEFAULT" ?
                     <DefaultContent /> : 
                 homepage.name.toUpperCase() === "CHRISTMAS" ? 

@@ -3,13 +3,11 @@ import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import { connect } from "react-redux";
 import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../redux/actions/wishlistActions";
 import { addToCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import ProductsContext from "../../contexts/ProductsContext";
 import { getElementsFromIds } from '../../helpers/product';
 import api from "../../config/api";
@@ -34,10 +32,11 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Wishlist</title>
-        <meta name="description"
-              content="Wishlist page of flone react minimalist eCommerce template."
-        />
+          <title>{ "Frais Péi, votre maraîcher en ligne - Mes favoris" }</title>
+          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes favoris" } />
+          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes favoris" } />
+          <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+          <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
       <LayoutSeven stick="stick">

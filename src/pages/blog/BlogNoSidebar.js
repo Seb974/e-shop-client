@@ -1,11 +1,10 @@
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import MetaTags from "react-meta-tags";
-import { BreadcrumbsItem } from "react-breadcrumbs-dynamic";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import Breadcrumb from "../../wrappers/breadcrumb/Breadcrumb";
 import BlogPagination from "../../wrappers/blog/BlogPagination";
 import BlogPostsNoSidebar from "../../wrappers/blog/BlogPostsNoSidebar";
+import api from "../../config/api";
 
 const BlogNoSidebar = ({ location }) => {
   const { pathname } = location;
@@ -13,18 +12,14 @@ const BlogNoSidebar = ({ location }) => {
   return (
     <Fragment>
       <MetaTags>
-        <title>Flone | Blog</title>
-        <meta name="description"
-              content="Blog of flone react minimalist eCommerce template."
-        />
+        <title>{ "Frais Péi, votre maraîcher en ligne - Le blog" }</title>
+        <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Le blog" } />
+        <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Le blog" } />
+        <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
+        <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
 
-      {/* <BreadcrumbsItem to={process.env.PUBLIC_URL + "/"}>Home</BreadcrumbsItem>
-      <BreadcrumbsItem to={process.env.PUBLIC_URL + pathname}>Blog</BreadcrumbsItem> */}
-
       <LayoutSeven stick="stick">
-        {/* breadcrumb */}
-        {/* <Breadcrumb /> */}
         <div className="blog-area pt-100 pb-100 blog-no-sidebar mt-3">
           <div className="container">
             <div className="row">
