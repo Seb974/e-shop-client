@@ -185,7 +185,16 @@
   "date": "Datiert",
   "no_order": "Kein Kommentar",
   "order_again": "Bestelle Erneut",
-  "email_not_found": "The address email entered is not linked to an account on this website.",
-  "reset_password_success": "Check yout email, we sent you a link to reset your password",
-  "size_passwords": "The password must have at least 6 characters"
+  "email_not_found": "Die eingegebene Adress-E-Mail ist nicht mit einem Konto auf dieser Website verknüpft.",
+  "reset_password_success": "Überprüfen Sie Ihre E-Mail, wir haben Ihnen einen Link zum Zurücksetzen Ihres Passworts gesendet",
+  "size_passwords": "Das Passwort muss mindestens 6 Zeichen haben",
+  "who_we_are": "Wer wir sind",
+  "welcome": "Willkommen auf Frais Péi",
+  "follow_us": "Folge uns",
+  "get_in_touch": "In Kontakt kommen",
+  "name*": "Name*",
+  "email*": "Email*",
+  "subject*": "Gegenstand*",
+  "your_message*": "Ihre Nachricht*",
+  "send": "SENDEN"
 }

@@ -1,19 +1,25 @@
 import PropTypes from "prop-types";
 import React from "react";
+import Imgix from "react-imgix";
+import api from "../../config/api";
+import { isDefined } from "../../helpers/utils";
 
 const TeamMemberOneSingle = ({ data, spaceBottomClass }) => {
+  
   return (
     <div className="col-lg-3 col-md-6 col-sm-6">
       <div
         className={`team-wrapper ${spaceBottomClass ? spaceBottomClass : ""}`}
       >
         <div className="team-img">
-          <img
-            src={process.env.PUBLIC_URL + data.image}
-            alt=""
-            className="img-fluid"
-          />
-          <div className="team-action">
+          { isDefined(data.image.imgPath) ?
+              <Imgix src={ data.image.imgPath } className="lazyload img-fluid" alt={ data.image.filePath } width="270" disableSrcSet={ true } disableLibraryParam={ true }
+                  attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+              />
+            :
+              <img className="img-fluid" src={ api.API_DOMAIN + "/uploads/pictures/" + data.image.filePath } alt="" />
+          }
+          {/* <div className="team-action">
             <a
               className="facebook"
               href={data.fbLink}
@@ -38,11 +44,11 @@ const TeamMemberOneSingle = ({ data, spaceBottomClass }) => {
             >
               <i className="fa fa-instagram" />
             </a>
-          </div>
+          </div> */}
         </div>
         <div className="team-content text-center">
           <h4>{data.name}</h4>
-          <span>{data.position} </span>
+          <span>{data.role} </span>
         </div>
       </div>
     </div>

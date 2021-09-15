@@ -13,6 +13,7 @@ import App from "./App";
 import "./assets/scss/style.scss";
 import "./assets/css/fpcolor.css";
 import * as serviceWorker from "./serviceWorker";
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import { composeWithDevTools } from "redux-devtools-extension";
 

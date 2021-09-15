@@ -187,5 +187,14 @@
   "order_again": "Réenvoyer",
   "email_not_found": "L'adresse email saisie n'est associée à aucun compte sur ce site.",
   "reset_password_success": "Vérifiez vos emails. Nous vous avons envoyé un lien pour réinitialiser votre mot de passe.",
-  "size_passwords": "Le mot de passe doit contenir au moins 6 caractères"
+  "size_passwords": "Le mot de passe doit contenir au moins 6 caractères",
+  "who_we_are": "À propos de nous",
+  "welcome": "Bienvenue chez Frais Péi",
+  "follow_us": "Suivez nous",
+  "get_in_touch": "Prenons contact",
+  "name*": "Nom*",
+  "email*": "Email*",
+  "subject*": "Sujet*",
+  "your_message*": "Votre Message*",
+  "send": "ENVOYER"
 }

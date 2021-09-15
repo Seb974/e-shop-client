@@ -2,8 +2,9 @@ import React from "react";
 import Swiper from "react-id-swiper";
 import HeroSliderEightSingle from "../../components/hero-slider/HeroSliderEightSingle.js";
 import sliderData from "../../data/hero-sliders/hero-slider-eight.json";
+import { isDefined } from "../../helpers/utils.js";
 
-const HeroSliderEight = () => {
+const HeroSliderEight = ({ data }) => {
   const params = {
     effect: "fade",
     loop: true,
@@ -32,16 +33,12 @@ const HeroSliderEight = () => {
     <div className="slider-area">
       <div className="slider-active nav-style-1">
         <Swiper {...params}>
-          {sliderData &&
-            sliderData.map((single, key) => {
-              return (
+          { isDefined(data) && isDefined(data.headerPicture) && 
                 <HeroSliderEightSingle
-                  data={single}
-                  key={key}
+                  data={data}
                   sliderClass="swiper-slide"
                 />
-              );
-            })}
+            }
         </Swiper>
       </div>
     </div>

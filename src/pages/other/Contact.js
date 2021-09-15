@@ -7,18 +7,28 @@ import { isDefined } from "../../helpers/utils";
 import ContactMap from "../../components/map/contact/Map";
 import AuthContext from "../../contexts/AuthContext";
 import api from "../../config/api";
+import Field from "../../components/forms/Field";
+import MessageActions from "../../services/MessageActions";
+import { multilanguage } from "redux-multilanguage";
+import { useToasts } from "react-toast-notifications";
 
-const Contact = ({ location }) => {
+const Contact = ({ location, strings }) => {
 
   const { pathname } = location;
+  const { addToast } = useToasts();
   const { selectedCatalog } = useContext(AuthContext);
+  const defaultMessage = {name: "", email: "", subject: "", message: ""};
   const defaultInformationsErrors = {name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""};
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
   const [platform, setPlatform] = useState(null);
+  const [message, setMessage] = useState(defaultMessage);
+  const [errors, setErrors] = useState(defaultMessage);
   const [informations, setInformations] = useState(initialInformations);
   const [informationsErrors, setInformationsErrors] = useState(defaultInformationsErrors);
 
-  useEffect(() => fetchPlatform(), [])
+  useEffect(() => fetchPlatform(), []);
+
+  const handleChange = ({ currentTarget }) => setMessage({...message, [currentTarget.name]: currentTarget.value});
   
   const fetchPlatform = () => {
       PlatformActions
@@ -28,6 +38,26 @@ const Contact = ({ location }) => {
           setInformations(response.metas);
         });
   };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    console.log(message);
+    MessageActions
+        .create(message)
+        .then(response => {
+          addToast(
+            "Nous avons bien reçu votre message et le traitons dans les plus brefs délais.", 
+            { appearance: "success", autoDismiss: true }
+          );
+          setMessage(defaultMessage);
+      })
+      .catch(error => {
+        console.log(error);
+        addToast(
+          "Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer ultérieurement.", 
+          { appearance: "warning", autoDismiss: true, autoDismissTimeout: 8000 });
+        });
+  }
 
   return !isDefined(platform) ? <></> : (
     <Fragment>
@@ -83,7 +113,7 @@ const Contact = ({ location }) => {
                     </div>
                   </div>
                   <div className="contact-social text-center">
-                    <h3>Follow Us</h3>
+                    <h3>{strings["follow_us"]}</h3>
                     <ul>
                       <li>
                         <a href="//facebook.com">
@@ -117,31 +147,56 @@ const Contact = ({ location }) => {
               <div className="col-lg-8 col-md-7">
                 <div className="contact-form">
                   <div className="contact-title mb-30">
-                    <h2>Get In Touch</h2>
+                    <h2>{strings["get_in_touch"]}</h2>
                   </div>
-                  <form className="contact-form-style">
+                  <form className="contact-form-style" onSubmit={ handleSubmit }>
                     <div className="row">
                       <div className="col-lg-6">
-                        <input name="name" placeholder="Name*" type="text" />
+                        <input 
+                            name="name" 
+                            value={ message.name }
+                            onChange={ handleChange }
+                            placeholder={strings["name*"]}
+                            error={ errors.name }
+                            required={ true }
+                            type="text" 
+                        />
                       </div>
                       <div className="col-lg-6">
-                        <input name="email" placeholder="Email*" type="email" />
+                        <input 
+                            name="email" 
+                            placeholder="Email*" 
+                            type="email"
+                            value={ message.email }
+                            onChange={ handleChange }
+                            placeholder={strings["email*"]}
+                            error={ errors.email }
+                            required={ true }
+                        />
                       </div>
                       <div className="col-lg-12">
                         <input
                           name="subject"
                           placeholder="Subject*"
                           type="text"
+                          value={ message.subject }
+                          onChange={ handleChange }
+                          placeholder={strings["subject*"]}
+                          error={ errors.subject }
+                          required={ true }
                         />
                       </div>
                       <div className="col-lg-12">
                         <textarea
                           name="message"
-                          placeholder="Your Message*"
-                          defaultValue={""}
+                          placeholder={strings["your_message*"]} 
+                          value={ message.message }
+                          onChange={ handleChange }
+                          error={ errors.message }
+                          required={ true }
                         />
                         <button className="submit" type="submit">
-                          SEND
+                          {strings["send"]}
                         </button>
                       </div>
                     </div>
@@ -161,4 +216,4 @@ Contact.propTypes = {
   location: PropTypes.object
 };
 
-export default Contact;
+export default multilanguage(Contact);

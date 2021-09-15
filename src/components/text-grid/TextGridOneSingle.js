@@ -5,7 +5,7 @@ const TextGridOneSingle = ({ data, spaceBottomClass }) => {
   return (
     <div className="col-lg-4 col-md-4">
       <div
-        className={`single-mission ${spaceBottomClass ? spaceBottomClass : ""}`}
+        className={`text-center single-mission ${spaceBottomClass ? spaceBottomClass : ""}`}
       >
         <h3>{data.title}</h3>
         <p>{data.text}</p>
