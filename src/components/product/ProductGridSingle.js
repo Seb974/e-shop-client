@@ -24,9 +24,9 @@ const ProductGridSingle = ({
 }) => {
   const [modalShow, setModalShow] = useState(false);
   const { addToast } = useToasts();
-  const { country } = useContext(AuthContext);
+  const { country, selectedCatalog } = useContext(AuthContext);
 
-  const taxToApply = isDefined(product) ? product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent : 0;
+  const taxToApply = isDefined(product) ? product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent : 0;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate* (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

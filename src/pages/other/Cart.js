@@ -24,7 +24,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
-  const { country, settings } = useContext(AuthContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
   const { packages } = useContext(DeliveryContext);
   const { products, setProducts } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([]);
@@ -40,7 +40,6 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
             .then(response => {
                 setProducts(response);
                 productSet = getProductsFromIds(cartItems, response);
-                console.log(productSet);
                 setProductCart(productSet);
             });
 
@@ -82,7 +81,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                         </thead>
                         <tbody>
                           { productCart.map((cartItem, key) => {
-                            const taxToApply = !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                            const taxToApply = !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                             const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount, cartItem.product.offerEnd);
                             const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

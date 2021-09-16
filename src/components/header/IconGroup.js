@@ -9,6 +9,9 @@ import Identification from "../identification/Identification";
 import AuthActions from "../../services/AuthActions";
 import { multilanguage } from "redux-multilanguage";
 import * as icons from "react-bootstrap-icons";
+import ReactCountryFlag from "react-country-flag";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import MenuCatalog from "./sub-components/MenuCatalog";
 
 const UseOutsideAlerter = (ref, handler) => {
   useEffect(() => {
@@ -23,7 +26,7 @@ const UseOutsideAlerter = (ref, handler) => {
 
 const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCart, iconWhiteClass, strings }) => {
 
-  const { isAuthenticated, setIsAuthenticated, setCurrentUser } = useContext(AuthContext);
+  const { isAuthenticated, setIsAuthenticated, setCurrentUser, selectedCatalog, catalogs } = useContext(AuthContext);
   const iconGroupContainer = useRef(null);
   const [active, setActive] = useState("");
   const clearActive = () => setActive("");
@@ -51,64 +54,31 @@ const IconGroup = ({ currency, cartData, wishlistData, compareData, deleteFromCa
 
   return (
     <div ref={ iconGroupContainer } className={`header-right-wrap ${iconWhiteClass ? iconWhiteClass : ""}`}>
-      {/* <div className="same-style header-search d-none d-lg-block">
-        <button name="search" className="search-active" onClick={ handleClick }>
-          <i className= "fas fa-search"></i>
-        </button>
-        <div className={"search-content " + (active === "search" ? "active" : "")}>
-          <form action="#">
-            <input type="text" placeholder="Search" />
-            <button className="button-search">
-              <i className= "fas fa-search"></i>
+      { isDefinedAndNotVoid(catalogs) && catalogs.filter(c => c.isActive).length > 1 && 
+          <div className="same-style cart-wrap d-none d-lg-block">
+            <button name="catalog" className="icon-cart" onClick={ handleClick }>
+            <ReactCountryFlag countryCode={isDefined(selectedCatalog) ? selectedCatalog.code : "RE"} style={{fontSize: '1.5em', lineHeight: '1.5em', marginLeft: '1em', verticalAlign: 'top', marginTop: '-12px' }}/>
             </button>
-          </form>
-        </div>
-      </div> */}
-          {/* <div className="same-style account-setting d-none d-lg-block">
-            <button name="account" className="account-setting-active" onClick={ handleClick }>
-              <i className= "fas fa-user-circle pb-2" style={{fontSize: '1.1em'}}></i>
-            </button>
-            <div className={"account-dropdown " + (active === "account" ? "active" : "")}>
-              <ul>
-                { isAuthenticated &&
-                  <li>
-                    <Link to={process.env.PUBLIC_URL + "/my-account"}>{ strings["my_account"] }</Link>
-                  </li>
-                }
-                <li>
-                    { !isAuthenticated ? <Identification name={ strings["login"] }/> : 
-                      <a className="nav-link" href="#" onClick={ handleLogout }>{strings["logout"]}</a>
-                    }
-                </li>
-              </ul>
-            </div>
-          </div> */}
-
-
+            <MenuCatalog active={ active === "catalog" ? "active" : "" } setActive={ setActive } />
+          </div>
+      }
       <div className="same-style header-compare">
         <Link to={process.env.PUBLIC_URL + "/compare"}>
-          {/* <i className="pe-7s-shuffle" /> */}
           <icons.Shuffle />
-          {/* <i className= "fas fa-random fa-sm"></i> */}
           <span className="count-style">{compareData && compareData.length ? compareData.length : 0}</span>
         </Link>
       </div>
       <div className="same-style header-wishlist">
         <Link to={process.env.PUBLIC_URL + "/wishlist"}>
-          {/* <i className="pe-7s-like" /> */}
-          {/* <i className="fas fa-heart text-danger fa-sm"/>   */}
           <icons.SuitHeart />
           <span className="count-style">{wishlistData && wishlistData.length ? wishlistData.length : 0}</span>
         </Link>
       </div>
       <div className="same-style cart-wrap d-none d-lg-block">
         <button name="cart" className="icon-cart" onClick={ handleClick }>
-          {/* <i className="pe-7s-shopbag" /> */}
-          {/* <i className= "fas fa-shopping-basket fa-sm"/> */}
           <icons.Bag/>
           <span className="count-style">{cartData && cartData.length ? cartData.length : 0}</span>
         </button>
-        {/* menu cart */}
         <MenuCart cartData={cartData} currency={currency} deleteFromCart={deleteFromCart} active={ active === "cart" ? "active" : "" } />
       </div>
       <div className="same-style cart-wrap d-block d-lg-none">

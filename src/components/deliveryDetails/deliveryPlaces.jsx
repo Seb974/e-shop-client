@@ -8,10 +8,11 @@ import RelaypointActions from '../../services/RelaypointActions';
 import DeliveredCities from './deliveredCities';
 import AuthContext from '../../contexts/AuthContext';
 import CityActions from '../../services/CityActions';
+import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
 
 const DeliveryPlaces = ({ name, color }) => {
 
-    const { settings } = useContext(AuthContext);
+    const { settings, catalogs } = useContext(AuthContext);
     const [show, setShow] = useState(false);
     const [cities, setCities] = useState([]);
     const { relaypoints, setRelaypoints } = useContext(DeliveryContext);
@@ -63,19 +64,21 @@ const DeliveryPlaces = ({ name, color }) => {
                     <Tab eventKey="profile" title="En points relais">
                         <Map displayedRelaypoints={ relaypoints }/>
                     </Tab>
-                    <Tab eventKey="contact" title="Hors Réunion" >
-                        <Row className="my-4">
-                            <Col className="mx-2">
-                                Les livraisons hors réunion sont effectuées à votre domicile ou bureau par notre partenaire <span style={{ color: 'blue' }}>Chronopost</span>,
-                                dans un délais de 48 à 72h suivant la date d'expédition.
-                            </Col>
-                        </Row>
-                        <Row className="mt-4">
-                            <Col className="d-flex justify-content-center mt-4">
-                                <img src={ process.env.PUBLIC_URL + '/assets/img/logo/logo-chronopost.jpeg' }/>
-                            </Col>
-                        </Row>
-                    </Tab>
+                    { isDefinedAndNotVoid(catalogs) && catalogs.filter(c => isDefined(c.isActive) && c.isActive && c.needsParcel).length > 0 &&
+                        <Tab eventKey="contact" title="Hors Réunion">
+                            <Row className="my-4">
+                                <Col className="mx-2">
+                                    Les livraisons hors réunion sont effectuées à votre domicile ou bureau par notre partenaire <span style={{ color: 'blue' }}>Chronopost</span>,
+                                    dans un délais de 48 à 72h suivant la date d'expédition.
+                                </Col>
+                            </Row>
+                            <Row className="mt-4">
+                                <Col className="d-flex justify-content-center mt-4">
+                                    <img src={ process.env.PUBLIC_URL + '/assets/img/logo/logo-chronopost.jpeg' }/>
+                                </Col>
+                            </Row>
+                        </Tab>
+                    }
                 </Tabs>
                 </Modal.Body>
                 <Modal.Footer style={{ width: '100%', display: 'block' }}>

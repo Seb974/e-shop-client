@@ -33,14 +33,14 @@ const ProductGridPersonalizedSingle = ({
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
   const [hasStock, setHasStock] = useState(false);
-  const { country, settings } = useContext(AuthContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
 
   useEffect(() => {
     const stockStatus = hasEnoughStock(product);
     setHasStock(stockStatus);
   }, [product]);
 
-  const taxToApply = !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+  const taxToApply = !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;    // country
   const discountedPrice = getDiscountPrice(product.price, product.discount, product.offerEnd);
   const finalProductPrice = +(
     product.price *

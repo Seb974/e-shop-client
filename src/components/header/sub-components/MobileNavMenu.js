@@ -5,10 +5,14 @@ import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../../contexts/AuthContext";
 import AuthActions from "../../../services/AuthActions";
 import Identification from "../../identification/Identification";
+import ReactCountryFlag from "react-country-flag";
+import { useToasts } from "react-toast-notifications";
+import { isDefined, isDefinedAndNotVoid } from "../../../helpers/utils";
 
 const MobileNavMenu = ({ strings }) => {
 
-  const { isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser } = useContext(AuthContext);
+  const { addToast } = useToasts();
+  const { isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, catalogs, selectedCatalog, setSelectedCatalog } = useContext(AuthContext);
 
   const handleLogout = () => {
     AuthActions.logout()
@@ -18,6 +22,13 @@ const MobileNavMenu = ({ strings }) => {
                });
   }
 
+  const handleChangeCatalog = (e, id) => {
+    const newCatalog = catalogs.find(c => c.id === parseInt(id));
+    if (isDefined(newCatalog) && newCatalog.id !== selectedCatalog.id)
+        setSelectedCatalog(newCatalog);
+        addToast(<>{"Sélectionnez vos produits pour une livraison sur la "} <strong>{ newCatalog.name }</strong><ReactCountryFlag countryCode={newCatalog.code } style={{ verticalAlign: 'middle', marginLeft: '5px' }}/> </> , { appearance: "info", autoDismiss: true, autoDismissTimeout: 6000 });
+  }
+
   return (
     <nav className="offcanvas-navigation" id="offcanvas-navigation">
       <ul>
@@ -25,9 +36,36 @@ const MobileNavMenu = ({ strings }) => {
           <Link to={process.env.PUBLIC_URL + "/"}>{strings["home"]}</Link>
         </li>
 
-        <li>
-          <Link to={process.env.PUBLIC_URL + "/shop"}>{strings["shop"]}</Link>
-        </li>
+        { !isDefinedAndNotVoid(catalogs) || catalogs.filter(c => c.isActive).length <= 1 ?
+            <li>
+              <Link to={process.env.PUBLIC_URL + "/shop"}>{strings["shop"]}</Link>
+            </li>
+          :
+          <li className="menu-item-has-children">
+              <Link to={process.env.PUBLIC_URL + "/shop"} className="d-flex flex-row align-items-start">
+                {strings["shop"]}
+                <ReactCountryFlag countryCode={isDefined(selectedCatalog) ? selectedCatalog.code : "RE"} style={{ marginLeft: '1em', verticalAlign: 'top' }}/>
+                {/* { sidebarMenu ? <span><i className="fa fa-angle-right"></i></span> : <i className="fa fa-angle-down" /> } */}
+              </Link>
+              <ul className="sub-menu">
+                <li style={{ width: '100%' }}>
+                  <ul>
+                    { catalogs.filter(c => c.isActive).map(catalog => {
+                          return (
+                            <li style={{ width: '100%', marginBottom: '20px' }} className="d-flex flex-row align-items-start justify-content-start">
+                                <Link to={process.env.PUBLIC_URL + "/shop"} onClick={ e => handleChangeCatalog(e, catalog.id)}>
+                                    {strings["destination"] + " " + catalog.name }
+                                </Link>
+                                <ReactCountryFlag countryCode={catalog.code} style={{fontSize: '2em', lineHeight: '2em', marginLeft: '1em', verticalAlign: 'top', marginTop: '-10px' }}/>
+                            </li>
+                          );
+                      })
+                    }
+                  </ul>
+                </li>
+              </ul>
+          </li>
+        }
         { isAuthenticated && 
           <>
             <li>

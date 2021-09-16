@@ -3,10 +3,12 @@ import '../../assets/css/search-input.css';
 import React, { useContext } from "react";
 import { setActiveLayout } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProductCount}) => {
 
+  const { selectedCatalog } = useContext(AuthContext);
   const { categories, navSearch, setNavSearch, selectedCategory, setSelectedCategory } = useContext(ProductsContext);
 
   const handleSearchChange = ({ currentTarget }) => setNavSearch(currentTarget.value);
@@ -33,7 +35,7 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
               </select> */}
               <select className="form-control" value={ selectedCategory } onChange={ handleCategoryChange }>
                 <option value={-1}>Toutes</option>
-                { categories.map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
+                { categories.filter(c => isDefinedAndNotVoid(c.catalogs) ? c.catalogs.find(cat => cat.id === (isDefined(selectedCatalog) ? selectedCatalog.id : cat.id)) !== undefined : false).map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
               </select>
             </div>
             {/* <p>

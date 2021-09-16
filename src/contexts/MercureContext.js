@@ -21,4 +21,6 @@ export default React.createContext({
     setUpdatedCities: (value) => {},
     updatedArticles: [],
     setUpdatedArticles: (value) => {},
+    updatedCatalogs: [],
+    setUpdatedCatalogs: (value) => {}
 });

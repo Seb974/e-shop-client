@@ -14,12 +14,13 @@ import { updateContainers } from '../data/dataProvider/eventHandlers/containerEv
 import { updateHomepage } from '../data/dataProvider/eventHandlers/homepageEvents';
 import { updateRelaypoints } from '../data/dataProvider/eventHandlers/relaypointEvents';
 import { updateCities } from '../data/dataProvider/eventHandlers/cityEvents';
+import { updateCatalogs } from '../data/dataProvider/eventHandlers/catalogEvents';
 
 const Mercure = ({ children }) => {
 
     const { homepage, setHomepage } = useContext(HomeContext);
     const { containers, setContainers } = useContext(ContainerContext);
-    const { currentUser, setCurrentUser } = useContext(AuthContext);
+    const { currentUser, setCurrentUser, catalogs, setCatalogs } = useContext(AuthContext);
     const { products, setProducts, categories, setCategories } = useContext(ProductsContext);
     const { relaypoints, setRelaypoints, condition, setCondition, cities, setCities } = useContext(DeliveryContext);
 
@@ -32,6 +33,7 @@ const Mercure = ({ children }) => {
     const [updatedRelaypoints, setUpdatedRelaypoints] = useState([]);
     const [updatedCities, setUpdatedCities] = useState([]);
     const [updatedArticles, setUpdatedArticles] = useState([]);
+    const [updatedCatalogs, setUpdatedCatalogs] = useState([]);
 
     const [productOpering, setProductOpering] = useState(false);
     const [categoryOpering, setCategoryOpering] = useState(false);
@@ -40,6 +42,7 @@ const Mercure = ({ children }) => {
     const [relaypointOpering, setRelaypointOpering] = useState(false);
     const [citiesOpering, setCitiesOpering] = useState(false);
     const [homeOpering, setHomeOpering] = useState(false);
+    const [catalogOpering, setCatalogOpering] = useState(false);
 
     useEffect(() => {
         if (isDefinedAndNotVoid(updatedProducts) && !productOpering) {
@@ -97,6 +100,14 @@ const Mercure = ({ children }) => {
         }
     }, [updatedCities]);
 
+    useEffect(() => {
+        if (isDefinedAndNotVoid(updatedCatalogs) && !catalogOpering) {
+            setCatalogOpering(true);
+            updateCatalogs(catalogs, setCatalogs, updatedCatalogs, setUpdatedCatalogs)
+                .then(response => setCatalogOpering(response));
+        }
+    }, [updatedCatalogs]);
+
     return (
         <MercureContext.Provider value={{ 
                 updatedOrders, setUpdatedOrders, 
@@ -107,7 +118,8 @@ const Mercure = ({ children }) => {
                 updatedHomepages, setUpdatedHomepages,
                 updatedRelaypoints, setUpdatedRelaypoints,
                 updatedCities, setUpdatedCities,
-                updatedArticles, setUpdatedArticles
+                updatedArticles, setUpdatedArticles,
+                updatedCatalogs, setUpdatedCatalogs
             }}
         >
             <MercureHub>

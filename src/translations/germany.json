@@ -196,5 +196,10 @@
   "email*": "Email*",
   "subject*": "Gegenstand*",
   "your_message*": "Ihre Nachricht*",
-  "send": "SENDEN"
+  "send": "SENDEN",
+  "french": "Französisch",
+  "english": "Englisch",
+  "germany": "Deutschland",
+  "choose_language": "Sprache wählen",
+  "destination": "Ziel"
 }

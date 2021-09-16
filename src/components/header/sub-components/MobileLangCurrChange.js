@@ -4,12 +4,7 @@ import { multilanguage, changeLanguage } from "redux-multilanguage";
 import { connect } from "react-redux";
 import { setCurrency } from "../../../redux/actions/currencyActions";
 
-const MobileLangCurrChange = ({
-  currency,
-  setCurrency,
-  currentLanguageCode,
-  dispatch
-}) => {
+const MobileLangCurrChange = ({ currency, setCurrency, currentLanguageCode, dispatch, strings }) => {
   const changeLanguageTrigger = e => {
     const languageCode = e.target.value;
     dispatch(changeLanguage(languageCode));
@@ -30,7 +25,7 @@ const MobileLangCurrChange = ({
   return (
     <div className="mobile-menu-middle">
       <div className="lang-curr-style">
-        <span className="title mb-2">Choose Language </span>
+        <span className="title mb-2">{strings["choose_language"]}</span>
         <select
           value={currentLanguageCode}
           onChange={e => {
@@ -38,12 +33,12 @@ const MobileLangCurrChange = ({
             closeMobileMenu();
           }}
         >
-          <option value="fn">French</option>
-          <option value="en">English</option>
-          <option value="de">Germany</option>
+          <option value="fn">{strings["french"]}</option>
+          <option value="en">{strings["english"]}</option>
+          <option value="de">{strings["germany"]}</option>
         </select>
       </div>
-      <div className="lang-curr-style">
+      {/* <div className="lang-curr-style">
         <span className="title mb-2">Choose Currency</span>
         <select
           value={currency.currencyName}
@@ -56,7 +51,7 @@ const MobileLangCurrChange = ({
           <option value="USD">USD</option>
           <option value="GBP">GBP</option>
         </select>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -82,7 +77,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(multilanguage(MobileLangCurrChange));
+export default connect(mapStateToProps, mapDispatchToProps)(multilanguage(MobileLangCurrChange));

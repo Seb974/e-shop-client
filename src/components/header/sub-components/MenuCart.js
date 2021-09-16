@@ -19,9 +19,9 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   let cartTotalPrice = 0;
   const { addToast } = useToasts();
   const [productCart, setProductCart] = useState([]);
-  const { products } = useContext(ProductsContext);
-  const { country, selectedCatalog, settings } = useContext(AuthContext);
-  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight ,condition } = useContext(DeliveryContext);
+  const { products, categories } = useContext(ProductsContext);
+  const { country, selectedCatalog, settings, catalogs } = useContext(AuthContext);
+  const { packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, condition } = useContext(DeliveryContext);
   const { containers } = useContext(ContainerContext);
   const [packageUpdate, setPackageUpdate] = useState(false);
 
@@ -32,22 +32,15 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData, products]);
 
   useEffect(() => {
-    if (isDefinedAndNotVoid(productCart) && !packageUpdate && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
-        setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
-        setPackageUpdate(false);
-    }
-  }, [productCart, containers, selectedCatalog]);
+    if (!packageUpdate)
+        updatePackages();
+  }, [productCart]);
+
+  useEffect(() => updatePackages(), [containers, selectedCatalog]);
 
   useEffect(() => {
-    if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0) {
-        setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
-        setPackageUpdate(false);
-    }
-  }, [containers]);
-
-  useEffect(() => {
-      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
-          if (isDefinedAndNotVoid(packages)) {
+      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {     // && selectedCatalog.needsParcel
+          if (isDefinedAndNotVoid(packages) && selectedCatalog.needsParcel) {
               setPackageUpdate(true);
               const packageProducts = formatPackages(packages, country);
               setProductCart([
@@ -56,17 +49,40 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
               ]);
               setTotalWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))));
               setAvailableWeight(getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages));
-          } else {
-              if (packages.length === 0) {
+          } else if (packages.length === 0) {
                   setPackageUpdate(false);
                   const productSet = getProductsFromIds(cartData, products);
                   setProductCart(productSet);
                   setTotalWeight(0);
                   setAvailableWeight(0);
-              }
           }
+      } else if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && !selectedCatalog.needsParcel && productCart.filter(product => isDefined(product.isPackage)).length > 0) {
+          const productSet = getProductsFromIds(cartData, products);
+          setProductCart(productSet);
+          setTotalWeight(0);
+          setAvailableWeight(0);
       }
-  }, [packages, selectedCatalog]);
+  }, [packages]);
+
+  const updatePackages = () => {
+      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog)) {
+          setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
+          setPackageUpdate(false);
+      }
+      checkForRestrictions(selectedCatalog, productCart);
+  };
+
+  const checkForRestrictions = (catalog, cart) => {
+      cart.map(item => {
+          const restrictedCategory = isDefined(item.product) && isDefinedAndNotVoid(item.product.categories) && isDefined(catalog) ? item.product.categories.find(c => c.catalogs.find(cat => cat.id === catalog.id) !== undefined && c.restrictions.length > 0) : undefined;
+          if (isDefined(restrictedCategory)) {
+            const appliedRestriction =  restrictedCategory.restrictions.find(r => r.catalog.id === catalog.id);
+            if (isDefined(appliedRestriction) && item.quantity > appliedRestriction.quantity) {
+                console.log("Les livraisons sur la " + catalog.name + " de " + item.product.name + " sont limitées à " + appliedRestriction.quantity + " " + appliedRestriction.unit);
+            }
+          }
+      })
+  };
 
   return (
     <div className={"shopping-cart-content " + active}>
@@ -75,7 +91,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
           <ul>
             { productCart.map((single, key) => {
               const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
-                single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount, single.product.offerEnd) : 0;
               const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
               const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;

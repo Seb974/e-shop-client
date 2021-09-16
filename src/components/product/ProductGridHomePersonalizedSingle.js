@@ -11,25 +11,14 @@ import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
 import Imgix from "react-imgix";
 
-const ProductGridHomePersonalizedSingle = ({
-  product,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItem,
-  wishlistItem,
-  compareItem,
-  sliderClassName,
-  spaceBottomClass,
-}) => {
+const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass }) => {
   const { addToast } = useToasts();
-  const { country, settings } = useContext(AuthContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState(0);
   const quantityInput = useRef();
 
-  const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+  const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
   const discountedPrice = getDiscountPrice(product.price, product.discount, product.offerEnd);
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

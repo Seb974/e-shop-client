@@ -7,22 +7,26 @@ import { addToCompare } from "../../redux/actions/compareActions";
 import ProductGridPersonalizedSingle from "../../components/product/ProductGridPersonalizedSingle";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import ProductsContext from "../../contexts/ProductsContext";
+import AuthContext from "../../contexts/AuthContext";
 
 const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass}) => {
   
   const [displayedProducts, setDisplayedProducts] = useState([]);
   const { navSearch, selectedCategory } = useContext(ProductsContext);
+  const { selectedCatalog } = useContext(AuthContext);
 
   useEffect(() => setProductsToDisplay(), []);
-  useEffect(() => setProductsToDisplay(), [products, navSearch, selectedCategory]);
+  useEffect(() => setProductsToDisplay(), [products, navSearch, selectedCategory, selectedCatalog]);
 
   const setProductsToDisplay = () => {
-      if (isDefinedAndNotVoid(products)) {
-          let productsToDisplay = products;
+      if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
+          let productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
           if (isDefined(navSearch) && navSearch.length > 0)
-              productsToDisplay = products.filter(product => product.name.toUpperCase().includes(navSearch.toUpperCase()));
+              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
+                                          .filter(product => product.name.toUpperCase().includes(navSearch.toUpperCase()));
           else if (parseInt(selectedCategory) !== -1)
-              productsToDisplay = products.filter(product => product.categories.find(category => category.id === parseInt(selectedCategory)) !== undefined);
+              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
+                                          .filter(product => product.categories.find(category => category.id === parseInt(selectedCategory)) !== undefined);
           setDisplayedProducts(productsToDisplay);
       }
   };

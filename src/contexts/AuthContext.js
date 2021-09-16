@@ -12,5 +12,7 @@ export default React.createContext({
     settings: {},
     setSettings: (value) => {},
     selectedCatalog: [],
-    setSelectedCatalog: (value) => {}
+    setSelectedCatalog: (value) => {},
+    catalogs: [],
+    setCatalogs: (value) => {}
 });

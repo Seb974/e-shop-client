@@ -16,11 +16,13 @@ const MercureHub = ({ children }) => {
     const { updatedOrders, setUpdatedOrders, updatedProducts, setUpdatedProducts, updatedCategories, setUpdatedCategories } = useContext(MercureContext);
     const { updatedUsers, setUpdatedUsers, updatedContainers, setUpdatedContainers, updatedHomepages, setUpdatedHomepages } = useContext(MercureContext);
     const { updatedRelaypoints, setUpdatedRelaypoints, updatedCities, setUpdatedCities, updatedArticles, setUpdatedArticles } = useContext(MercureContext);
+    const { updatedCatalogs, setUpdatedCatalogs } = useContext(MercureContext);
 
     useEffect(() => {
         closeIfExists();
         url.searchParams.append('topic', api.API_DOMAIN + '/api/homepages/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/products/{id}');
+        url.searchParams.append('topic', api.API_DOMAIN + '/api/catalogs/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/stocks/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/categories/{id}');
         url.searchParams.append('topic', api.API_DOMAIN + '/api/containers/{id}');
@@ -82,6 +84,9 @@ const MercureHub = ({ children }) => {
         
         if (data['@id'].includes('articles'))
             setUpdatedArticles([...updatedArticles, data]);
+        
+        if (data['@id'].includes('catalogs'))
+            setUpdatedCatalogs([...updatedCatalogs, data]);
     };
 
     return <>{ children }</>

@@ -21,7 +21,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
   
   const { pathname } = location;
   const { addToast } = useToasts();
-  const { country, settings } = useContext(AuthContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [compareList, setCompareList] = useState([]);
 
@@ -100,7 +100,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                           <tr>
                             <th className="title-column">{ strings["price"] }</th>
                             {compareList.map((compareItem, key) => {
-                              const taxToApply = !isDefined(compareItem) || !settings.subjectToTaxes ? 0 : compareItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                              const taxToApply = !isDefined(compareItem) || !settings.subjectToTaxes ? 0 : compareItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                               const discountedPrice = isDefined(compareItem) ? getDiscountPrice(compareItem.price, compareItem.discount, compareItem.offerEnd) : 0;
                               const finalProductPrice = isDefined(compareItem) ? (compareItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
                               const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);

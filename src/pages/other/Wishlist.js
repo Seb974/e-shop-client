@@ -20,7 +20,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
   
   const { addToast } = useToasts();
   const { pathname } = location;
-  const { country, settings } = useContext(AuthContext);
+  const { country, settings, selectedCatalog } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [favourites, setFavourites] = useState([]);
 
@@ -60,7 +60,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                         </thead>
                         <tbody>
                           { favourites.map((wishlistItem, key) => {
-                            const taxToApply = !isDefined(wishlistItem) || !settings.subjectToTaxes ? 0 : wishlistItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country).percent;
+                            const taxToApply = !isDefined(wishlistItem) || !settings.subjectToTaxes ? 0 : wishlistItem.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                             const discountedPrice = isDefined(wishlistItem) ? getDiscountPrice(wishlistItem.price, wishlistItem.discount, wishlistItem.offerEnd) : 0;
                             const finalProductPrice = isDefined(wishlistItem) ? (wishlistItem.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
                             const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
