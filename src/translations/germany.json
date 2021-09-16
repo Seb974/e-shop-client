@@ -122,6 +122,7 @@
   "billing_details": "Rechnungsdetails",
   "shipping_details": "Lieferdetails",
   "delivery_date": "Liefertermin",
+  "shipping_date": "Versanddatum",
   "your_order": "Deine Bestellung",
   "first_name": "Vorname",
   "last_name": "Name",

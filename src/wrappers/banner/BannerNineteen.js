@@ -16,9 +16,6 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
     if (isDefined(homepage) && isDefined(homepage.banners)) {
         const main = homepage.banners.find(b => b.isMain);
         const others = homepage.banners.filter(b => !b.isMain).filter((b, i) => i < 2);
-        console.log(homepage.banners);
-        console.log(main);
-        console.log(others);
         setMainBanner(main);
         setBanners(others);
     }
@@ -37,7 +34,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
               <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
                 { isDefined(mainBanner) ?
                       isDefined(mainBanner.image.imgPath) ?
-                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
+                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />
                         :
@@ -71,12 +68,12 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
             </div>
           </div>
           <div className="col-lg-6 col-md-6">
-              { banners.map(banner => {
+              { banners.map((banner, key) => {
                 return (
-                    <div className="single-banner mb-20">
+                    <div key={ key } className="single-banner mb-20">
                         <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
                             { isDefined(banner) && isDefined(banner.image.imgPath) ?
-                                <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
+                                <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
                                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                 />
                                 :

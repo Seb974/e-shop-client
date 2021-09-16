@@ -13,6 +13,7 @@ import { definePackages, getAvailableWeight, getOrderWeight, formatPackages } fr
 import ContainerContext from "../../../contexts/ContainerContext";
 import DeliveryContext from "../../../contexts/DeliveryContext";
 import Imgix from "react-imgix";
+import { checkForRestrictions } from "../../../helpers/checkout";
 
 const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) => {
 
@@ -32,8 +33,15 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData, products]);
 
   useEffect(() => {
-    if (!packageUpdate)
-        updatePackages();
+    if (isDefined(selectedCatalog) && isDefinedAndNotVoid(categories))
+        checkForRestrictions(selectedCatalog, getProductsFromIds(cartData, products), categories, addToast);
+  }, [cartData, selectedCatalog]);
+
+  useEffect(() => {
+    if (!packageUpdate) {
+      updatePackages();
+      // checkForRestrictions(selectedCatalog, productCart, categories, addToast);
+    }
   }, [productCart]);
 
   useEffect(() => updatePackages(), [containers, selectedCatalog]);
@@ -69,19 +77,6 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
           setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
           setPackageUpdate(false);
       }
-      checkForRestrictions(selectedCatalog, productCart);
-  };
-
-  const checkForRestrictions = (catalog, cart) => {
-      cart.map(item => {
-          const restrictedCategory = isDefined(item.product) && isDefinedAndNotVoid(item.product.categories) && isDefined(catalog) ? item.product.categories.find(c => c.catalogs.find(cat => cat.id === catalog.id) !== undefined && c.restrictions.length > 0) : undefined;
-          if (isDefined(restrictedCategory)) {
-            const appliedRestriction =  restrictedCategory.restrictions.find(r => r.catalog.id === catalog.id);
-            if (isDefined(appliedRestriction) && item.quantity > appliedRestriction.quantity) {
-                console.log("Les livraisons sur la " + catalog.name + " de " + item.product.name + " sont limitées à " + appliedRestriction.quantity + " " + appliedRestriction.unit);
-            }
-          }
-      })
   };
 
   return (
@@ -106,14 +101,14 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
                       { isDefined(single.isPackage) && single.isPackage ?
                             isDefined(single.product.image.imgPath) ?
-                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                 />
                                 :
                                 <img alt="" src={ single.product.image.filePath } className="img-fluid"/>
                         :
                             isDefined(single.product.image.imgPath) ?
-                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                 />
                                 :

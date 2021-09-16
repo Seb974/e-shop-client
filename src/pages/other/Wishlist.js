@@ -70,7 +70,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
                                 <td className="product-thumbnail">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + wishlistItem.id}>
                                     { isDefined(wishlistItem.image.imgPath) ?
-                                        <Imgix  src={ wishlistItem.image.imgPath } className="lazyload img-fluid" alt={ wishlistItem.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                        <Imgix  src={ wishlistItem.image.imgPath } className="lazyload img-fluid" alt={ wishlistItem.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                         />
                                         :

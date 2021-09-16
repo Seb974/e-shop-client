@@ -81,7 +81,7 @@ const ProductGridPersonalizedSingle = ({
           <div className="product-img">
             <a href="#" onClick={handleShowDetails}>
               { isDefined(product.image.imgPath) ?
-                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
                           attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
@@ -93,7 +93,7 @@ const ProductGridPersonalizedSingle = ({
                   />
               }
               { isDefined(product.image.imgPath) ?
-                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
                           attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                   :
@@ -178,7 +178,7 @@ const ProductGridPersonalizedSingle = ({
                 <div className="product-img">
                   <a href="#" onClick={handleShowDetails}>
                     { isDefined(product.image.imgPath) ?
-                        <Imgix  src={ product.image.imgPath } className="lazyload default-img img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }   // height="800"
+                        <Imgix  src={ product.image.imgPath } className="lazyload default-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   // height="800"
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />
                         :
@@ -190,7 +190,7 @@ const ProductGridPersonalizedSingle = ({
                         />
                     }
                     { isDefined(product.image.imgPath) ?
-                        <Imgix  src={ product.image.imgPath } className="lazyload hover-img img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }  // height="800"
+                        <Imgix  src={ product.image.imgPath } className="lazyload hover-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }  // height="800"
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />
                         :

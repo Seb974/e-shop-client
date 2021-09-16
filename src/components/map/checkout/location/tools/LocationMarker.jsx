@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { isDefinedAndNotVoid } from '../../../../../helpers/utils';
+import { isDefined, isDefinedAndNotVoid } from '../../../../../helpers/utils';
 import AddressPanel from '../../../../forms/address/AddressPanel';
 import { Marker } from 'react-map-gl';
 import AuthContext from '../../../../../contexts/AuthContext';
@@ -16,7 +16,7 @@ const LocationMarker = ({ position, informations, isRelaypoint, setTooltip, setP
     }, []);
 
     useEffect(() => {
-        const reset = JSON.stringify(informations.position) === JSON.stringify(selectedCatalog.center);
+        const reset = JSON.stringify(informations.position) === JSON.stringify(isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]);
         if (!isRelaypoint || ownPosition.length === 0 || reset) {
             setOwnPosition(reset ? [] : informations.position);
             setOwnInformations(reset ? undefined : informations);
@@ -29,7 +29,7 @@ const LocationMarker = ({ position, informations, isRelaypoint, setTooltip, setP
         setPopup(ownInformations);
     };
 
-    return !isDefinedAndNotVoid(position) || JSON.stringify(position) === JSON.stringify(selectedCatalog.center) ? <></> : (
+    return !isDefinedAndNotVoid(position) || JSON.stringify(position) === JSON.stringify(isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]) ? <></> : (
         <Marker latitude={ position[0] } longitude={ position[1] } offsetLeft={0} offsetTop={-30}>
             <a href="#" onClick={ handleClick }>
                 <img 

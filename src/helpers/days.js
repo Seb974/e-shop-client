@@ -22,8 +22,10 @@ export const isSameAddress = (address1, address2) => {
 export const getWorstConstraint = (items, groupDelay) => {
     let constraint = groupDelay;
     items.map(item => {
-        const productConstraint = item.product.seller.delay;
-        constraint = productConstraint > constraint ? productConstraint : constraint;
+        if (isDefined(item.product)) {
+            const productConstraint = item.product.seller.delay;
+            constraint = productConstraint > constraint ? productConstraint : constraint;
+        }
     });
     return constraint;
 }

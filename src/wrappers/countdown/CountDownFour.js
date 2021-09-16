@@ -45,7 +45,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
               <Link to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}>
                 { isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].image) ? 
                     isDefined(homepage.countdowns[0].image.imgPath) ?
-                      <Imgix  src={ homepage.countdowns[0].image.imgPath } className="lazyload img-fluid" alt={ homepage.countdowns[0].image.filePath } width="570" disableSrcSet={ true } disableLibraryParam={ true }
+                      <Imgix  src={ homepage.countdowns[0].image.imgPath } className="lazyload img-fluid" alt={ homepage.countdowns[0].image.filePath } width={ 570 } disableSrcSet={ true } disableLibraryParam={ true }
                               attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                       />
                       :

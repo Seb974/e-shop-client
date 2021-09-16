@@ -23,13 +23,13 @@ import { deleteAllFromCart } from "../../redux/actions/cartActions";
 import { useToasts } from "react-toast-notifications";
 import PromotionActions from "../../services/PromotionActions";
 import OrderActions from "../../services/OrderActions";
-import { getOrderToWrite, validateForm } from "../../helpers/checkout";
+import { checkForRestrictions, getOrderToWrite, validateForm } from "../../helpers/checkout";
 import api from "../../config/api";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const { addToast } = useToasts();
-  const { products } = useContext(ProductsContext);
+  const { products, categories } = useContext(ProductsContext);
   const initialErrors = {name:"", email: "", phone: "", address: ""};
   const { currentUser, country, settings, selectedCatalog } = useContext(AuthContext);
   const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
@@ -103,18 +103,21 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
-      const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
-      if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
-          setErrors({...initialErrors, ...newErrors});
-      } else {
-          if (!settings.onlinePayment) {
-            createOrder()
-                .then(response => {
-                    addToast(
-                        "Votre commande nous est bien parvenue et nous vous en remercions !", 
-                        { appearance: "success", autoDismiss: true }
-                    );
-                });
+      const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
+      if (!hasRestriction) {
+          const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
+          if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
+              setErrors({...initialErrors, ...newErrors});
+          } else {
+              if (!settings.onlinePayment) {
+                createOrder()
+                    .then(response => {
+                        addToast(
+                            "Votre commande nous est bien parvenue et nous vous en remercions !", 
+                            { appearance: "success", autoDismiss: true }
+                        );
+                    });
+              }
           }
       }
   };
@@ -171,9 +174,10 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(productCart) ?
-              <form>
+              // <form>
                 <div className="row">
                   <div className="col-lg-7">
+                  <form>
                     <div className="billing-info-wrap">
                       <h3 className="mb-0">{strings["shipping_details"]}</h3>
                       <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
@@ -192,6 +196,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                         </div>
                       </div>
                     </div>
+                  </form>
                   </div>
 
                   <div className="col-lg-5">
@@ -267,7 +272,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             <ul>
                                 <li className="your-order-shipping"><strong>{strings["shipping"]}</strong></li>
                                 <li>
-                                  { selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
+                                  { isDefined(selectedCatalog) && selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
                                     !isDefined(condition) || condition.price === 0 ? strings["free_shipping"] : 
                                     condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
                                     (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100).toFixed(2) + " " + currency.currencySymbol
@@ -275,12 +280,12 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                 </li>
                             </ul>
                           </div>
-                          { !isDefined(condition) && selectedCatalog.needsParcel ? 
+                          { !isDefined(condition) && isDefined(selectedCatalog) && selectedCatalog.needsParcel ? 
                               <div className="your-order-middle"> 
                                     <ul>
-                                      { packages.map(_package => {
+                                      { packages.map((_package, key) => {
                                         const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
-                                        return <li>
+                                        return <li key={ key }>
                                                 <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
                                                 <span className="order-price">
                                                   { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 " + currency.currencySymbol : 
@@ -293,11 +298,11 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                     </ul> 
                               </div> : <></>
                           }
-                          <div className={selectedCatalog.needsParcel ? "your-order-top" : "your-order-total"}>
+                          <div className={isDefined(selectedCatalog) && selectedCatalog.needsParcel ? "your-order-top" : "your-order-total"}>
                             <ul>
                                 <li className="order-total">{strings["total"]}</li>
                                 <li>
-                                    { selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
+                                    { isDefined(selectedCatalog) && selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
@@ -327,6 +332,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               errors={ errors }
                               initialErrors={ initialErrors }
                               setErrors={ setErrors }
+                              productCart={ productCart }
                           />
                           :
                           <button onClick={ handleSubmit } className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
@@ -337,7 +343,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                     </div>
                   </div>
                 </div>
-              </form>
+              // {/* </form> */}
             :
               <div className="row">
                 <div className="col-lg-12">

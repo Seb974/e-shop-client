@@ -95,7 +95,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                 <td className="product-thumbnail">
                                   <Link to={ process.env.PUBLIC_URL + "/product/" + cartItem.product.id}>
                                       { isDefined(cartItem.product.image.imgPath) ?
-                                        <Imgix  src={ cartItem.product.image.imgPath } className="lazyload img-fluid" alt={ cartItem.product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                        <Imgix  src={ cartItem.product.image.imgPath } className="lazyload img-fluid" alt={ cartItem.product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                         />
                                         :

@@ -1,3 +1,4 @@
+import Login from "../components/identification/Login";
 import { isInSelectedCountry } from "./map";
 import { isDefined, isDefinedAndNotVoid } from "./utils";
 
@@ -93,7 +94,6 @@ export const isValidPhoneNumber = phoneNumber => {
 
 export const isValidAddress = (informations, catalog, condition, relaypoints) => {
     const zipPattern = /^(?:[0-9]\d|9[0-8])\d{3}$/g;
-    console.log(catalog);
     if ( isDefinedAndNotVoid(informations.zipcode.match(zipPattern)) ) {
         const { city, address, position } = informations;
         const initialPosition = isDefined(catalog) && isDefinedAndNotVoid(catalog.center) ? catalog.center : [0, 0];
@@ -120,3 +120,37 @@ const isRelaypoint = (condition, relaypoints) => {
     const selectedRelaypoint = relaypoints.find(relaypoint => relaypoint.conditions.find(c => c.id === condition.id) !== undefined);
     return isDefined(selectedRelaypoint);
 };
+
+export const checkForRestrictions = (catalog, cart, categories, addToast = null) => {
+    let hasRestriction = false;
+    if (isDefinedAndNotVoid(cart) && isDefined(catalog)) {
+        let activeCategories = [];
+        cart.map(item => {
+          if (isDefined(item.product) && isDefinedAndNotVoid(item.product.categories)) {
+              activeCategories = [...activeCategories, ...item.product.categories.map(c => c.id)];
+          }
+        });
+        const selectedCategories = [...new Set(activeCategories)];
+        const quantitiesPerCategory = selectedCategories.map(category => {
+          const quantity = cart.reduce((sum, item) => {
+              return sum += isDefinedAndNotVoid(item.product.categories) && item.product.categories.find(c => c.id === category) !== undefined ? item.quantity : 0;
+          }, 0);
+          const selection = categories.find(c => c.id === category);
+          return {category: selection, quantity};
+        });
+        const restrictedCategories = quantitiesPerCategory.filter(c => isDefined(c.category) && c.category.restrictions.find(r => r.catalog.id === catalog.id));
+        if (restrictedCategories.length > 0) {
+            restrictedCategories.map(c => {
+                const restriction = c.category.restrictions.find(r => r.catalog.id === catalog.id);
+                if (isDefined(restriction) && c.quantity > restriction.quantity) {
+                    hasRestriction = true;
+                    const message = "Les livraisons sur la " + catalog.name + " de " + c.category.name + " sont limitées à " + restriction.quantity + " " + restriction.unit + '/envoi';
+                    isDefined(addToast) ?
+                        addToast(message, { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }) :
+                        console.log(message);
+                }
+            });
+        }
+    }
+    return hasRestriction;
+  };

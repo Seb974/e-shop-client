@@ -59,7 +59,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
                   isDefined(product.image[0].imgPath) ?
-                    <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
@@ -67,7 +67,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                 
               ) : (
                 isDefined(product.image.imgPath) ?
-                    <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
@@ -75,14 +75,14 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
               )}
               {!Array.isArray(product.image) || product.image.length <= 1 ? (
                 isDefined(product.image.imgPath) ?
-                    <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
                     <img className="hover-img" src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath } alt="" />
               ) : (
                 isDefined(product.image[1].imgPath) ?
-                    <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :

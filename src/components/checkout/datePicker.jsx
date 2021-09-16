@@ -11,7 +11,7 @@ import { getWeekDays, getWorstConstraint } from '../../helpers/days';
 
 const DatePicker = ({date, setDate, condition, productCart, strings}) => {
 
-    const { settings } = useContext(AuthContext);
+    const { settings, selectedCatalog } = useContext(AuthContext);
     const [daysOff, setDaysOff] = useState([]);
     const [minDate, setMinDate] = useState(new Date());
     const [weekConstraints, setWeekConstraints] = useState([])
@@ -73,7 +73,7 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
 
     return (
         <>
-            <h3>{strings["delivery_date"]}</h3>
+            <h3>{ isDefined(selectedCatalog) && selectedCatalog.needsParcel ? strings["shipping_date"] : strings["delivery_date"]}</h3>
             <div className="row">
                 <div className="col-md-12 row-date mb-5">
                     <Flatpickr
