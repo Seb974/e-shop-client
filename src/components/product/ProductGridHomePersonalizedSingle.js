@@ -47,14 +47,8 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
   };
   return (
     <Fragment>
-      <div
-        className={`col-xl-3 col-md-6 col-lg-4 col-sm-6 ${
-          sliderClassName ? sliderClassName : ""
-        }`}
-      >
-        <div
-          className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
-        >
+      <div className={`col-xl-3 col-md-6 col-lg-4 col-sm-6 ${sliderClassName ? sliderClassName : ""}`}>
+        <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img">
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
@@ -279,13 +273,13 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
             <div className="product-price">
               {discountedPrice !== null ? (
                 <Fragment>
-                  <span>{finalDiscountedPrice + currency.currencySymbol}</span>{" "}
+                  <span>{finalDiscountedPrice.toFixed(2) + currency.currencySymbol}</span>{" "}
                   <span className="old">
-                    {finalProductPrice + currency.currencySymbol}
+                    {finalProductPrice.toFixed(2) + currency.currencySymbol}
                   </span>
                 </Fragment>
               ) : (
-                <span>{finalProductPrice + currency.currencySymbol} </span>
+                <span>{finalProductPrice.toFixed(2) + currency.currencySymbol} </span>
               )}
             </div>
           </div>

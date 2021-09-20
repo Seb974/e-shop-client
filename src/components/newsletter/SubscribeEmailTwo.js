@@ -1,14 +1,10 @@
 import PropTypes from "prop-types";
 import React from "react";
+import { multilanguage } from "redux-multilanguage";
 import MailchimpSubscribe from "react-mailchimp-subscribe";
 
-const CustomForm = ({
-  status,
-  message,
-  onValidated,
-  spaceTopClass,
-  subscribeBtnClass
-}) => {
+const CustomForm = ({ status, message, onValidated, spaceTopClass, subscribeBtnClass, placeholder, buttonText }) => {
+  
   let email;
   const submit = () => {
     email &&
@@ -28,53 +24,40 @@ const CustomForm = ({
             className="email"
             ref={node => (email = node)}
             type="email"
-            placeholder="Your Email Address"
+            placeholder={ placeholder }
             required
           />
         </div>
-        {status === "sending" && (
-          <div style={{ color: "#3498db", fontSize: "12px" }}>sending...</div>
-        )}
+        {status === "sending" && ( <div style={{ color: "#3498db", fontSize: "12px" }}>sending...</div> )}
         {status === "error" && (
-          <div
-            style={{ color: "#e74c3c", fontSize: "12px" }}
-            dangerouslySetInnerHTML={{ __html: message }}
-          />
+          <div style={{ color: "#e74c3c", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
         )}
         {status === "success" && (
-          <div
-            style={{ color: "#2ecc71", fontSize: "12px" }}
-            dangerouslySetInnerHTML={{ __html: message }}
-          />
+          <div style={{ color: "#2ecc71", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
         )}
-        <div
-          className={`clear-3 ${subscribeBtnClass ? subscribeBtnClass : ""}`}
-        >
-          <button className="button" onClick={submit}>
-            SUBSCRIBE
-          </button>
+        <div className={`clear-3 ${subscribeBtnClass ? subscribeBtnClass : ""}`}>
+          <button className="button" onClick={submit}>{ buttonText }</button>
         </div>
       </div>
     </div>
   );
 };
 
-const SubscribeEmailTwo = ({
-  mailchimpUrl,
-  spaceTopClass,
-  subscribeBtnClass
-}) => {
+const SubscribeEmailTwo = ({ mailchimpUrl, spaceTopClass, subscribeBtnClass, strings }) => {
+
   return (
     <div>
       <MailchimpSubscribe
         url={mailchimpUrl}
         render={({ subscribe, status, message }) => (
           <CustomForm
-            status={status}
-            message={message}
-            onValidated={formData => subscribe(formData)}
-            spaceTopClass={spaceTopClass}
-            subscribeBtnClass={subscribeBtnClass}
+            status={ status }
+            message={ message }
+            onValidated={ formData => subscribe(formData) }
+            spaceTopClass={ spaceTopClass }
+            subscribeBtnClass={ subscribeBtnClass }
+            placeholder={ strings["your_email_address"] }
+            buttonText={ strings["subscribe_button"] }
           />
         )}
       />
@@ -87,4 +70,4 @@ SubscribeEmailTwo.propTypes = {
   spaceTopClass: PropTypes.string
 };
 
-export default SubscribeEmailTwo;
+export default multilanguage(SubscribeEmailTwo);

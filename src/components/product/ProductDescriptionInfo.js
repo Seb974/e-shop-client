@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { hasVariationScope, getAvailableStock, getProductCartQuantity } from "../../helpers/product";
@@ -11,14 +11,37 @@ import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import {FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton} from "react-share";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 
 const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscountedPrice, finalProductPrice, cartItems, wishlistItem, compareItem, addToast, addToCart, addToWishlist, addToCompare, strings}) => {
   
+  const { selectedCatalog } = useContext(AuthContext);
   const [selectedProductColor, setSelectedProductColor] = useState(isDefined(product) && isDefinedAndNotVoid(product.variations) ? product.variations[0] : undefined);
   const [selectedProductSize, setSelectedProductSize] = useState(isDefined(product) && isDefinedAndNotVoid(product.variations) ? product.variations[0].sizes[0] : undefined);
   const [productStock, setProductStock] = useState(getAvailableStock(product, selectedProductColor, selectedProductSize));
   const [quantityCount, setQuantityCount] = useState(1);
   const productCartQty = !isDefined(product) ? 0 : getProductCartQuantity(cartItems, product, selectedProductColor, selectedProductSize);
+
+  useEffect(() => console.log(selectedCatalog), []);
+
+  const getRestrictions = () => {
+    let restrictions = [];
+    product.categories.map(c => {
+        if (isDefinedAndNotVoid(c.restrictions)) {
+          const activeRestrictions = c.restrictions.filter(r => isDefined(r.catalog) && r.catalog.id === selectedCatalog.id)
+                                                   .map(r => ({...r, category: c.name}));
+          restrictions = [...restrictions, ...activeRestrictions];
+        } 
+    });
+    return restrictions.length === 0 ? <></> : (
+        restrictions.map((restriction, key) => {
+          return <p key={ key }>
+              <i className="fas fa-exclamation-triangle text-danger mr-2"></i>
+              {"Les livraisons sur la " + selectedCatalog.name + " de " + restriction.category + " sont limitées à " + restriction.quantity + " " + restriction.unit + '/envoi' }
+          </p>
+        }
+    ))
+  };
 
   return !isDefined(product) ? <></> : (
     <div className="product-details-content ml-70">
@@ -44,6 +67,7 @@ const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscou
               isDefined(product.fullDescription) ? product.fullDescription : ""
             }
         </p>
+        { getRestrictions() }
       </div>
 
       { !(isDefined(product) && isDefinedAndNotVoid(product.variations)) ? "" :
@@ -53,7 +77,7 @@ const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscou
             <div className="pro-details-size-content">
               {product.variations.map((single, key) => {
 
-                return !isDefined(single) ? <></> : (
+                return !isDefined(single) || single.color.length === 0 || single.color === " " ? <></> : (
                   <label className={`pro-details-size-content--single ${single.color}`} key={key}>
                     <input 
                       type="radio" 
@@ -75,10 +99,10 @@ const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscou
           <div className="pro-details-size">
             <span>{ strings["declination"] }</span>
             <div className="pro-details-size-content">
-              {isDefined(product) && isDefinedAndNotVoid(product.variations) && product.variations.map(single => {
+              {!isDefined(selectedProductColor) ? <></> : isDefined(product) && isDefinedAndNotVoid(product.variations) && product.variations.map(single => {
                   return single.color !== selectedProductColor.color ? "" :
                     single.sizes.map((singleSize, key) => {
-                        return (
+                        return !isDefined(singleSize) || singleSize.name.length === 0 || singleSize.name === " " ? <></> : (
                           <label className={`pro-details-size-content--single`} key={key}>
                             <input
                               type="radio"
@@ -164,13 +188,6 @@ const ProductDescriptionInfo = ({product, discountedPrice, currency, finalDiscou
       }
 
       <div className="pro-details-social">
-        {/* <ul>
-          <li><a href="//facebook.com"><i className="fa fa-facebook" /></a></li>
-          <li><a href="//dribbble.com"><i className="fa fa-dribbble" /></a></li>
-          <li><a href="//pinterest.com"><i className="fa fa-pinterest-p" /></a></li>
-          <li><a href="//twitter.com"><i className="fa fa-twitter" /></a></li>
-          <li><a href="//linkedin.com"><i className="fa fa-linkedin" /></a></li>
-        </ul> */}
         <ul>
               <li className="d-inline mx-2">
                   <FacebookShareButton 

@@ -7,30 +7,22 @@ import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 import ProductsContext from "../../contexts/ProductsContext";
+import AuthContext from "../../contexts/AuthContext";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
-const ProductGridHomePersonalized = ({
-  // products,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItems,
-  wishlistItems,
-  compareItems,
-  sliderClassName,
-  spaceBottomClass,
-  category,
-  type,
-  limit,
-}) => {
+const ProductGridHomePersonalized = ({currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, category, type, limit }) => {
 
   const { products } = useContext(ProductsContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [displayedProducts, setDisplayedProducts] = useState([]);
 
   useEffect(() => {
-      const productSet = getProducts(products, category, type, limit);
+    if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
+      const productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
+      const productSet = getProducts(productsToDisplay, category, type, limit);
       setDisplayedProducts(productSet);
-  }, [products])
+    }
+  }, [products]);
 
   return (
     <Fragment>

@@ -2,19 +2,22 @@ import PropTypes from "prop-types";
 import React, { useContext, useEffect, useState } from "react";
 import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
+import AuthContext from "../../contexts/AuthContext";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const BannerThirtySeven = ({ spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
 
-  useEffect(() => defineBanner(),[homepage]);
+  useEffect(() => defineBanner(),[homepage, selectedCatalog]);
 
   const defineBanner = () => {
     if (isDefined(homepage) && isDefinedAndNotVoid(homepage.banners)) {
-        const bannersTwo = homepage.banners.filter(b => b.bannerNumber === 2);
+        const bannersTwo = homepage.banners.filter(b => b.bannerNumber === 2 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id)))
+                                           .filter((b, i) => i < 2);
         setBanners(bannersTwo);
     }
   };

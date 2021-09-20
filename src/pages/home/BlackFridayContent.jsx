@@ -41,6 +41,12 @@ const BlackFridayContent = () => {
           gutterClass="padding-10-row-col"
           bgColorClass="bg-black-2"
         /> */}
+        <TabProductPersonalized
+          spaceBottomClass="pb-60"
+          spaceTopClass="pt-100"
+          category="auto parts"
+        />
+        
         <BrandLogoSliderOne spaceBottomClass="pb-95" spaceTopClass="pt-100" />
         
         

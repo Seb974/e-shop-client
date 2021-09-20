@@ -3,23 +3,28 @@ import React, { useContext, useEffect, useState } from "react";
 import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 import HomeContext from "../../contexts/HomeContext";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const BannerThirtySix = ({ spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [mainBanner, setMainBanner] = useState(null);
   const [banners, setBanners] = useState([]);
 
-  useEffect(() => {
-    if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const main = homepage.banners.find(b => b.isMain && b.bannerNumber === 2);
-        const others = homepage.banners.filter(b => !b.isMain && b.bannerNumber === 2).filter((b, i) => i < 2);
+  // useEffect(() => fetchBanners(),[]);
+  useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
+
+  const fetchBanners = () => {
+    if (isDefined(homepage) && isDefined(homepage.banners) && isDefined(selectedCatalog)) {
+        const main = homepage.banners.find(b => b.isMain && b.bannerNumber === 2 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id)));
+        const others = homepage.banners.filter(b => !b.isMain && b.bannerNumber === 2 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id))).filter((b, i) => i < 2);
         setMainBanner(main);
         setBanners(others);
     }
-  },[homepage]);
+  }
 
   return (
     <div className={`banner-area ${spaceBottomClass ? spaceBottomClass : ""}`}>
@@ -30,7 +35,7 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
               <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
                 { isDefined(mainBanner) ?
                       isDefined(mainBanner.image.imgPath) ?
-                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
+                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />
                         :
@@ -44,7 +49,7 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
                     shadow: isDefined(mainBanner) && isDefined(mainBanner.textShadow) && mainBanner.textShadow ? "0.1em 0.1em 0.2em black" : "none",
                     fontSize: '2.2em'
                 }}>
-                    { mainBanner.subtitle }
+                    { isDefined(mainBanner) && isDefined(mainBanner.subtitle) ? mainBanner.subtitle : "" }
                 </h2>
                 <Link 
                     to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}
@@ -64,7 +69,7 @@ const BannerThirtySix = ({ spaceBottomClass }) => {
                         <div className="single-banner mb-20">
                           <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
                               { isDefined(banner) && isDefined(banner.image.imgPath) ?
-                                  <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
+                                  <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
                                           attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                   />
                                   :

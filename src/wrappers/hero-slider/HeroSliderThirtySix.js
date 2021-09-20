@@ -4,9 +4,11 @@ import heroSliderData from "../../data/hero-sliders/hero-slider-thirty-six.json"
 import HeroSliderThirtySixSingle from "../../components/hero-slider/HeroSliderThirtySixSingle.js";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const HeroSliderThirtySix = () => {
 
+  const { selectedCatalog } = useContext(AuthContext);
   const { homepage } = useContext(HomeContext);
   const [heroes, setHeroes] = useState([]);
 
@@ -14,8 +16,10 @@ const HeroSliderThirtySix = () => {
   useEffect(() => refreshHeroes(), [homepage]);
 
   const refreshHeroes = () => {
-      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes))
-        setHeroes(homepage.heroes); 
+      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes)) {
+        const activeHeroes = homepage.heroes.filter(h => !isDefinedAndNotVoid(h.catalogs) || h.catalogs.find(cat => cat.id === selectedCatalog.id));
+        setHeroes(activeHeroes); 
+      }
   };
 
   const params = {

@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React from "react";
 import Swiper from "react-id-swiper";
 import BrandLogoOneSingle from "../../components/brand-logo/BrandLogoOneSingle";
+import SectionTitle from "../../components/section-title/SectionTitle";
 import brandLogoData from "../../data/brand-logos/brand-logo-one.json";
 
 const BrandLogoSliderOne = ({ spaceBottomClass, spaceTopClass }) => {
@@ -35,6 +36,14 @@ const BrandLogoSliderOne = ({ spaceBottomClass, spaceTopClass }) => {
       }  ${spaceTopClass ? spaceTopClass : ""}`}
     >
       <div className="container">
+      <SectionTitle
+          titleText="Nos partenaires"
+          subtitleText="Retrouvez leurs produits sur la boutique !"
+          subtitleColorClass="grey"
+          positionClass="text-center"
+          spaceClass="mb-55"
+          borderClass="no-border"
+        />
         <div className="brand-logo-active">
           <Swiper {...settings}>
             {brandLogoData &&

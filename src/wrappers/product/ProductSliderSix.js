@@ -42,7 +42,7 @@ const ProductSliderSix = ({ spaceBottomClass, spaceTopClass, category }) => {
           borderClass="no-border"
         />
         <div className="row">
-          <Swiper {...settings}>
+          {/* <Swiper {...settings}> */}
             {/* <ProductGridTwo
               category={category}
               limit={6}
@@ -54,7 +54,7 @@ const ProductSliderSix = ({ spaceBottomClass, spaceTopClass, category }) => {
                   limit={4}
                   spaceBottomClass="mb-25"
                 />
-          </Swiper>
+          {/* </Swiper> */}
         </div>
       </div>
     </div>

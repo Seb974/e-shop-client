@@ -3,19 +3,24 @@ import React, { useContext, useEffect, useState } from "react";
 import bannerData from "../../data/banner/banner-thirty-eight.json";
 import BannerThirtyEightSingle from "../../components/banner/BannerThirtyEightSingle.js";
 import HomeContext from "../../contexts/HomeContext";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const BannerThirtyEight = ({ spaceTopClass, spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
 
-  useEffect(() => {
+  useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
+
+  const fetchBanners = () => {
     if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const bannersOne = homepage.banners.filter(b => b.bannerNumber === 1).filter((b, i) => i < 2);
-        setBanners(bannersOne);
+        const selectedBanners = homepage.banners.filter(b => b.bannerNumber === 1 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id)))
+                                                .filter((b, i) => i < 2);
+        setBanners(selectedBanners);
     }
-  },[homepage]);
+  };
 
   return (
     <div

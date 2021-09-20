@@ -4,18 +4,24 @@ import bannerData from "../../data/banner/banner-thirty-three.json";
 import BannerThirtyThreeSingle from "../../components/banner/BannerThirtyThreeSingle.js";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const BannerThirtyThree = ({ spaceBottomClass, bgColorClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
 
-  useEffect(() => {
+  // useEffect(() => fetchBanners(),[]);
+  useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
+
+  const fetchBanners = () => {
     if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const selectedBanners = homepage.banners.filter(b => b.bannerNumber === 2).filter((b, i) => i < 2);
+        const selectedBanners = homepage.banners.filter(b => b.bannerNumber === 2 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id)))
+                                                .filter((b, i) => i < 2);
         setBanners(selectedBanners);
     }
-  },[homepage]);
+  };
 
   return (
     <div className={`banner-area ${bgColorClass ? bgColorClass : ""} ${spaceBottomClass ? spaceBottomClass : ""}`}>

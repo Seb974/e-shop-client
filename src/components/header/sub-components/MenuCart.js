@@ -38,10 +38,8 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData, selectedCatalog]);
 
   useEffect(() => {
-    if (!packageUpdate) {
+    if (!packageUpdate)
       updatePackages();
-      // checkForRestrictions(selectedCatalog, productCart, categories, addToast);
-    }
   }, [productCart]);
 
   useEffect(() => updatePackages(), [containers, selectedCatalog]);

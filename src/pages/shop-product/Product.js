@@ -45,10 +45,10 @@ const Product = ({ location, match }) => {
         />
 
         {/* product description tab */}
-        <ProductDescriptionTab
+        {/* <ProductDescriptionTab
           spaceBottomClass="pb-90"
           productFullDesc={ isDefined(product) ? product.fullDescription : ""}
-        />
+        /> */}
 
         {/* related product slider */}
         <RelatedProductSlider

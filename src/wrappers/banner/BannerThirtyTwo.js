@@ -4,18 +4,24 @@ import bannerData from "../../data/banner/banner-thirty-two.json";
 import BannerThirtyTwoSingle from "../../components/banner/BannerThirtyTwoSingle.js";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const BannerThirtyTwo = ({ spaceTopClass, spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
 
-  useEffect(() => {
-    if (isDefined(homepage) && isDefined(homepage.banners)) {
-        const selectedBanners = homepage.banners.filter(b => b.bannerNumber === 1).filter((b, i) => i < 3);
-        setBanners(selectedBanners);
-    }
-  },[homepage]);
+  // useEffect(() => fetchBanners(),[]);
+  useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
+
+  const fetchBanners = () => {
+      if (isDefined(homepage) && isDefined(homepage.banners)) {
+          const selectedBanners = homepage.banners.filter(b => b.bannerNumber === 1 && (!isDefinedAndNotVoid(b.catalogs) || b.catalogs.find(cat => cat.id === selectedCatalog.id)))
+                                                  .filter((b, i) => i < 3);
+          setBanners(selectedBanners);
+      }
+  };
 
   return (
     <div className={`banner-area ${spaceTopClass ? spaceTopClass : ""}  ${spaceBottomClass ? spaceBottomClass : ""}`}>
