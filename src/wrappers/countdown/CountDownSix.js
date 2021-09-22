@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Countdown from "react-countdown-now";
 import Renderer from "../../components/countdown/Renderer";
@@ -7,50 +7,67 @@ import HomeContext from "../../contexts/HomeContext";
 import Imgix from "react-imgix";
 import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage}) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
 
-  return (
+  const [countdowns, setCountdowns] = useState([]);
+  const [selection, setSelection] = useState(null);
+
+  useEffect(() => getCatalogCountdowns(), []);
+  useEffect(() => getCatalogCountdowns(), [homepage, selectedCatalog]);
+
+  const getCatalogCountdowns = () => {
+      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(selectedCatalog)) {
+          const activeCountdowns = homepage.countdowns.filter(c => !isDefinedAndNotVoid(c.catalogs) || c.catalogs.find(cat => cat.id === selectedCatalog.id));
+          setCountdowns(activeCountdowns);
+          setSelection(activeCountdowns[0]);
+      }
+  };
+
+  return !isDefined(selection) ? <></> : (
     <div className={`funfact-area ${spaceTopClass ? spaceTopClass : ""} ${spaceBottomClass ? spaceBottomClass : ""}`}>
       <div className="container">
         <div className="row align-items-center">
           <div className="col-md-8 col-lg-6 order-1 order-lg-2">
             <div className="funfact-content funfact-res text-center">
               <h2 style={{ 
-                    color: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
-                    shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    color: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
+                    shadow: isDefined(selection) && isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                 }}
               >
-                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].title) ? homepage.countdowns[0].title : "Deal of the day"}
+                  {isDefined(selection) && isDefined(selection.title) ? selection.title : "Deal of the day"}
               </h2>
               <div className="timer">
-                <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
+                <Countdown date={isDefined(selection) && isDefined(selection.date) ? new Date(selection.date) : ''} renderer={Renderer} />
               </div>
               <div className="funfact-btn funfact-btn-red btn-hover">
                 <Link 
-                  to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}
+                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}
                   style={{ 
-                    backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
-                    shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                    backgroundColor: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
+                    shadow: isDefined(selection) && isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                   }}
                 >
-                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].buttonText) ? homepage.countdowns[0].buttonText.toUpperCase() : "J'EN PROFITE"}
+                  {isDefined(selection) && isDefined(selection.buttonText) ? selection.buttonText.toUpperCase() : "J'EN PROFITE"}
                 </Link>
               </div>
             </div>
           </div>
           <div className="col-md-4 col-lg-6 order-2 order-lg-1">
             <div className="funfact-image">
-              <Link to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}>
+              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}>
                   {/* <img src={process.env.PUBLIC_URL + countDownImage} alt="" className="img-fluid"/> */}
-                  { isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].image) && isDefined(homepage.countdowns[0].image.imgPath) ?
-                    <Imgix  src={ homepage.countdowns[0].image.imgPath } className="lazyload default-img" alt={ homepage.countdowns[0].image.filePath } width="549" disableSrcSet={ true } disableLibraryParam={ true }
+                  { isDefined(selection) && isDefined(selection.image) ? isDefined(selection.image.imgPath) ?
+                    <Imgix  src={ selection.image.imgPath } className="lazyload default-img" alt={ selection.image.filePath } width="549" disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
-                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + homepage.countdowns[0].image.filePath } alt="" />
+                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" />
+                    : <></>
                 }
               </Link>
             </div>

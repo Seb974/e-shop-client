@@ -22,8 +22,8 @@ const DefaultContent = () => {
   
         {/* tab product */}
         <TabProductPersonalized
-          spaceBottomClass="pb-60"
-          spaceTopClass="pt-100"
+          spaceBottomClass="pb-100"
+          spaceTopClass="pt-50"
           category="auto parts"
         />
 
@@ -36,7 +36,7 @@ const DefaultContent = () => {
         />
         
         {/* feature icon */}
-        <BrandLogoSliderOne spaceBottomClass="pb-95" spaceTopClass="pt-100" />
+        <BrandLogoSliderOne spaceBottomClass="pb-70" spaceTopClass="pt-50" />
 
         {/* newsletter */}
         <NewsletterThree

@@ -9,6 +9,7 @@ import NewsletterThree from "../../wrappers/newsletter/NewsletterThree";
 import ImageSliderOne from "../../wrappers/image-slider/ImageSliderOne";
 import BannerThirtySix from "../../wrappers/banner/BannerThirtySix";
 import TabProductThirteen from "../../wrappers/product/TabProductThirteen";
+import TabProductPersonalized from "../../wrappers/product/TabProductPersonalized";
 import BrandLogoSliderOne from "../../wrappers/brand-logo/BrandLogoSliderOne";
 
 const BlackFridayTwoContent = () => {
@@ -28,11 +29,18 @@ const BlackFridayTwoContent = () => {
           productTabClass="product-tab-pink"
           spaceBottomClass="pb-100"
         /> */}
-        <TabProductThirteen
+        {/* <TabProductThirteen
+          spaceBottomClass="pb-60"
+          spaceTopClass="pt-100"
+          category="auto parts"
+        /> */}
+
+        <TabProductPersonalized
           spaceBottomClass="pb-60"
           spaceTopClass="pt-100"
           category="auto parts"
         />
+
         {/* banner */}
         <BannerThirtySix spaceBottomClass="pb-80" />
         {/* feature icon */}

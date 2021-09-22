@@ -17,14 +17,16 @@ import AuthContext from '../../contexts/AuthContext';
 import OrderActions from '../../services/OrderActions';
 import { useToasts } from 'react-toast-notifications';
 import AuthActions from '../../services/AuthActions';
-import { cardStyle, updateError, validateForm } from '../../helpers/checkout';
+import { cardStyle, checkForRestrictions, updateError, validateForm } from '../../helpers/checkout';
+import ProductsContext from '../../contexts/ProductsContext';
 
-const PaymentForm = ({ name, available, user, informations, cartItems, deleteAllFromCart, objectDiscount, createOrder, errors, initialErrors, setErrors, strings }) => {
+const PaymentForm = ({ name, available, user, informations, cartItems, deleteAllFromCart, objectDiscount, createOrder, errors, initialErrors, setErrors, strings, productCart }) => {
 
     const stripe = useStripe();
     const elements = useElements();
     const { addToast } = useToasts();
     const [show, setShow] = useState(false);
+    const { categories } = useContext(ProductsContext);
     const { currentUser, selectedCatalog, setCurrentUser } = useContext(AuthContext);
     const { condition, packages, relaypoints } = useContext(DeliveryContext);
     const [succeeded, setSucceeded] = useState(false);
@@ -42,11 +44,14 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
     }, [show]);
 
     const handleShow = () => {
-        const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
-        if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
-            setErrors({...initialErrors, ...newErrors});
-        } else {
-            setShow(true)
+        const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
+        if (!hasRestriction) {
+            const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
+            if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
+                setErrors({...initialErrors, ...newErrors});
+            } else {
+                setShow(true)
+            }
         }
     };
 

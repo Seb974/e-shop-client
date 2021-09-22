@@ -32,15 +32,15 @@ const BlogPostsNoSidebar = () => {
 
   return (
     <Fragment>
-      { articles.map(article => {
+      { articles.map((article, key) => {
               return (
-                  <div className="col-lg-4 col-md-6 col-sm-12">
+                  <div key={ key } className="col-lg-4 col-md-6 col-sm-12">
                       <div className="blog-wrap-2 mb-30">
                           <div className="blog-img-2">
                               <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
                                   {/* <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt="" />   {process.env.PUBLIC_URL + "/assets/img/blog/blog-9.jpg"}  */}
                                   { isDefined(article.image.imgPath) ?
-                                    <Imgix  src={ article.image.imgPath } className="lazyload" alt={ article.filePath } width="750" disableSrcSet={ true } disableLibraryParam={ true }
+                                    <Imgix  src={ article.image.imgPath } className="lazyload" alt={ article.filePath } width={ 750 } disableSrcSet={ true } disableLibraryParam={ true }
                                             attributeConfig={{
                                               srcSet: 'data-srcset',
                                               sizes: 'data-sizes'

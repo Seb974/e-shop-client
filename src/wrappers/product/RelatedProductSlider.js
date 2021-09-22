@@ -3,8 +3,9 @@ import React from "react";
 import Swiper from "react-id-swiper";
 import SectionTitle from "../../components/section-title/SectionTitle";
 import ProductGrid from "./ProductGrid";
+import { multilanguage } from "redux-multilanguage";
 
-const RelatedProductSlider = ({ spaceBottomClass, category }) => {
+const RelatedProductSlider = ({ spaceBottomClass, category, strings }) => {
   const settings = {
     loop: false,
     slidesPerView: 4,
@@ -33,18 +34,18 @@ const RelatedProductSlider = ({ spaceBottomClass, category }) => {
     >
       <div className="container">
         <SectionTitle
-          titleText="Related Products"
+          titleText={ strings["related-products"] }
           positionClass="text-center"
           spaceClass="mb-50"
         />
         <div className="row">
-          <Swiper {...settings}>
+          {/* <Swiper {...settings}> */}
             <ProductGrid
               category={category}
               limit={6}
               sliderClassName="swiper-slide"
             />
-          </Swiper>
+          {/* </Swiper> */}
         </div>
       </div>
     </div>
@@ -56,4 +57,4 @@ RelatedProductSlider.propTypes = {
   spaceBottomClass: PropTypes.string
 };
 
-export default RelatedProductSlider;
+export default multilanguage(RelatedProductSlider);

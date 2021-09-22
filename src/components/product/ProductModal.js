@@ -64,14 +64,14 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
 
   return (
     <Fragment>
-      <Modal show={show} onHide={onHide} className="product-quickview-modal-wrapper">
+      <Modal show={show} onHide={onHide} className="product-quickview-modal-wrapper" style={{ maxWidth: 'auto'}}>
         <Modal.Header closeButton></Modal.Header>
 
         <div className="modal-body">
           <div className="row">
             <div className="col-md-5 col-sm-12 col-xs-12">
-              <div className="product-large-image-wrapper">
-                {/*<Swiper {...gallerySwiperParams}> */ }
+              <div className="product-large-image-wrapper" style={{ maxWidth: '200px'}}>
+                <Swiper {...gallerySwiperParams}>
                   { !isDefined(product.image) ? <></> :
                       <div>
                         <div className="single-image">
@@ -100,7 +100,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                       })
                   }
-                {/* </Swiper> */}
+                </Swiper>
               </div>
               <div className="product-small-image-wrapper mt-15">
               { isDefinedAndNotVoid(product.variations) &&
@@ -245,7 +245,11 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                       { getAvailableStock(product, selectedProductColor, selectedProductSize) <= 0 ?
                         <button disabled>{strings["out_of_stock"]}</button>
                         :
-                        <button onClick={() => addToCart(product, addToast, quantityCount, selectedProductColor, selectedProductSize)}>
+                        <button onClick={() => {
+                                    addToCart(product, addToast, quantityCount, selectedProductColor, selectedProductSize);
+                                    onHide();
+                                }}
+                        >
                             {" "}{strings["add_to_cart"]}{" "}
                         </button>
                       }

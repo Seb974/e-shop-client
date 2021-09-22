@@ -8,6 +8,9 @@ import BrandLogoSliderFive from "../../wrappers/brand-logo/BrandLogoSliderFive";
 import BannerThirtySeven from "../../wrappers/banner/BannerThirtySeven";
 import HeroSliderThirtySix from "../../wrappers/hero-slider/HeroSliderThirtySix";
 import TabProductThirteen from "../../wrappers/product/TabProductThirteen";
+import TabProductPersonalized from "../../wrappers/product/TabProductPersonalized";
+import BrandLogoSliderOne from "../../wrappers/brand-logo/BrandLogoSliderOne";
+import NewsletterThree from "../../wrappers/newsletter/NewsletterThree";
 
 const ValentinesDayContent = () => {
   return (
@@ -26,20 +29,33 @@ const ValentinesDayContent = () => {
           backgroundImage="/assets/img/bg/deal-bg.jpg"
         />
         {/* product slider */}
-        <ProductSliderSix
+        <TabProductPersonalized
+          spaceBottomClass="pb-95"
+          spaceTopClass="pt-100"
+          category="auto parts"
+        />
+        {/* <ProductSliderSix
           category="fashion"
           spaceBottomClass="pb-100"
           spaceTopClass="pt-100"
-        />
+        /> */}
         {/* <TabProductThirteen
           spaceBottomClass="pb-60"
           spaceTopClass="pt-100"
           category="auto parts"
         /> */}
+        
         {/* banner */}
         <BannerThirtySeven spaceBottomClass="pb-85" />
         {/* brand logo */}
-        <BrandLogoSliderFive spaceBottomClass="pb-100" />
+        {/* <BrandLogoSliderFive spaceBottomClass="pb-100" /> */}
+        <BrandLogoSliderOne spaceBottomClass="pb-70" spaceTopClass="pt-50" />
+
+        <NewsletterThree
+          spaceTopClass="pt-50"
+          spaceBottomClass="pb-100"
+          subscribeBtnClass="dark-red-subscribe"
+        />
       </LayoutOne>
   );
 };

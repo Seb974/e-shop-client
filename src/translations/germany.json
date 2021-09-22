@@ -122,6 +122,7 @@
   "billing_details": "Rechnungsdetails",
   "shipping_details": "Lieferdetails",
   "delivery_date": "Liefertermin",
+  "shipping_date": "Versanddatum",
   "your_order": "Deine Bestellung",
   "first_name": "Vorname",
   "last_name": "Name",
@@ -201,5 +202,13 @@
   "english": "Englisch",
   "germany": "Deutschland",
   "choose_language": "Sprache wählen",
-  "destination": "Ziel"
+  "destination": "Ziel",
+  "related-products": "Verwandte Produkte",
+  "new_arrivals": "Neuankömmlinge",
+  "best_sellers": "Bestseller",
+  "our_selection": "Herzinfarkt ❤️",
+  "join_with_us": "Mach bei uns mit",
+  "subscribe": "Abonnieren Sie unseren Newsletter und bleiben Sie über Neuigkeiten informiert",
+  "your_email_address": "Ihre E-Mail-Adresse",
+  "subscribe_button": "ABONNIEREN"
 }

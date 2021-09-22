@@ -1,43 +1,58 @@
 import PropTypes from "prop-types";
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Countdown from "react-countdown-now";
 import Renderer from "../../components/countdown/Renderer";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const CountDownEight = ({ backgroundImage, dateTime, spaceTopClass, spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
 
-  return (
+  const [countdowns, setCountdowns] = useState([]);
+  const [selection, setSelection] = useState(null);
+
+  useEffect(() => getCatalogCountdowns(), []);
+  useEffect(() => getCatalogCountdowns(), [homepage, selectedCatalog]);
+
+  const getCatalogCountdowns = () => {
+      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(selectedCatalog)) {
+          const activeCountdowns = homepage.countdowns.filter(c => !isDefinedAndNotVoid(c.catalogs) || c.catalogs.find(cat => cat.id === selectedCatalog.id));
+          setCountdowns(activeCountdowns);
+          setSelection(activeCountdowns[0]);
+      }
+  };
+
+  return !isDefined(selection) ? <></> : (
     <div
       className={`funfact-area funfact-valentine bg-img ${ spaceTopClass ? spaceTopClass : ""} ${spaceBottomClass ? spaceBottomClass : ""}`}
-      // style={{ backgroundImage: `url(${process.env.PUBLIC_URL + backgroundImage})`}}
-      style={{ backgroundImage: `url(${homepage.countdowns[0].image.imgPath})` }}
+      style={{ backgroundImage: `url(${selection.image.imgPath})` }}
     >
       <div className="container">
         <div className="row">
           <div className="col-lg-6 ml-auto mr-auto">
             <div className="funfact-content text-center">
               <h2 style={{ 
-                  color: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
-                  shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                  color: isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
+                  shadow: isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
               }}>
-                  {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].title) ? homepage.countdowns[0].title : "Deal of the day"}
+                  { isDefined(selection.title) ? selection.title : "Deal of the day" }
               </h2>
               <div className="timer">
-                <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
+                <Countdown date={isDefined(selection.date) ? new Date(selection.date) : ''} renderer={Renderer} />
               </div>
               <div className="funfact-btn btn-only-round funfact-btn-red-2 btn-hover">
                 <Link 
                     to={process.env.PUBLIC_URL + "/shop-grid-standard"}
                     style={{ 
-                      backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
-                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textShadow) && homepage.countdowns[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                      backgroundColor: isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
+                      shadow: isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                     }}
                 >
-                    {isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].buttonText) ? homepage.countdowns[0].buttonText.toUpperCase() : "J'EN PROFITE"}
+                    { isDefined(selection.buttonText) ? selection.buttonText.toUpperCase() : "J'EN PROFITE" }
                 </Link>
               </div>
             </div>

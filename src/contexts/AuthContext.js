@@ -14,5 +14,7 @@ export default React.createContext({
     selectedCatalog: [],
     setSelectedCatalog: (value) => {},
     catalogs: [],
-    setCatalogs: (value) => {}
+    setCatalogs: (value) => {},
+    platform: {},
+    setPlatform: (value) => {}
 });

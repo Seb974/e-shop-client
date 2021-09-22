@@ -39,6 +39,8 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
                 longitude: !isInitialState(informations.position) ? informations.position[1] : selectedCatalog.center[1], 
                 zoom: !isInitialState(informations.position) ? 17 : selectedCatalog.zoom
             });
+            if (isInitialState(informations.position))
+                setInformations({...informations, position: selectedCatalog.center});
         }
     }, [selectedCatalog]);
 
@@ -92,7 +94,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     const onClear = () => {
         setInformations(informations => ({
             ...informations, 
-            position: selectedCatalog.center,
+            position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0],
             address: '', 
             address2: '', 
             zipcode: '', 
@@ -116,9 +118,9 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     };
 
     const isInitialState = (position) => {
-        return !isDefinedAndNotVoid(position) || !isDefinedAndNotVoid(selectedCatalog.center) ||
-               JSON.stringify(position) === JSON.stringify(selectedCatalog.center) || 
-               JSON.stringify(position) === JSON.stringify([0, 0]);
+        const isInitial = !isDefinedAndNotVoid(position) || JSON.stringify(position) === JSON.stringify([0, 0]) || 
+                          informations.address.length === 0;
+        return isInitial;
     };
 
     return (

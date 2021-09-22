@@ -47,19 +47,13 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
   };
   return (
     <Fragment>
-      <div
-        className={`col-xl-3 col-md-6 col-lg-4 col-sm-6 ${
-          sliderClassName ? sliderClassName : ""
-        }`}
-      >
-        <div
-          className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
-        >
+      <div className={`col-xl-3 col-md-6 col-lg-4 col-sm-6 ${sliderClassName ? sliderClassName : ""}`}>
+        <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
           <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
                   isDefined(product.image[0].imgPath) ?
-                    <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image[0].imgPath } className="lazyload default-img" alt={ product.image[0].filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
@@ -67,7 +61,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                 
               ) : (
                 isDefined(product.image.imgPath) ?
-                    <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
@@ -75,14 +69,14 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
               )}
               {!Array.isArray(product.image) || product.image.length <= 1 ? (
                 isDefined(product.image.imgPath) ?
-                    <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
                     <img className="hover-img" src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath } alt="" />
               ) : (
                 isDefined(product.image[1].imgPath) ?
-                    <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ product.image[1].imgPath } className="lazyload hover-img" alt={ product.image[1].filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :
@@ -279,13 +273,13 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
             <div className="product-price">
               {discountedPrice !== null ? (
                 <Fragment>
-                  <span>{finalDiscountedPrice + currency.currencySymbol}</span>{" "}
+                  <span>{finalDiscountedPrice.toFixed(2) + currency.currencySymbol}</span>{" "}
                   <span className="old">
-                    {finalProductPrice + currency.currencySymbol}
+                    {finalProductPrice.toFixed(2) + currency.currencySymbol}
                   </span>
                 </Fragment>
               ) : (
-                <span>{finalProductPrice + currency.currencySymbol} </span>
+                <span>{finalProductPrice.toFixed(2) + currency.currencySymbol} </span>
               )}
             </div>
           </div>

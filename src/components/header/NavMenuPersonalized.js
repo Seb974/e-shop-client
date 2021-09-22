@@ -55,9 +55,9 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
                   <ul className="mega-menu mega-menu-padding" style={{ width: '320px', paddingTop: '20px', paddingBottom: '0px' }}>
                     <li style={{ width: '100%' }}>
                       <ul>
-                        { catalogs.filter(c => c.isActive).map(catalog => {
+                        { catalogs.filter(c => c.isActive).map((catalog, key) => {
                               return (
-                                <li style={{ width: '100%', marginBottom: '20px' }} className="d-flex flex-row align-items-start justify-content-start">
+                                <li key={ key } style={{ width: '100%', marginBottom: '20px' }} className="d-flex flex-row align-items-start justify-content-start">
                                     <Link to={process.env.PUBLIC_URL + "/shop"} onClick={ e => handleChangeCatalog(e, catalog.id)}>
                                         {strings["destination"] + " " + catalog.name }
                                     </Link>

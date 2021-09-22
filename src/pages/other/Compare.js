@@ -63,7 +63,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                                   </div>
                                   <Link to={process.env.PUBLIC_URL + "/product/" + compareItem.id} className="image">
                                     { isDefined(compareItem.image.imgPath) ?
-                                        <Imgix  src={ compareItem.image.imgPath } className="lazyload img-fluid" alt={ compareItem.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
+                                        <Imgix  src={ compareItem.image.imgPath } className="lazyload img-fluid" alt={ compareItem.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                                         />
                                         :

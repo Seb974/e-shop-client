@@ -1,23 +1,33 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Background } from 'react-imgix';
-import sliderData from "../../data/hero-sliders/hero-slider-thirty-four.json";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
 const HeroSliderThirtyFour = () => {
 
   const { homepage } = useContext(HomeContext);
+  const { selectedCatalog } = useContext(AuthContext);
+  const [heroes, setHeroes] = useState([]);
+  const [selectedHero, setSelectedHero] = useState(null);
 
-  return !(isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes)) ? <></> : (
+  // useEffect(() => refreshHeroes(), []);
+  useEffect(() => refreshHeroes(), [homepage, selectedCatalog]);
+
+  const refreshHeroes = () => {
+      if (isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(selectedCatalog)) {
+        const activeHeroes = homepage.heroes.filter(h => !isDefinedAndNotVoid(h.catalogs) || h.catalogs.find(cat => cat.id === selectedCatalog.id));
+        setHeroes(activeHeroes);
+        setSelectedHero(activeHeroes[0]);
+      }
+  };
+
+  return !isDefined(selectedHero) ? <></> : (
     <div className="slider-area">
       <div
         className="slider-height-5 bg-img d-flex align-items-center"
-        style={{ backgroundImage: `url(${homepage.heroes[0].image.imgPath})` }}
+        style={{ backgroundImage: `url(${selectedHero.image.imgPath})` }}
       >
-      {/* <Background src={ homepage.heroes[0].image.imgPath } className="slider-height-5 bg-img d-flex align-items-center"
-        imgixParams={{ w: 1920, h: 800 }} disableLibraryParam={ true }
-      > */}
         <div className="container">
           <div className="row">
             <div className="col-xl-12 col-lg-12 col-md-12 col-12">
@@ -25,36 +35,36 @@ const HeroSliderThirtyFour = () => {
                 <h3 
                     className="animated"
                     style={{ 
-                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].titleColor) ? homepage.heroes[0].titleColor : "white",
-                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                      color: isDefined(selectedHero) && isDefined(selectedHero.titleColor) ? selectedHero.titleColor : "white",
+                      shadow: isDefined(selectedHero) && isDefined(selectedHero.textShadow) && selectedHero.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                   }}
                 >
-                    { homepage.heroes[0].title }
+                    { selectedHero.title }
                 </h3>
                 <h1 
                     className="animated"
                     style={{ 
-                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textColor) ? homepage.heroes[0].textColor : "white",
-                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                      color: isDefined(selectedHero) && isDefined(selectedHero.textColor) ? selectedHero.textColor : "white",
+                      shadow: isDefined(selectedHero) && isDefined(selectedHero.textShadow) && selectedHero.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                     }}
                 >
-                    { homepage.heroes[0].subtitle }
+                    { selectedHero.subtitle }
                 </h1>
                 <p 
                     className="animated"
                     style={{ 
-                      color: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textColor) ? homepage.heroes[0].textColor : "white",
-                      shadow: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].textShadow) && homepage.heroes[0].textShadow ? "0.1em 0.1em 0.2em black" : "none"
+                      color: isDefined(selectedHero) && isDefined(selectedHero.textColor) ? selectedHero.textColor : "white",
+                      shadow: isDefined(selectedHero) && isDefined(selectedHero.textShadow) && selectedHero.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                     }}
                 >
-                    { homepage.heroes[0].text }
+                    { selectedHero.text }
                 </p>
                 <div className="slider-btn btn-hover">
                   <Link 
                       className="animated" 
-                      to={isDefined(homepage.heroes[0].product) ? "/product/" + homepage.heroes[0].product.id : "/shop"}
+                      to={isDefined(selectedHero.product) ? "/product/" + selectedHero.product.id : "/shop"}
                       style={{ 
-                        backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.heroes) && isDefined(homepage.heroes[0].titleColor) ? homepage.heroes[0].titleColor : "#ED59A0",
+                        backgroundColor: isDefined(selectedHero) && isDefined(selectedHero.titleColor) ? selectedHero.titleColor : "#ED59A0",
                     }}
                   >
                     J'EN PROFITE
@@ -64,7 +74,6 @@ const HeroSliderThirtyFour = () => {
             </div>
           </div>
         </div>
-      {/* </Background> */}
       </div>
     </div>
   );

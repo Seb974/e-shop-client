@@ -11,29 +11,32 @@ mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worke
 const Map = ({ displayedRelaypoints }) => {
 
     const map = useRef(null);
-    const { selectedCatalog } = useContext(AuthContext);
+    const { catalogs } = useContext(AuthContext);
     const apiToken = process.env.REACT_APP_MAPBOX_TOKEN;
     const [viewport, setViewport] = useState(defaultView);
+    const [defaultCatalog, setDefaultCatalog] = useState(catalogs.find(c => c.isDefault));
     const [relayPointTooltip, setRelaypointTooltip] = useState(undefined);
     const [relayPointPopup, setRelaypointPopup] = useState(undefined);
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
     const [defaultView, setDefaultView] = useState({ 
-        latitude: isDefined(selectedCatalog) && isDefinedAndNotVoid(selectedCatalog.center) ? selectedCatalog.center[0] : 0, 
-        longitude: isDefined(selectedCatalog) && isDefinedAndNotVoid(selectedCatalog.center) ? selectedCatalog.center[1] : 0, 
-        zoom: isDefined(selectedCatalog) && isDefinedAndNotVoid(selectedCatalog.center) ? selectedCatalog.zoom : 9
+        latitude: isDefined(defaultCatalog) && isDefinedAndNotVoid(defaultCatalog.center) ? defaultCatalog.center[0] : 0, 
+        longitude: isDefined(defaultCatalog) && isDefinedAndNotVoid(defaultCatalog.center) ? defaultCatalog.center[1] : 0, 
+        zoom: 9
     });
 
     useEffect(() => {
-        if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center)) {
-            setDefaultView({ latitude: selectedCatalog.center[0], longitude: selectedCatalog.center[1], zoom: selectedCatalog.zoom});
+        setDefaultCatalog(catalogs.find(c => c.isDefault));
+        if (isDefined(defaultCatalog)) {
+            setDefaultView({ latitude: defaultCatalog.center[0], longitude: defaultCatalog.center[1]});
             setViewport({
                 ...viewport, 
-                latitude: selectedCatalog.center[0], 
-                longitude: selectedCatalog.center[1], 
-                zoom: selectedCatalog.zoom
+                latitude: defaultCatalog.center[0], 
+                longitude: defaultCatalog.center[1],
+                zoom: 9
             });
         }
-    }, [selectedCatalog]);
+
+    }, [catalogs]);
 
     return (
         <ReactMapGL ref={ map } {...viewport} {...mapStyle} onViewportChange={view => setViewport(view)} mapboxApiAccessToken={ apiToken } attributionControl={false} scrollZoom={ false }>

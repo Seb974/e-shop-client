@@ -39,8 +39,11 @@ export const getCityCondition = (zipcode, cities, settings) => {
 }
 
 export const isInSelectedCountry = (latitude, longitude, catalog) => {
-    const { minLat, maxLat, minLng, maxLng } = catalog;
-    return isInBoundingBox(latitude, minLat, maxLat) && isInBoundingBox(longitude, minLng, maxLng);
+    if (isDefined(catalog)) {
+        const { minLat, maxLat, minLng, maxLng } = catalog;
+        return isInBoundingBox(latitude, minLat, maxLat) && isInBoundingBox(longitude, minLng, maxLng);
+    }
+    return false;
 }
 
 const isInBoundingBox = (point, min, max) => (point >= min && point <= max) || (point <= min && point >= max);

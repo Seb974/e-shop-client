@@ -111,64 +111,20 @@ const ProductGridPersonalizedSingle = ({
         >
           <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
-              {Array.isArray(product.image) ? (
-                isDefined(product.image[0].imgPath) ? (
-                  <Imgix
-                    src={product.image[0].imgPath}
-                    className="lazyload default-img"
-                    alt={product.image[0].filePath}
-                    width="600"
-                    height="500"
-                    disableSrcSet={true}
-                    disableLibraryParam={true}
-                    attributeConfig={{
-                      srcSet: "data-srcset",
-                      sizes: "data-sizes",
-                    }}
+              { isDefined(product.image.imgPath) ? (
+                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                 ) : (
                   <img
                     className="default-img"
                     src={process.env.PUBLIC_URL + product.image[0]}
                     alt=""
-                  />
-                )
-              ) : isDefined(product.image.imgPath) ? (
-                <Imgix
-                  src={product.image.imgPath}
-                  className="lazyload default-img"
-                  alt={product.image.filePath}
-                  sizes="600"
-                  disableLibraryParam={false}
-                  attributeConfig={{
-                    srcSet: "data-srcset",
-                    sizes: "data-sizes",
-                  }}
-                />
-              ) : (
-                <img
-                  className="default-img"
-                  src={
-                    api.API_DOMAIN +
-                    "/uploads/pictures/" +
-                    product.image.filePath
-                  }
-                  alt=""
-                />
-              )}
-              {!Array.isArray(product.image) || product.image.length <= 1 ? (
-                isDefined(product.image.imgPath) ? (
-                  <Imgix
-                    src={product.image.imgPath}
-                    className="lazyload hover-img"
-                    alt={product.image.filePath}
-                    width="600"
-                    disableSrcSet={true}
-                    disableLibraryParam={true}
-                    attributeConfig={{
-                      srcSet: "data-srcset",
-                      sizes: "data-sizes",
-                    }}
+                  />)
+              }
+              { isDefined(product.image.imgPath) ? (
+                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
+                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                   />
                 ) : (
                   <img
@@ -181,26 +137,27 @@ const ProductGridPersonalizedSingle = ({
                     alt=""
                   />
                 )
-              ) : isDefined(product.image[1].imgPath) ? (
-                <Imgix
-                  src={product.image[1].imgPath}
-                  className="lazyload hover-img"
-                  alt={product.image[1].filePath}
-                  width="600"
-                  disableSrcSet={true}
-                  disableLibraryParam={true}
-                  attributeConfig={{
-                    srcSet: "data-srcset",
-                    sizes: "data-sizes",
-                  }}
-                />
-              ) : (
-                <img
-                  className="hover-img"
-                  src={process.env.PUBLIC_URL + product.image[1]}
-                  alt=""
-                />
-              )}
+              // ) : isDefined(product.image[1].imgPath) ? (
+              //   <Imgix
+              //     src={product.image[1].imgPath}
+              //     className="lazyload hover-img"
+              //     alt={product.image[1].filePath}
+              //     width="600"
+              //     disableSrcSet={true}
+              //     disableLibraryParam={true}
+              //     attributeConfig={{
+              //       srcSet: "data-srcset",
+              //       sizes: "data-sizes",
+              //     }}
+              //   />
+              // ) : (
+              //   <img
+              //     className="hover-img"
+              //     src={process.env.PUBLIC_URL + product.image[1]}
+              //     alt=""
+              //   />
+              // )
+              }
             </a>
             <div className="product-img-action input-group">
               {wishlistItem !== undefined ? (
@@ -376,37 +333,34 @@ const ProductGridPersonalizedSingle = ({
         <div className="shop-list-wrap mb-30">
           <div className="row">
             <div className="col-xl-4 col-md-5 col-sm-6">
-              <div className="product-list-image-wrap ">
-                <div className="product-img rounded-lg">
-                  <a href="#" onClick={handleShowDetails} style={{
-                    maxHeight : '207px'
-                  }}>
-                    {isDefined(product.image.imgPath) ? (
-                      <Imgix
-                        src={product.image.imgPath}
-                        className="lazyload default-img img-fluid"
-                        alt={product.image.filePath}
-                        width='600'
-                        disableSrcSet={true}
-                        disableLibraryParam={true} // height="800"
-                        // attributeConfig={{
-                        //   srcSet: "data-srcset",
-                        //   sizes: "data-sizes",
-                        // }}
-                      />
-                    ) : (
-                      <img
-                        className="default-img img-fluid"
-                        src={
-                          api.API_DOMAIN +
-                          "/uploads/pictures/" +
-                          product.image.filePath
-                        }
-                        alt=""
-                        height="800px"
-                        width="600px"
-                      />
-                    )}
+              <div className="product-list-image-wrap">
+                <div className="product-img">
+                  <a href="#" onClick={handleShowDetails}>
+                    { isDefined(product.image.imgPath) ?
+                        <Imgix  src={ product.image.imgPath } className="lazyload default-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   // height="800"
+                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                        />
+                        :
+                        <img className="default-img img-fluid"
+                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
+                          alt=""
+                          height="800"
+                          width="600"
+                        />
+                    }
+                    { isDefined(product.image.imgPath) ?
+                        <Imgix  src={ product.image.imgPath } className="lazyload hover-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }  // height="800"
+                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+                        />
+                        :
+                        <img className="hover-img img-fluid"
+                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
+                          alt=""
+                          height="800"
+                          width="600"
+                        />
+                    }{" "}
+                    :
                   </a>
                   <div className="product-img-action input-group top-0">
                     {wishlistItem !== undefined ? (

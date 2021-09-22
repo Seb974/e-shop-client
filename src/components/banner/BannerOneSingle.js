@@ -14,7 +14,7 @@ const BannerOneSingle = ({ data, spaceBottomClass }) => {
       >
         <Link to={process.env.PUBLIC_URL + data.link}>
           { isDefined(data.image.imgPath) ?
-              <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width="370" disableSrcSet={ true } disableLibraryParam={ true }
+              <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width={ 370 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
               />
               :

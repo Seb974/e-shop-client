@@ -17,7 +17,7 @@ export const getProducts = (products, category, type, limit) => {
   }
   if (type && type === "saleItems") {
     const saleItems = finalProducts.filter(
-      single => single.discount && single.discount > 0
+      single => isDefined(single.discount) && single.discount > 0 && isDefined(single.offerEnd) && new Date(single.offerEnd) >= new Date()
     );
     return saleItems.slice(0, limit ? limit : saleItems.length);
   }

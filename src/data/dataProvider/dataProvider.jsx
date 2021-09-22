@@ -15,6 +15,7 @@ import HomepageActions from '../../services/HomepageActions';
 import dbProducts from "../products.json";
 import Mercure from '../../mercure/Mercure';
 import Roles from '../../config/Roles';
+import PlatformActions from '../../services/PlatformActions';
 
 const DataProvider = ({ children }) => {
 
@@ -38,11 +39,14 @@ const DataProvider = ({ children }) => {
     const [totalWeight, setTotalWeight] = useState(null);
     const [availableWeight, setAvailableWeight] = useState(null);
     const [homepage, setHomepage] = useState(null);
+    const [platform, setPlatform] = useState(null);
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
         // AuthActions.getGeolocation()
         //            .then(response => setCountry(response));
+        PlatformActions.find()
+                       .then(response => setPlatform(response));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
         ProductActions.findAll()
@@ -72,10 +76,13 @@ const DataProvider = ({ children }) => {
         }
     }, [catalogs, country]);
 
-    useEffect(() => console.log(settings), [settings]);
+    useEffect(() => {
+        if (isDefined(selectedCatalog))
+            setCountry(selectedCatalog.code);
+    }, [selectedCatalog]);
 
     return (
-        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog, catalogs, setCatalogs} }>
+        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog, catalogs, setCatalogs, platform, setPlatform} }>
         <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
         <ContainerContext.Provider value={{ containers, setContainers }}>
         <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>

@@ -55,11 +55,12 @@ const HeaderSix = ({ layout, headerPaddingClass, headerBgClass, stick = "" }) =>
             <div className="logo text-center logo-hm5 my-2">
               <Link className="sticky-none" to={process.env.PUBLIC_URL + "/"}>
                 {/* <img src={} alt=""></img> */}
-                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="50"/>
+                <img src="/assets/img/logo/navbar-logo.png" height="50"/>  {/* logoClass="logo" */}
+                
                 {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150" */}
               </Link>
               <Link className="sticky-block" to={process.env.PUBLIC_URL + "/"}>
-                <img src="/assets/img/logo/navbar-logo.png" logoClass="logo" height="50"/>
+                <img src="/assets/img/logo/navbar-logo.png" height="50"/>  {/* logoClass="logo" */}
               {/* <h1> <span className="text-orange">Frais</span>  Péi<span className="text-orange">.</span></h1> width="150"*/}
               </Link>
             </div>

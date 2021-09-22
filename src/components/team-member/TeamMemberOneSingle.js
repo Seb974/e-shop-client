@@ -13,7 +13,7 @@ const TeamMemberOneSingle = ({ data, spaceBottomClass }) => {
       >
         <div className="team-img">
           { isDefined(data.image.imgPath) ?
-              <Imgix src={ data.image.imgPath } className="lazyload img-fluid" alt={ data.image.filePath } width="270" disableSrcSet={ true } disableLibraryParam={ true }
+              <Imgix src={ data.image.imgPath } className="lazyload img-fluid" alt={ data.image.filePath } width={ 270 } disableSrcSet={ true } disableLibraryParam={ true }
                   attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
               />
             :

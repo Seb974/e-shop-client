@@ -50,7 +50,7 @@ const MercureHub = ({ children }) => {
     // eventSource.onopen = event => console.log(event);
     // eventSource.onmessage = event => eventHandler.dispatch(event);
 
-    eventSource.onerror = event => console.log(event);
+    // eventSource.onerror = event => console.log(event);
 
     eventSource.onmessage = event => {
         const data = JSON.parse(event.data);
