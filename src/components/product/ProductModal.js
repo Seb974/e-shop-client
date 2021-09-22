@@ -71,7 +71,7 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
           <div className="row">
             <div className="col-md-5 col-sm-12 col-xs-12">
               <div className="product-large-image-wrapper">
-                <Swiper {...gallerySwiperParams}>
+                {/*<Swiper {...gallerySwiperParams}> */ }
                   { !isDefined(product.image) ? <></> :
                       <div>
                         <div className="single-image">
@@ -100,11 +100,12 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                       })
                   }
-                </Swiper>
+                {/* </Swiper> */}
               </div>
               <div className="product-small-image-wrapper mt-15">
               { isDefinedAndNotVoid(product.variations) &&
-                <Swiper {...thumbnailSwiperParams}>
+            <>
+                {/* <Swiper {...thumbnailSwiperParams}> */}
                     {isDefined(product.image) && 
                         <div>
                           <div className="single-image">
@@ -133,7 +134,8 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                       })
                     }
-                </Swiper>
+                {/* </Swiper> */}
+                </>
               }
               </div>
             </div>

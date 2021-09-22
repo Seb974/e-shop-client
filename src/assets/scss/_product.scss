@@ -11,9 +11,9 @@
         transition: 0.5s;
 
         @media #{$lg-layout} {
-          flex: 1 0 33.3333%;
+          flex: 1 0 20.3333%;
 
-          max-width: 33.3333%;
+          max-width: 20.3333%;
         }
         @media #{$md-layout} {
           flex: 1 0 50%;
@@ -247,7 +247,7 @@
   position: relative;
   .product-img {
     position: relative;
-
+    
     overflow: hidden;
     img {
       width: 100%;
@@ -380,7 +380,7 @@
   .product-content {
     margin: 20px 0 0;
     h3 {
-      font-size: 16px;
+      font-size: 24px;
 
       margin: 0;
     }
@@ -399,14 +399,14 @@
     }
     .product-price {
       span {
-        font-size: 15px;
+        font-size: 20px;
         font-weight: 500;
 
         position: relative;
 
         margin: 0 9px;
 
-        color: #000;
+        color: $text-price-color;
         &::before {
           position: absolute;
           top: 10px;

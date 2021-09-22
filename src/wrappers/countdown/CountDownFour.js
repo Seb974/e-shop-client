@@ -28,7 +28,8 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
                 <Countdown date={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].date) ? new Date(homepage.countdowns[0].date) : ''} renderer={Renderer} />
               </div>
               <div className="funfact-btn funfact-btn--round-shape funfact-btn-violet btn-hover">
-                <Link 
+                <Link
+                className="rounded" 
                   to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}
                   style={{ 
                     backgroundColor: isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].textColor) ? homepage.countdowns[0].textColor : "#ED59A0",
@@ -45,7 +46,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
               <Link to={isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].product) ? "/product/" + homepage.countdowns[0].product.id : "/shop"}>
                 { isDefined(homepage) && isDefinedAndNotVoid(homepage.countdowns) && isDefined(homepage.countdowns[0].image) ? 
                     isDefined(homepage.countdowns[0].image.imgPath) ?
-                      <Imgix  src={ homepage.countdowns[0].image.imgPath } className="lazyload img-fluid" alt={ homepage.countdowns[0].image.filePath } width="570" disableSrcSet={ true } disableLibraryParam={ true }
+                      <Imgix  src={ homepage.countdowns[0].image.imgPath } className="lazyload img-fluid rounded" alt={ homepage.countdowns[0].image.filePath } width="570" disableSrcSet={ true } disableLibraryParam={ true }
                               attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                       />
                       :

@@ -37,7 +37,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
               <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
                 { isDefined(mainBanner) ?
                       isDefined(mainBanner.image.imgPath) ?
-                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
+                        <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img rounded" alt={ mainBanner.image.filePath } width="575" disableSrcSet={ true } disableLibraryParam={ true }
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />
                         :

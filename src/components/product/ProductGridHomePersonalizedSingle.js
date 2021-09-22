@@ -55,7 +55,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
         <div
           className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}
         >
-          <div className="product-img">
+          <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
                   isDefined(product.image[0].imgPath) ?
