@@ -1,66 +1,70 @@
 import PropTypes from "prop-types";
-import React from "react";
+import React, { useState } from "react";
 import { multilanguage } from "redux-multilanguage";
-import MailchimpSubscribe from "react-mailchimp-subscribe";
+import AuthActions from "../../services/AuthActions";
 
-const CustomForm = ({ status, message, onValidated, spaceTopClass, subscribeBtnClass, placeholder, buttonText }) => {
-  
-  let email;
-  const submit = () => {
-    email &&
-      email.value.indexOf("@") > -1 &&
-      onValidated({
-        EMAIL: email.value
-      });
+const SubscribeEmailTwo = ({ spaceTopClass, subscribeBtnClass, strings }) => {
 
-    email.value = "";
-  };
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState("");
+  const [message, setMessage] = useState("");
+  const errorMessage = "Une erreur est survenue. Veuillez s'il vous plaît réessayer ultérieurement."
+  const successMessage = "Votre adresse email a bien été ajouté à notre liste de diffusion de la newsletter";
 
-  return (
-    <div className={`subscribe-form-3 ${spaceTopClass ? spaceTopClass : ""}`}>
-      <div className="mc-form">
-        <div>
-          <input
-            className="email"
-            ref={node => (email = node)}
-            type="email"
-            placeholder={ placeholder }
-            required
-          />
-        </div>
-        {status === "sending" && ( <div style={{ color: "#3498db", fontSize: "12px" }}>sending...</div> )}
-        {status === "error" && (
-          <div style={{ color: "#e74c3c", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
-        )}
-        {status === "success" && (
-          <div style={{ color: "#2ecc71", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
-        )}
-        <div className={`clear-3 ${subscribeBtnClass ? subscribeBtnClass : ""}`}>
-          <button className="button" onClick={submit}>{ buttonText }</button>
-        </div>
-      </div>
-    </div>
-  );
-};
+  const handleChange = ({ currentTarget }) => setEmail(currentTarget.value);
 
-const SubscribeEmailTwo = ({ mailchimpUrl, spaceTopClass, subscribeBtnClass, strings }) => {
+  const handlesubmit = () => {
+    setStatus("sending");
+    setEmail("");
+    AuthActions
+        .subscribeToNewsletter(email)
+        .then(response => {
+            const serverMessage = response.data.status === 'done' ? successMessage : errorMessage;
+            const serverStatus = response.data.status === 'done' ? "success" : "error";
+            setMessage(serverMessage);
+            setStatus(serverStatus);
+            reinitializeStatus();
+        })
+        .catch(error => {
+            setMessage(errorMessage);
+            setStatus("error");
+            reinitializeStatus();
+        });
+  }
+
+  const reinitializeStatus = () => {
+    setTimeout(() => {
+        setStatus("");
+        setMessage("");
+  }, 4000);
+  }
 
   return (
     <div>
-      <MailchimpSubscribe
-        url={mailchimpUrl}
-        render={({ subscribe, status, message }) => (
-          <CustomForm
-            status={ status }
-            message={ message }
-            onValidated={ formData => subscribe(formData) }
-            spaceTopClass={ spaceTopClass }
-            subscribeBtnClass={ subscribeBtnClass }
-            placeholder={ strings["your_email_address"] }
-            buttonText={ strings["subscribe_button"] }
-          />
-        )}
-      />
+      <div className={`subscribe-form-3 ${spaceTopClass ? spaceTopClass : ""}`}>
+        <div className="mc-form">
+          <div>
+            <input
+              className="email"
+              type="email"
+              value={ email }
+              placeholder={ strings["your_email_address"] }
+              onChange={ handleChange }
+              required
+            />
+          </div>
+          {status === "sending" && ( <div style={{ color: "#3498db", fontSize: "12px" }}>{strings["sending"]}</div> )}
+          {status === "error" && (
+            <div style={{ color: "#e74c3c", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
+          )}
+          {status === "success" && (
+            <div style={{ color: "#2ecc71", fontSize: "12px" }} dangerouslySetInnerHTML={{ __html: message }}/>
+          )}
+          <div className={`clear-3 ${subscribeBtnClass ? subscribeBtnClass : ""}`}>
+            <button className="button" onClick={ handlesubmit }>{ strings["subscribe_button"] }</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

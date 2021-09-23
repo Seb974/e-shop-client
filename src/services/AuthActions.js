@@ -140,6 +140,10 @@ function resetAccountPassword(reset, password) {
     return api.post('/api/reset_account_password/' + reset.id, {password: password});
 }
 
+function subscribeToNewsletter(email) {
+    return api.post('/api/newsletter/subscribe', {email: email});
+}
+
 export default {
     authenticate,
     logout,
@@ -156,5 +160,6 @@ export default {
     resetPassword,
     findResetByToken,
     resetAccountPassword,
-    authenticateWithFacebook
+    authenticateWithFacebook,
+    subscribeToNewsletter
 }

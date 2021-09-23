@@ -210,5 +210,6 @@
   "join_with_us": "Rejoignez-nous",
   "subscribe": "Abonnez-vous à notre newsletter et restez informé des nouveautés",
   "your_email_address": "Votre Adresse Email",
-  "subscribe_button": "S'INSCRIRE"
+  "subscribe_button": "S'INSCRIRE",
+  "sending": "Envoi en cours..."
 }
