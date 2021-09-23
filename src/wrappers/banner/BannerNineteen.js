@@ -51,7 +51,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
       <div className="container padding-20-row-col">
         <div className="row">
           <div className="col-lg-6 col-md-6">
-            <div className="single-banner mb-20">
+            <div className="single-banner mb-20 rounded">
               <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
                 { isDefined(mainBanner) ?
                       isDefined(mainBanner.image.imgPath) ?

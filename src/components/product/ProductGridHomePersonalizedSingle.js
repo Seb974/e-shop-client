@@ -49,7 +49,7 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
     <Fragment>
       <div className={`col-xl-3 col-md-6 col-lg-4 col-sm-6 ${sliderClassName ? sliderClassName : ""}`}>
         <div className={`product-wrap ${spaceBottomClass ? spaceBottomClass : ""}`}>
-          <div className="product-img">
+          <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
               {Array.isArray(product.image) ? (
                   isDefined(product.image[0].imgPath) ?

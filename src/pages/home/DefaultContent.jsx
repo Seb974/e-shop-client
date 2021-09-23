@@ -31,7 +31,7 @@ const DefaultContent = () => {
         {/* countdown */}
         <CountDownFour
           spaceBottomClass="pb-100"
-          dateTime="August 29, 2021 23:12:00"
+          dateTime="September 29, 2021 23:12:00"
           countDownImage="/assets/img/banner/deal-7.png"
         />
         

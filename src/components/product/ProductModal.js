@@ -104,7 +104,8 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
               </div>
               <div className="product-small-image-wrapper mt-15">
               { isDefinedAndNotVoid(product.variations) &&
-                <Swiper {...thumbnailSwiperParams}>
+            <>
+                {/* <Swiper {...thumbnailSwiperParams}> */}
                     {isDefined(product.image) && 
                         <div>
                           <div className="single-image">
@@ -133,7 +134,8 @@ const ProductModal = ({product, currency, discountedprice, finalproductprice, fi
                           </div>
                       })
                     }
-                </Swiper>
+                {/* </Swiper> */}
+                </>
               }
               </div>
             </div>

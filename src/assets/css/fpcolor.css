@@ -34,7 +34,8 @@ Background frais péi
     transition: all 0.5s cubic-bezier(0.645, 0.045, 0.355, 1)
 }
 
-.product-wrap .product-img-action{
+.product-wrap .product-img-action, .product-list-image-wrap .product-img-action
+{
     position: absolute;
     top : 12px;
     left : 12px;
