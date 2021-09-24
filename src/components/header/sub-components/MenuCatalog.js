@@ -37,7 +37,7 @@ const MenuCatalog = ({ active = "", setActive, strings }) => {
                     <div className="shopping-cart-title" style={{ width: '180px'}}>
                       <h4 style={{ marginRight: '0px', marginLeft: '8px'}}>
                         <Link to="#" onClick={ e => handleChangeCatalog(e, single.id) }>
-                          {" "}Livraison { single.name }{" "}
+                          {" "}{strings["destination"] + " " + single.name }{" "}
                         </Link>
                       </h4>
                     </div>

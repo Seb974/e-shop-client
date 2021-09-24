@@ -59,9 +59,10 @@ const NavMenuPersonalized = ({ strings, menuWhiteClass, sidebarMenu }) => {
                               return (
                                 <li key={ key } style={{ width: '100%', marginBottom: '20px' }} className="d-flex flex-row align-items-start justify-content-start">
                                     <Link to={process.env.PUBLIC_URL + "/shop"} onClick={ e => handleChangeCatalog(e, catalog.id)}>
-                                        {strings["destination"] + " " + catalog.name }
+                                        { strings["destination"] + " " + catalog.name }
                                     </Link>
                                     <ReactCountryFlag countryCode={catalog.code} style={{fontSize: '2em', lineHeight: '2em', marginLeft: '1em', verticalAlign: 'top', marginTop: '-10px' }}/>
+                                    
                                 </li>
                               );
                           })

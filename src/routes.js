@@ -85,6 +85,9 @@ const Cart = React.lazy(() => import("./pages/other/Cart"));
 const Wishlist = React.lazy(() => import("./pages/other/Wishlist"));
 const Compare = React.lazy(() => import("./pages/other/Compare"));
 const Checkout = React.lazy(() => import("./pages/other/Checkout"));
+const LegalNotice = React.lazy(() => import("./pages/other/LegalNotice"));
+const TermsOfUse = React.lazy(() => import("./pages/other/TermsOfUse"));
+
 
 const NotFound = React.lazy(() => import("./pages/other/NotFound"));
 
@@ -173,6 +176,8 @@ const routes = [
                 { path: process.env.PUBLIC_URL + "/wishlist", name: 'Wishlist', component: Wishlist },
                 { path: process.env.PUBLIC_URL + "/compare", name: 'Compare', component: Compare },
                 { path: process.env.PUBLIC_URL + "/checkout", name: 'Checkout', component: Checkout },
+                { path: process.env.PUBLIC_URL + "/legal-notices", name: 'LegalNotice', component: LegalNotice },
+                { path: process.env.PUBLIC_URL + "/terms-of-sales", name: 'TermsOfUse', component: TermsOfUse },
                 { path: process.env.PUBLIC_URL + "/not-found", name: 'NotFound', component: NotFound },
 ];
 

@@ -209,8 +209,16 @@
   "our_selection": "Our ❤️ strokes",
   "join_with_us": "Join With Us",
   "subscribe": "Subscribe to our newsletter to receive news on update",
+  "subscribe_short": "Subscribe to our newsletter",
   "your_email_address": "Your Email Address",
   "subscribe_button": "SUBSCRIBE",
-  "sending": "Sending..."
+  "sending": "Sending...",
+  "our_partners": "Our Partners",
+  "partners_products": "Find their products on the store !",
+  "navigation": "Navigation",
+  "useful_links": "Useful Links",
+  "all_rights_reserved": "All Rights Reserved",
+  "terms_of_sales": "Terms of Sales",
+  "legal_notice": "Legal Notice"
 
 }
