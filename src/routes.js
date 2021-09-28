@@ -94,7 +94,7 @@ const NotFound = React.lazy(() => import("./pages/other/NotFound"));
 const routes = [
                 // { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
                 { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomeWrapper },
-                { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },
+                { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },      // exact: true,
 
                 // {/* Homepages */}
                 { path: process.env.PUBLIC_URL + "/home-fashion", name: 'HomeFashion', component: HomeFashion },

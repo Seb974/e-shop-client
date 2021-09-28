@@ -1,21 +1,16 @@
 import PropTypes from "prop-types";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { animateScroll } from "react-scroll";
+import AuthContext from "../../contexts/AuthContext";
+import { isDefined } from "../../helpers/utils";
+import { multilanguage } from "redux-multilanguage";
 
-const FooterTwo = ({
-  backgroundColorClass,
-  copyrightColorClass,
-  spaceLeftClass,
-  spaceRightClass,
-  footerTopBackgroundColorClass,
-  footerTopSpaceTopClass,
-  footerTopSpaceBottomClass,
-  footerLogo,
-  backgroundImage
-}) => {
+const FooterTwo = ({ backgroundColorClass, copyrightColorClass, spaceLeftClass, spaceRightClass, footerTopBackgroundColorClass, footerTopSpaceTopClass, footerTopSpaceBottomClass, footerLogo, backgroundImage, strings}) => {
+  
   const [scroll, setScroll] = useState(0);
   const [top, setTop] = useState(0);
+  const { platform } = useContext(AuthContext);
 
   useEffect(() => {
     setTop(100);
@@ -32,45 +27,19 @@ const FooterTwo = ({
   const handleScroll = () => {
     setScroll(window.scrollY);
   };
+
   return (
-    <footer
-      className={`footer-area ${
-        backgroundColorClass ? backgroundColorClass : ""
-      } ${spaceLeftClass ? spaceLeftClass : ""} ${
-        spaceRightClass ? spaceRightClass : ""
-      } ${backgroundImage ? "bg-img" : ""}`}
-      style={{
-        backgroundImage: ` ${
-          backgroundImage
-            ? `url(${process.env.PUBLIC_URL + backgroundImage})`
-            : `url()`
-        }`
-      }}
+    <footer className={`footer-area ${backgroundColorClass ? backgroundColorClass : ""} ${spaceLeftClass ? spaceLeftClass : ""} ${spaceRightClass ? spaceRightClass : ""} ${backgroundImage ? "bg-img" : ""}`}
+      style={{ backgroundImage: ` ${ backgroundImage ? `url(${process.env.PUBLIC_URL + backgroundImage})` : `url()`}`}}
     >
-      <div
-        className={`footer-top text-center ${
-          footerTopBackgroundColorClass ? footerTopBackgroundColorClass : ""
-        } ${footerTopSpaceTopClass ? footerTopSpaceTopClass : ""}  ${
-          footerTopSpaceBottomClass ? footerTopSpaceBottomClass : ""
-        }`}
-      >
+      <div className={`footer-top text-center ${footerTopBackgroundColorClass ? footerTopBackgroundColorClass : ""} ${footerTopSpaceTopClass ? footerTopSpaceTopClass : ""}  ${footerTopSpaceBottomClass ? footerTopSpaceBottomClass : ""}`}>
         <div className="container">
           <div className="footer-logo">
             <Link to={process.env.PUBLIC_URL}>
-              <img
-                alt=""
-                src={
-                  process.env.PUBLIC_URL +
-                  `${footerLogo ? footerLogo : "/assets/img/logo/logo.png"}`
-                }
-              />
+              <img alt="" src="/assets/img/logo/logo_fp_5.png" style={{ marginBottom: "-60px", marginTop: '-60px', maxWidth: 345 }}/>
             </Link>
           </div>
-          <p>
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim
-          </p>
+          <p>{ platform.name + " " + strings["happy_text"] }</p>
           <div className="footer-social">
             <ul>
               <li>
@@ -104,29 +73,12 @@ const FooterTwo = ({
       </div>
       <div className="footer-bottom text-center">
         <div className="container">
-          <div
-            className={`copyright-2 ${
-              copyrightColorClass ? copyrightColorClass : ""
-            }`}
-          >
-            <p>
-              © 2020{" "}
-              <a
-                href="//www.hasthemes.com"
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Flone
-              </a>
-              . All Rights Reserved.
-            </p>
+          <div className={`copyright-2 ${copyrightColorClass ? copyrightColorClass : ""}`}>
+            <p>© { (new Date()).getFullYear() }{" "}<a href="//www.hasthemes.com" rel="noopener noreferrer" target="_blank">{ isDefined(platform) ? platform.name : "" }</a>. { strings["all_rights_reserved"] }.</p>
           </div>
         </div>
       </div>
-      <button
-        className={`scroll-top ${scroll > top ? "show" : ""}`}
-        onClick={() => scrollToTop()}
-      >
+      <button className={`scroll-top ${scroll > top ? "show" : ""}`} onClick={() => scrollToTop()}>
         <i className="fa fa-angle-double-up"></i>
       </button>
     </footer>
@@ -145,4 +97,4 @@ FooterTwo.propTypes = {
   spaceRightClass: PropTypes.string
 };
 
-export default FooterTwo;
+export default multilanguage(FooterTwo);

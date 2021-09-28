@@ -36,8 +36,7 @@ const LegalNotice = ({ location, strings }) => {
                             <h3>{ strings["legal_notice"] }</h3>
                             { isDefined(platform) &&
                                 <>
-                                    { platform.name }
-
+                                    { parse(platform.notices) }
                                 </>
                             }
                         </div>

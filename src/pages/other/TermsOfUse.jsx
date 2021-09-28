@@ -16,7 +16,7 @@ const TermsOfUse = ({ match, history, location, strings }) => {
   const { id = "new" } = match.params;
   const { platform } = useContext(AuthContext);
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
         <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
@@ -40,8 +40,7 @@ const TermsOfUse = ({ match, history, location, strings }) => {
                             <h3>{ strings["terms_of_sales"] }</h3>
                             { isDefined(platform) &&
                                 <>
-                                    { platform.name }
-
+                                    { parse(platform.terms) }
                                 </>
                             }
                         </div>

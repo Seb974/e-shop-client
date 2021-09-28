@@ -9,8 +9,9 @@ import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
+import { isDefinedAndNotVoid } from "../../helpers/utils";
 
-const ShopGridNoSidebar = ({ location }) => {
+const ShopGridNoSidebar = ({ location, match }) => {
 
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
@@ -65,6 +66,7 @@ const ShopGridNoSidebar = ({ location }) => {
                   getFilterSortParams={getFilterSortParams}
                   productCount={products.length}
                   sortedProductCount={currentData.length}
+                  location={ location }
                 />
 
                 {/* shop page content */}
