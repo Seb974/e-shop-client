@@ -12,7 +12,6 @@ const BannerThirtyFive = ({spaceTopClass, spaceBottomClass, bgColorClass}) => {
   const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
 
-  // useEffect(() => fetchBanners(),[]);
   useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
 
   const fetchBanners = () => {

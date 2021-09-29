@@ -9,7 +9,7 @@ const BannerThirtyThreeSingle = ({ data, spaceBottomClass }) => {
   return (
     <div className="col-lg-6 col-md-6">
       <div className={`single-banner-2 ${spaceBottomClass ? spaceBottomClass : ""}`}>
-        <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}>
+        <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}>
           { isDefined(data.image.imgPath) ?
                 <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width="570" disableSrcSet={ true } disableLibraryParam={ true }
                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
@@ -34,7 +34,7 @@ const BannerThirtyThreeSingle = ({ data, spaceBottomClass }) => {
             {/* <span>{ data.price }</span> */}
           </h4>
           <Link 
-              to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}
+              to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}
               style={{ 
                   color: isDefined(data) && isDefined(data.titleColor) ? data.titleColor : "red",
                   border: '3px solid ' + (isDefined(data) && isDefined(data.titleColor) ? data.titleColor : "red"), 

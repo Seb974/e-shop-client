@@ -11,7 +11,6 @@ const HeroSliderThirtyFour = () => {
   const [heroes, setHeroes] = useState([]);
   const [selectedHero, setSelectedHero] = useState(null);
 
-  // useEffect(() => refreshHeroes(), []);
   useEffect(() => refreshHeroes(), [homepage, selectedCatalog]);
 
   const refreshHeroes = () => {
@@ -62,7 +61,7 @@ const HeroSliderThirtyFour = () => {
                 <div className="slider-btn btn-hover">
                   <Link 
                       className="animated" 
-                      to={isDefined(selectedHero.product) ? "/product/" + selectedHero.product.id : "/shop"}
+                      to={isDefined(selectedHero) && isDefined(selectedHero.product) ? "/product/" + selectedHero.product.id : isDefined(selectedHero) && isDefined(selectedHero.category) ? "/shop?category=" + selectedHero.category.id : "/shop"}
                       style={{ 
                         backgroundColor: isDefined(selectedHero) && isDefined(selectedHero.titleColor) ? selectedHero.titleColor : "#ED59A0",
                     }}

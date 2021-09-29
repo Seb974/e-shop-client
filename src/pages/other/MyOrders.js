@@ -24,7 +24,7 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
   const successMessage = "Le contenu de votre précédente commande a bien été ajoutée à votre panier.";
   const partialMessage = 'Le contenu de votre précédente commande a été ajouté à votre panier dans les quantités présentes en stock.'
   const { updatedOrders, setUpdatedOrders } = useContext(MercureContext);
-  const { currentUser, isAuthenticated } = useContext(AuthContext);
+  const { currentUser, isAuthenticated, platform } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [orderOpering, setOrderOpering] = useState(false);
 
@@ -68,12 +68,12 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
 
   const getStock = item => isDefined(item.size) ? item.size.stock : item.product.stock;
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Mes commandes" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes commandes" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes commandes" } />
+          <title>{ platform.name + " - Mes commandes" }</title>
+          <meta property="title" content={ platform.name + " - Mes commandes" } />
+          <meta property="og:title" content={ platform.name + " - Mes commandes" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

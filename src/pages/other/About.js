@@ -15,15 +15,17 @@ import HeroSliderThirteen from "../../wrappers/hero-slider/HeroSliderThirteen";
 import HeroSliderEight from "../../wrappers/hero-slider/HeroSliderEight";
 import ProductsContext from "../../contexts/ProductsContext";
 import DeliveryContext from "../../contexts/DeliveryContext";
-import { isDefinedAndNotVoid } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import RelaypointActions from "../../services/RelaypointActions";
 import SellerActions from "../../services/SellerActions";
+import AuthContext from "../../contexts/AuthContext";
 
 const About = ({ location }) => {
 
   const { pathname } = location;
   const [aboutUs, setAboutUs] = useState(null);
   const [sellers, setSellers] = useState([]);
+  const { platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const { relaypoints, setRelaypoints } = useContext(DeliveryContext);
 
@@ -52,12 +54,12 @@ const About = ({ location }) => {
           .then(response => setSellers(response));
   };
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - A propos de nous" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - A propos de nous" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - A propos de nous" } />
+          <title>{ platform.name + " - A propos de nous" }</title>
+          <meta property="title" content={ platform.name + " - A propos de nous" } />
+          <meta property="og:title" content={ platform.name + " - A propos de nous" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

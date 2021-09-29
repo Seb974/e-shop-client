@@ -20,7 +20,7 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
   
   const { addToast } = useToasts();
   const { pathname } = location;
-  const { country, settings, selectedCatalog } = useContext(AuthContext);
+  const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [favourites, setFavourites] = useState([]);
 
@@ -29,12 +29,12 @@ const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, del
       setFavourites(favouriteSet);
   }, [wishlistItems, products]);
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Mes favoris" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes favoris" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes favoris" } />
+          <title>{ platform.name + " - Mes favoris" }</title>
+          <meta property="title" content={ platform.name + " - Mes favoris" } />
+          <meta property="og:title" content={ platform.name + " - Mes favoris" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

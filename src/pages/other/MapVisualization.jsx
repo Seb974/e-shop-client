@@ -9,10 +9,13 @@ import { MetaTags } from 'react-meta-tags';
 import LayoutSeven from '../../layouts/LayoutSeven';
 import { multilanguage } from "redux-multilanguage";
 import api from '../../config/api';
+import AuthContext from '../../contexts/AuthContext';
+import { isDefined } from '../../helpers/utils';
 
 const MapVisualization = ({ match, location, strings }) => {
     
     const { id = "new" } = match.params;
+    const { platform } = useContext(AuthContext);
     const { tourings, setTourings } = useContext(DeliveryContext);
 
     useEffect(() => fetchTourings(id), []);
@@ -26,12 +29,12 @@ const MapVisualization = ({ match, location, strings }) => {
         }
     };
 
-    return (
+    return !isDefined(platform) ? <></> : (
         <Fragment>
             <MetaTags>
-                <title>{ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" }</title>
-                <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" } />
-                <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Suivi de la livraisn" } />
+                <title>{ platform.name + " - Suivi de la livraisn" }</title>
+                <meta property="title" content={ platform.name + " - Suivi de la livraisn" } />
+                <meta property="og:title" content={ platform.name + " - Suivi de la livraisn" } />
                 <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
                 <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
             </MetaTags>
@@ -53,7 +56,6 @@ const MapVisualization = ({ match, location, strings }) => {
                                     <div className="cart-shiping-update"></div>
                                     <div className="cart-clear">
                                         <Link to="/my-orders" className="btn btn-link">Retour à la liste</Link>
-                                        {/* <Link to={process.env.PUBLIC_URL + "/shop"}>{ strings["continue_shopping"] }</Link> */}
                                     </div>
                                 </div>
                             </div>

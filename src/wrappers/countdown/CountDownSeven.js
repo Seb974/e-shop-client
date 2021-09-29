@@ -41,7 +41,7 @@ const CountDownSeven = ({ bgColorClass, spaceTopClass, dateTime }) => {
           </div>
           <div className="slider-btn-12 btn-hover">
             <Link 
-                to={ isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}
+                to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                 style={{ 
                   backgroundColor: isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
                   border: 'none',

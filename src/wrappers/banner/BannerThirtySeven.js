@@ -30,7 +30,7 @@ const BannerThirtySeven = ({ spaceBottomClass }) => {
               return (
                   <div className="col-lg-6 col-md-6" key={ key }>
                     <div className={`single-banner ${ key === 0 ? "mr-15" : "ml-15"} mb-15`}>
-                      <Link to={isDefined(single) && isDefined(single.product) ? "/product/" + single.product.id : "/shop"}>
+                      <Link to={isDefined(single) && isDefined(single.product) ? "/product/" + single.product.id : isDefined(single) && isDefined(single.category) ? "/shop?category=" + single.category.id : "/shop"}>
                         <Imgix  src={ single.image.imgPath } className="lazyload default-img" alt={ single.image.filePath } width="945" disableSrcSet={ true } disableLibraryParam={ true }
                                 attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                         />

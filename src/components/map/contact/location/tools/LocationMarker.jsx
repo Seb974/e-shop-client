@@ -7,21 +7,6 @@ import AuthContext from '../../../../../contexts/AuthContext';
 const LocationMarker = ({ position, informations, setTooltip, setPopup }) => {
 
     const { selectedCatalog } = useContext(AuthContext);
-    // const [ownPosition, setOwnPosition] = useState([]);
-    // const [ownInformations, setOwnInformations] = useState(undefined);
-
-    // useEffect(() => {
-    //     if (ownPosition.length > 0)
-    //         setOwnPosition(informations.position);
-    // }, []);
-
-    // useEffect(() => {
-    //     const reset = JSON.stringify(informations.position) === JSON.stringify(selectedCatalog.center);
-    //     if (ownPosition.length === 0 || reset) {
-    //         setOwnPosition(reset ? [] : informations.position);
-    //         setOwnInformations(reset ? undefined : informations);
-    //     }
-    // }, [informations.position]);
 
     const handleClick = e => {
         e.preventDefault();

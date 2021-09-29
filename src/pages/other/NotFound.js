@@ -1,19 +1,23 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import MetaTags from "react-meta-tags";
 import LayoutOne from "../../layouts/LayoutOne";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
+import { isDefined } from "../../helpers/utils";
 
 const NotFound = ({ location }) => {
-  const { pathname } = location;
 
-  return (
+  const { pathname } = location;
+  const { platform } = useContext(AuthContext);
+
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Page introuvable" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Page introuvable" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Page introuvable" } />
+          <title>{ platform.name + " - Page introuvable" }</title>
+          <meta property="title" content={ platform.name + " - Page introuvable" } />
+          <meta property="og:title" content={ platform.name + " - Page introuvable" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

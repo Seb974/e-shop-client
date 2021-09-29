@@ -48,7 +48,7 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
               </div>
               <div className="funfact-btn funfact-btn-red btn-hover">
                 <Link 
-                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop?test=42"}
+                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                   style={{ 
                     backgroundColor: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
                     shadow: isDefined(selection) && isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
@@ -61,17 +61,8 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
           </div>
           <div className="col-md-12 col-lg-6 order-2 order-lg-1 text-center my-4">
             <div className="funfact-image">
-              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}>
-                  {/* { isDefined(selection) && isDefined(selection.image) ? isDefined(selection.image.imgPath) ? */}
-                     {/* <Imgix  src={ selection.image.imgPath } className="lazyload default-img" alt={ selection.image.filePath } width={ 549 } disableSrcSet={ true } disableLibraryParam={ true }
-                    //         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes' }}
-                    // /> */}
-                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" style={{ maxWidth: width >= 768 ? 549 : 345 }}/>
-                    {/* 576 */}
-                    {/* :
-                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" /> */}
-                    {/* : <></> */}
-                {/* } */}
+              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}>
+                <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" style={{ maxWidth: width >= 768 ? 549 : 345 }}/>
               </Link>
             </div>
           </div>

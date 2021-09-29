@@ -1,59 +1,30 @@
-import React from "react";
+import React, { useContext } from "react";
+import AuthContext from "../../../contexts/AuthContext";
+import { isDefined, isDefinedAndNotVoid } from "../../../helpers/utils";
 
 const HeaderSocial = () => {
-  return (
-    <div className="side-social">
+
+  const { platform } = useContext(AuthContext);
+
+  const isDefaultSocial = social => {
+      const socialName = social.replaceAll(' ', '').toLowerCase();
+      return ['facebook', 'dribbble', 'pinterest', 'twitter', 'linkedin'].includes(socialName);
+  }
+
+  return !isDefined(platform) || !isDefinedAndNotVoid(platform.socials) ? <></> : (
+    <div className="side-social text-center">
       <ul>
-        <li>
-          <a
-            className="facebook"
-            href="//www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="fa fa-facebook" />
-          </a>
-        </li>
-        <li>
-          <a
-            className="dribbble"
-            href="//www.dribbble.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="fa fa-dribbble" />
-          </a>
-        </li>
-        <li>
-          <a
-            className="pinterest"
-            href="//www.pinterest.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="fa fa-pinterest-p" />
-          </a>
-        </li>
-        <li>
-          <a
-            className="twitter"
-            href="//www.twitter.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="fa fa-twitter" />
-          </a>
-        </li>
-        <li>
-          <a
-            className="linkedin"
-            href="//www.linkedin.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <i className="fa fa-linkedin" />
-          </a>
-        </li>
+          {
+            platform.socials.map((social, index) => {
+              return (
+                <li key={ index }>
+                  <a className={ isDefaultSocial(social.name) ? social.name.replaceAll(' ', '').toLowerCase() : 'dribbble' } href={ social.link } target="_blank" rel="noopener noreferrer">
+                    <i className={ social.icon } />
+                  </a>
+                </li>
+              )
+            })
+          }
       </ul>
     </div>
   );

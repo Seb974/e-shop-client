@@ -98,9 +98,9 @@ const ResetPassword = ({ location, strings, match, history }) => {
   return email === defaultEmail ? <Redirect to="/"/> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Réinitialisation du mot de passe" } />
+          <title>{ "Réinitialisation du mot de passe" }</title>
+          <meta property="title" content={ "Réinitialisation du mot de passe" } />
+          <meta property="og:title" content={ "Réinitialisation du mot de passe" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

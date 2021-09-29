@@ -61,7 +61,7 @@ const HeroSliderThirtyFive = () => {
                 <div className="slider-btn-12 btn-hover">
                   <Link
                     className="animated"
-                    to={isDefined(selectedHero.product) ? "/product/" + selectedHero.product.id : "/shop"}
+                    to={isDefined(selectedHero) && isDefined(selectedHero.product) ? "/product/" + selectedHero.product.id : isDefined(selectedHero) && isDefined(selectedHero.category) ? "/shop?category=" + selectedHero.category.id : "/shop"}
                     style={{
                       border: 'none',
                       backgroundColor: isDefined(selectedHero.textColor) ? selectedHero.textColor : "#ED59A0",

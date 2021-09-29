@@ -28,7 +28,7 @@ const FooterTwo = ({ backgroundColorClass, copyrightColorClass, spaceLeftClass, 
     setScroll(window.scrollY);
   };
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <footer className={`footer-area ${backgroundColorClass ? backgroundColorClass : ""} ${spaceLeftClass ? spaceLeftClass : ""} ${spaceRightClass ? spaceRightClass : ""} ${backgroundImage ? "bg-img" : ""}`}
       style={{ backgroundImage: ` ${ backgroundImage ? `url(${process.env.PUBLIC_URL + backgroundImage})` : `url()`}`}}
     >
@@ -42,31 +42,17 @@ const FooterTwo = ({ backgroundColorClass, copyrightColorClass, spaceLeftClass, 
           <p>{ platform.name + " " + strings["happy_text"] }</p>
           <div className="footer-social">
             <ul>
-              <li>
-                <a href="//www.facebook.com">
-                  <i className="fa fa-facebook" />
-                </a>
-              </li>
-              <li>
-                <a href="//www.dribbble.com">
-                  <i className="fa fa-dribbble" />
-                </a>
-              </li>
-              <li>
-                <a href="//www.pinterest.com">
-                  <i className="fa fa-pinterest-p" />
-                </a>
-              </li>
-              <li>
-                <a href="//www.twitter.com">
-                  <i className="fa fa-twitter" />
-                </a>
-              </li>
-              <li>
-                <a href="//www.linkedin.com">
-                  <i className="fa fa-linkedin" />
-                </a>
-              </li>
+              {
+                platform.socials.map((social, index) => {
+                  return (
+                    <li key={ index }>
+                      <a href={ social.link } target="_blank" rel="noopener noreferrer">
+                        <i className={ social.icon } />
+                      </a>
+                    </li>
+                  )
+                })
+              }
             </ul>
           </div>
         </div>

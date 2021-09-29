@@ -45,7 +45,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
               </div>
               <div className="funfact-btn funfact-btn--round-shape funfact-btn-violet btn-hover">
                 <Link 
-                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}
+                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                   style={{ 
                     backgroundColor: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
                     shadow: isDefined(selection) && isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
@@ -58,7 +58,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
           </div>
           <div className="col-md-4 col-lg-6">
             <div className="funfact-image">
-              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}>
+              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}>
                 { isDefined(selection) && isDefined(selection.image) ? 
                     isDefined(selection.image.imgPath) ?
                       <Imgix  src={ selection.image.imgPath } className="lazyload img-fluid" alt={ selection.image.filePath } width={ 570 } disableSrcSet={ true } disableLibraryParam={ true }

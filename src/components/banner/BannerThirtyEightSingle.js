@@ -8,8 +8,8 @@ const BannerThirtyEightSingle = ({ data, spaceBottomClass }) => {
   return (
     <div className="col-sm-6 col-12 mb-30">
       <div className={`single-banner ${spaceBottomClass ? spaceBottomClass : ""}`}>
-        <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : "/shop"}>
-          <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width="570" disableSrcSet={ true } disableLibraryParam={ true }
+        <Link to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}>
+          <Imgix  src={ data.image.imgPath } className="lazyload default-img" alt={ data.image.filePath } width={ 570 } disableSrcSet={ true } disableLibraryParam={ true }
                   attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
           />
         </Link>
