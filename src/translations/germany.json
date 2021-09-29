@@ -209,6 +209,21 @@
   "our_selection": "Herzinfarkt ❤️",
   "join_with_us": "Mach bei uns mit",
   "subscribe": "Abonnieren Sie unseren Newsletter und bleiben Sie über Neuigkeiten informiert",
+  "subscribe_short": "Abonniere unseren Newsletter",
   "your_email_address": "Ihre E-Mail-Adresse",
-  "subscribe_button": "ABONNIEREN"
+  "subscribe_button": "ABONNIEREN",
+  "sending": "Senden...",
+  "our_partners": "Unsere Partner",
+  "partners_products": "Finden Sie ihre Produkte im Shop !",
+  "navigation": "Navigation",
+  "useful_links": "Nützliche Links",
+  "all_rights_reserved": "Alle Rechte vorbehalten",
+  "terms_of_sales": "Verkaufsbedingungen",
+  "legal_notice": "Impressum",
+  "happy_text": "und sein Team wünschen Ihnen ein frohes Weihnachtsfest und einen guten Rutsch ins neue Jahr.",
+  "our_address": "Unsere Adresse",
+  "relay_details": "Klicken Sie für mehr Details",
+  "share": "Teilen",
+  "the_date": "Der",
+  "see more": "Mehr sehen"
 }

@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
 import BlogComment from "../../wrappers/blog/BlogComment";
 import BlogPost from "../../wrappers/blog/BlogPost";
@@ -7,10 +7,12 @@ import LayoutSeven from "../../layouts/LayoutSeven";
 import ArticleActions from "../../services/ArticleActions";
 import { isDefined } from "../../helpers/utils";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 
 const BlogDetailsStandard = ({ match, history, location }) => {
 
   const { id = "new" } = match.params;
+  const { platform } = useContext(AuthContext);
   const [article, setArticle] = useState(null);
 
   useEffect(() => fetchArticle(id), []);
@@ -30,15 +32,15 @@ const BlogDetailsStandard = ({ match, history, location }) => {
     }
 };
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
         <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
         { isDefined(article) && 
             <>
-              <title>{ article.title }</title>
-              <meta property="title" content={ article.title } />
-              <meta property="og:title" content={ article.title } />
+              <title>{ platform.name + " - " + article.title }</title>
+              <meta property="title" content={ platform.name + " - " + article.title } />
+              <meta property="og:title" content={ platform.name + " - " + article.title } />
               <meta name="description" content={ article.summary } />
               <meta property="og:description" content={ article.summary } />
               <meta property="image" content={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } />

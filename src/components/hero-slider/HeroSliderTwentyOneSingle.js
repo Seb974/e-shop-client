@@ -11,9 +11,6 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
       className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${ sliderClass ? sliderClass : ""}`}
       style={{ backgroundImage: `url(${data.image.imgPath})` }}
     >
-    {/* // <Background src={ data.image.imgPath } className={`single-slider-2 slider-height-2 d-flex align-items-center bg-img ${sliderClass ? sliderClass : ""}`}
-    //   imgixParams={{ w: 1920, h: 775 }} disableLibraryParam={ true }    // disableQualityByDPR={ false }
-    // > */}
         <div className="container">
           <div className="row">
             <div className="col-xl-6 col-lg-7 col-md-8 col-12">
@@ -35,13 +32,12 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
                 <div className="slider-btn btn-hover">
                   <Link
                     className="animated rounded"
-                    to={isDefined(data.product) ? "/product/" + data.product.id : "/shop"}
+                    to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}
                     style={{ 
                         color: isDefined(data.titleColor) ? data.titleColor : "black",
                         shadow: isDefined(data.textShadow) && data.textShadow ? "0.1em 0.1em 0.2em black" : "none"
                     }}
                   >
-                    {/* SHOP NOW */}
                     J'en profite !
                   </Link>
                 </div>
@@ -49,7 +45,6 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
             </div>
           </div>
         </div>
-    {/* </Background> */}
     </div>
   );
 };

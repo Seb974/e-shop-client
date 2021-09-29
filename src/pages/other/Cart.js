@@ -24,7 +24,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
   const { pathname } = location;
-  const { country, settings, selectedCatalog } = useContext(AuthContext);
+  const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
   const { packages } = useContext(DeliveryContext);
   const { products, setProducts } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([]);
@@ -49,12 +49,12 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
     }
   }, [cartItems, products])
 
-  return !isDefined(productCart) ? <></> : (
+  return !isDefined(productCart) || !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Panier" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Panier" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Panier" } />
+          <title>{ platform.name + " - Panier" }</title>
+          <meta property="title" content={ platform.name + " - Panier" } />
+          <meta property="og:title" content={ platform.name + " - Panier" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

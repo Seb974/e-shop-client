@@ -57,7 +57,7 @@ const HeroSliderThirtyThree = () => {
                 />
                 <div className="slider-btn btn-hover">
                   <Link 
-                      to={isDefined(homepage.heroes[index].product) ? "/product/" + homepage.heroes[index].product.id : "/shop"}
+                      to={isDefined(homepage.heroes[index]) && isDefined(homepage.heroes[index].product) ? "/product/" + homepage.heroes[index].product.id : isDefined(homepage.heroes[index]) && isDefined(homepage.heroes[index].category) ? "/shop?category=" + homepage.heroes[index].category.id : "/shop"}
                       style={{
                         border: 'none',
                         backgroundColor: isDefined(homepage.heroes[index].titleColor) ? homepage.heroes[index].titleColor : "#ED59A0",
@@ -71,7 +71,7 @@ const HeroSliderThirtyThree = () => {
             <div className="col-xl-6 col-lg-6 col-md-6 col-12 col-sm-6">
               <div className="slider-single-img-14">
                 { isDefined(homepage.heroes[index].image.imgPath) ?
-                    <Imgix  src={ homepage.heroes[index].image.imgPath } className="lazyload default-img" alt={ homepage.heroes[index].image.filePath } width="530" disableSrcSet={ true } disableLibraryParam={ true }
+                    <Imgix  src={ homepage.heroes[index].image.imgPath } className="lazyload default-img" alt={ homepage.heroes[index].image.filePath } width={ 530 } disableSrcSet={ true } disableLibraryParam={ true }
                             attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                     />
                     :

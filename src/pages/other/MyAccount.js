@@ -20,7 +20,7 @@ const MyAccount = ({ location, strings }) => {
 
   const { pathname } = location;
   const { addToast } = useToasts();
-  const { currentUser, country, settings, selectedCatalog, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, country, settings, selectedCatalog, setCurrentUser, platform } = useContext(AuthContext);
   const defaultPasswordErrors = { current: "", newPassword: "", confirm: ""};
   const defaultInformationsErrors = {name:"", email: "", phone: "", address: "", address2: "", zipcode: "", city: "", position: ""};
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
@@ -120,12 +120,12 @@ const MyAccount = ({ location, strings }) => {
       setCurrentUser(response);
   };
 
-  return !isDefinedAndNotVoid(selectedCatalog.center) ? <></> : (
+  return !isDefinedAndNotVoid(selectedCatalog.center) || !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Mon compte" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mon compte" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mon compte" } />
+          <title>{ platform.name + " - Mon compte" }</title>
+          <meta property="title" content={ platform.name + " - Mon compte" } />
+          <meta property="og:title" content={ platform.name + " - Mon compte" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
@@ -193,10 +193,6 @@ const MyAccount = ({ location, strings }) => {
                         <Card.Body>
                           <div className="myaccount-info-wrapper">
                             <form onSubmit={ handleChangePasswordSubmit }>
-                                {/* <div className="account-info-wrapper">
-                                  <h4>Change Password</h4>
-                                  <h5>Your Password</h5>
-                                </div> */}
                                 <div className="row">
                                   <div className="col-lg-12 col-md-12">
                                       <Field 

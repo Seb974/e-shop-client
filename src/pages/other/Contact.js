@@ -62,9 +62,9 @@ const Contact = ({ location, strings }) => {
   return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Contact" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Contact" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Contact" } />
+          <title>{ platform.name + " - Contact" }</title>
+          <meta property="title" content={ platform.name + " - Contact" } />
+          <meta property="og:title" content={ platform.name + " - Contact" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
@@ -88,7 +88,7 @@ const Contact = ({ location, strings }) => {
                       <i className="fa fa-phone" />
                     </div>
                     <div className="contact-info-dec">
-                      { platform.metas.phone }
+                      { isDefined(platform.metas) && isDefined(platform.metas.phone) ? platform.metas.phone : "" }
                     </div>
                   </div>
                   <div className="single-contact-info">
@@ -97,10 +97,10 @@ const Contact = ({ location, strings }) => {
                     </div>
                     <div className="contact-info-dec">
                       <p>
-                        <a href="mailto:koifai@fraispei.re">koifai@fraispei.re</a>
+                        <a href={`mailto:${ isDefined(platform.email) ? platform.email : "" }`}>{ isDefined(platform.email) ? platform.email : "" }</a>
                       </p>
                       <p>
-                        <a href="https://fraispei.re">https://fraispei.re</a>
+                        <a href={ window.location.href.split('/#')[0] }>{ window.location.href.split('/#')[0] }</a>
                       </p>
                     </div>
                   </div>
@@ -115,31 +115,17 @@ const Contact = ({ location, strings }) => {
                   <div className="contact-social text-center">
                     <h3>{strings["follow_us"]}</h3>
                     <ul>
-                      <li>
-                        <a href="//facebook.com">
-                          <i className="fa fa-facebook" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="//pinterest.com">
-                          <i className="fa fa-pinterest-p" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="//thumblr.com">
-                          <i className="fa fa-tumblr" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="//vimeo.com">
-                          <i className="fa fa-vimeo" />
-                        </a>
-                      </li>
-                      <li>
-                        <a href="//twitter.com">
-                          <i className="fa fa-twitter" />
-                        </a>
-                      </li>
+                      {
+                        platform.socials.map((social, index) => {
+                          return (
+                            <li key={ index }>
+                              <a href={ social.link } target="_blank" rel="noopener noreferrer">
+                                <i className={ social.icon } />
+                              </a>
+                            </li>
+                          )
+                        })
+                      }
                     </ul>
                   </div>
                 </div>

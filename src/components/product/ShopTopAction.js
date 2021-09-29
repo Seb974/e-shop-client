@@ -1,15 +1,28 @@
 import PropTypes from "prop-types";
 import '../../assets/css/search-input.css';
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { setActiveLayout } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 
-const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProductCount}) => {
+const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProductCount, location}) => {
 
   const { selectedCatalog } = useContext(AuthContext);
   const { categories, navSearch, setNavSearch, selectedCategory, setSelectedCategory } = useContext(ProductsContext);
+
+  useEffect(() => {
+    if (location.search.length > 0) {
+      const urlSearchParams = new URLSearchParams(location.search);
+      const params = Object.fromEntries(urlSearchParams.entries());
+      if (isDefinedAndNotVoid(params['category'])) {
+          const newSelection = categories.find(c => c.id === parseInt(params['category']));
+          if (isDefined(newSelection))
+              setSelectedCategory(newSelection.id);
+      }
+      window.history.replaceState({}, document.title, "#" + location.pathname);
+    }
+  }, []);
 
   const handleSearchChange = ({ currentTarget }) => setNavSearch(currentTarget.value);
 

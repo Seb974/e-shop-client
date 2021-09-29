@@ -2,6 +2,7 @@ import React, { Fragment, useContext, useState } from "react";
 import { useEffect } from "react";
 import MetaTags from "react-meta-tags";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 import HomeContext from "../../contexts/HomeContext";
 import { isDefined } from "../../helpers/utils";
 import BlackFridayContent from "./BlackFridayContent";
@@ -12,15 +13,16 @@ import ValentinesDayContent from "./ValentinesDayContent";
 
 const HomeWrapper = ({ location }) => {
 
+    const { platform } = useContext(AuthContext);
     const { homepage, setHomepage } = useContext(HomeContext);
     const [mercureOpering, setMercureOpering] = useState(false);
 
-    return (
+    return !isDefined(platform) ? <></> : (
         <Fragment>
             <MetaTags>
-                <title>{ "Frais Péi, votre maraîcher en ligne" }</title>
-                <meta property="title" content={ "Frais Péi, votre maraîcher en ligne" } />
-                <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne" } />
+                <title>{ platform.name + " - Accueil" }</title>
+                <meta property="title" content={ platform.name + " - Accueil" } />
+                <meta property="og:title" content={ platform.name + " - Accueil" } />
                 <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
                 <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
             </MetaTags>

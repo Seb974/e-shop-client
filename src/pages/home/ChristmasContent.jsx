@@ -8,6 +8,8 @@ import CountDownSix from "../../wrappers/countdown/CountDownSix";
 import TestimonialThree from "../../wrappers/testimonial/TestimonialThree";
 import NewsletterThree from "../../wrappers/newsletter/NewsletterThree";
 import BrandLogoSliderOne from "../../wrappers/brand-logo/BrandLogoSliderOne";
+import BannerFive from "../../wrappers/banner/BannerFive";
+import BannerEighteen from "../../wrappers/banner/BannerEighteen";
 
 const ChristmasContent = () => {
   return (
@@ -19,13 +21,14 @@ const ChristmasContent = () => {
         {/* hero slider */}
         <HeroSliderThirtyThree />
         {/* banner */}
-        <BannerThirtyTwo spaceTopClass="pt-95" spaceBottomClass="pb-70" />
+        <BannerFive spaceTopClass="pt-125" spaceBottomClass="pb-40" />
+        {/* <BannerThirtyTwo spaceTopClass="pt-95" spaceBottomClass="pb-70" /> */}
         {/* tab product */}
   
         {/* countdown */}
         <CountDownSix
-          spaceTopClass="pt-95"
-          spaceBottomClass="pb-95"
+          spaceTopClass="pt-1"
+          spaceBottomClass="pb-45"
           dateTime="November 13, 2020 12:12:00"
           countDownImage="/assets/img/banner/deal-11.png"
         />
@@ -36,6 +39,9 @@ const ChristmasContent = () => {
           spaceTopClass="pt-100"
           category="auto parts"
         />
+
+        {/* banner */}
+        <BannerEighteen spaceTopClass="pt-95" spaceBottomClass="pb-70" />
         {/* <TabProductEleven
           category="christmas"
           spaceTopClass="pt-100"
@@ -47,7 +53,8 @@ const ChristmasContent = () => {
         /> */}
         
         {/* testimonial */}
-        <TestimonialThree />
+        {/* <TestimonialThree /> */}
+
         {/* tab product */}
         {/* <TabProductEleven
           category="christmas"

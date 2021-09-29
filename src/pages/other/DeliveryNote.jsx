@@ -105,7 +105,7 @@ const DeliveryNote = ({ match }) => {
     return !isDefined(order) ? <></> : (
         <PDFViewer id="deliveryViewer" style={ styles.viewer }>
             <Document style={ styles.viewer }>
-                <DeliveryInformations order={ order } ordersLength={ order.items.length } maxPerPage={ maxPerPage }/> 
+                <DeliveryInformations order={ order } ordersLength={ order.items.length } maxPerPage={ maxPerPage } packagesLength={ isDefined(order.packages) ? order.packages.length : 0 }/> 
             </Document>
         </PDFViewer>
     );

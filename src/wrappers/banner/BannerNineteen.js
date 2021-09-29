@@ -16,7 +16,6 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
   const [mainBanner, setMainBanner] = useState(null);
   const [banners, setBanners] = useState([]);
 
-  // useEffect(() => fetchBanners(),[]);
   useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
 
   const fetchBanners = () => {
@@ -52,7 +51,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
         <div className="row">
           <div className="col-lg-6 col-md-6">
             <div className="single-banner mb-20 rounded">
-              <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}>
+              <Link to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : isDefined(mainBanner) && isDefined(mainBanner.category) ? "/shop?category=" + mainBanner.category.id : "/shop"}>
                 { isDefined(mainBanner) ?
                       isDefined(mainBanner.image.imgPath) ?
                         <Imgix  src={ mainBanner.image.imgPath } className="lazyload default-img" alt={ mainBanner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
@@ -78,7 +77,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
                     { isDefined(mainBanner) && mainBanner.subtitle }
                 </h5>
                 <Link className="rounded"
-                    to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}
+                    to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : isDefined(mainBanner) && isDefined(mainBanner.category) ? "/shop?category=" + mainBanner.category.id : "/shop"}
                     style={{ 
                       backgroundColor: isDefined(mainBanner) && isDefined(mainBanner.titleColor) ? mainBanner.titleColor : "#ED59A0",
                   }}
@@ -92,7 +91,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
               { banners.map((banner, key) => {
                 return (
                     <div key={ key } className="single-banner mb-20 rounded">
-                        <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
+                        <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : isDefined(banner) && isDefined(banner.category) ? "/shop?category=" + banner.category.id : "/shop"}>
                             { isDefined(banner) && isDefined(banner.image.imgPath) ?
                                 <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
                                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
@@ -123,7 +122,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
                                 }
                             </p>
                             <Link 
-                                to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}
+                                to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : isDefined(banner) && isDefined(banner.category) ? "/shop?category=" + banner.category.id : "/shop"}
                                 style={{ 
                                     color: isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "#ED59A0",
                                     border: '3px solid ' + (isDefined(banner) && isDefined(banner.titleColor) ? banner.titleColor : "#ED59A0"), 

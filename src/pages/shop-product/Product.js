@@ -9,23 +9,25 @@ import ProductImageDescription from "../../wrappers/product/ProductImageDescript
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined } from "../../helpers/utils";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
 
 const Product = ({ location, match }) => {
 
   const { id = "new" } = match.params;
   const { pathname } = location;
+  const { platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const product = products.find(product => product.id === parseInt(id));
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
         <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
         { isDefined(product) && 
             <>
-              <title>{ product.name }</title>
-              <meta property="title" content={ product.name } />
-              <meta property="og:title" content={ product.name } />
+              <title>{ platform.name + " - " + product.name }</title>
+              <meta property="title" content={ platform.name + " - " + product.name } />
+              <meta property="og:title" content={ platform.name + " - " + product.name } />
               <meta name="description" content={ product.description } />
               <meta property="og:description" content={ product.description } />
               <meta property="image" content={ product.image.imgPath } />

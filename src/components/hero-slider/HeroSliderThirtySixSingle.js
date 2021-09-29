@@ -31,7 +31,7 @@ const HeroSliderThirtySixSingle = ({ data, sliderClassName }) => {
               <div className="valentine-btn btn-hover">
                 <Link
                   className="animated"
-                  to={ isDefined(data.product) ? "/product/" + data.product.id : "/shop" }
+                  to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}
                   style={{
                     border: 'none',
                     backgroundColor: isDefined(data) ? data.textColor : "#ED59A0",

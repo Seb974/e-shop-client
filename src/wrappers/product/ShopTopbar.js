@@ -2,12 +2,8 @@ import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import ShopTopAction from "../../components/product/ShopTopAction";
 
-const ShopTopbar = ({
-  getLayout,
-  getFilterSortParams,
-  productCount,
-  sortedProductCount
-}) => {
+const ShopTopbar = ({ getLayout, getFilterSortParams, productCount, sortedProductCount, location }) => {
+  
   return (
     <Fragment>
       {/* shop top action */}
@@ -16,6 +12,7 @@ const ShopTopbar = ({
         getFilterSortParams={getFilterSortParams}
         productCount={productCount}
         sortedProductCount={sortedProductCount}
+        location={ location }
       />
     </Fragment>
   );

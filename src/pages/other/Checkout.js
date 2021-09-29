@@ -31,7 +31,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const { addToast } = useToasts();
   const { products, categories } = useContext(ProductsContext);
   const initialErrors = {name:"", email: "", phone: "", address: ""};
-  const { currentUser, country, settings, selectedCatalog } = useContext(AuthContext);
+  const { currentUser, country, settings, selectedCatalog, platform } = useContext(AuthContext);
   const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
@@ -160,12 +160,12 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
           condition.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.id === selectedCatalog.id).percent;
   };
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Mes informations" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Mes informations" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Mes informations" } />
+          <title>{ platform.name + " - Mes informations" }</title>
+          <meta property="title" content={ platform.name + " - Mes informations" } />
+          <meta property="og:title" content={ platform.name + " - Mes informations" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

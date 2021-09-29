@@ -9,8 +9,10 @@ import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import AuthContext from "../../contexts/AuthContext";
 
-const ShopGridNoSidebar = ({ location }) => {
+const ShopGridNoSidebar = ({ location, match }) => {
 
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
@@ -21,6 +23,7 @@ const ShopGridNoSidebar = ({ location }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
+  const { platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
 
   const pageLimit = 15;
@@ -43,12 +46,12 @@ const ShopGridNoSidebar = ({ location }) => {
     setCurrentData(sortedProducts.slice(offset, offset + pageLimit));
   }, [offset, products, sortType, sortValue, filterSortType, filterSortValue]);
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - La boutique" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - La boutique" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - La boutique" } />
+          <title>{ platform.name + " - La boutique" }</title>
+          <meta property="title" content={ platform.name + " - La boutique" } />
+          <meta property="og:title" content={ platform.name + " - La boutique" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>
@@ -65,6 +68,7 @@ const ShopGridNoSidebar = ({ location }) => {
                   getFilterSortParams={getFilterSortParams}
                   productCount={products.length}
                   sortedProductCount={currentData.length}
+                  location={ location }
                 />
 
                 {/* shop page content */}

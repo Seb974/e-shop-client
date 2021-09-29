@@ -21,7 +21,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
   
   const { pathname } = location;
   const { addToast } = useToasts();
-  const { country, settings, selectedCatalog } = useContext(AuthContext);
+  const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
   const [compareList, setCompareList] = useState([]);
 
@@ -30,12 +30,12 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
       setCompareList(compareSet);
   }, [compareItems, products]);
 
-  return (
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Comparaison" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Comparaison" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Comparaison" } />
+          <title>{ platform.name + " - Comparaison" }</title>
+          <meta property="title" content={ platform.name + " - Comparaison" } />
+          <meta property="og:title" content={ platform.name + " - Comparaison" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

@@ -46,7 +46,7 @@ const CountDownEight = ({ backgroundImage, dateTime, spaceTopClass, spaceBottomC
               </div>
               <div className="funfact-btn btn-only-round funfact-btn-red-2 btn-hover">
                 <Link 
-                    to={process.env.PUBLIC_URL + "/shop-grid-standard"}
+                    to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                     style={{ 
                       backgroundColor: isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
                       shadow: isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"

@@ -8,6 +8,7 @@ import Imgix from "react-imgix";
 import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
+import useWindowDimensions from '../../helpers/screenDimensions';
 
 const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage}) => {
 
@@ -16,6 +17,7 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
 
   const [countdowns, setCountdowns] = useState([]);
   const [selection, setSelection] = useState(null);
+  const { height, width } = useWindowDimensions();
 
   useEffect(() => getCatalogCountdowns(), []);
   useEffect(() => getCatalogCountdowns(), [homepage, selectedCatalog]);
@@ -32,7 +34,7 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
     <div className={`funfact-area ${spaceTopClass ? spaceTopClass : ""} ${spaceBottomClass ? spaceBottomClass : ""}`}>
       <div className="container">
         <div className="row align-items-center">
-          <div className="col-md-8 col-lg-6 order-1 order-lg-2">
+          <div className="col-md-12 col-lg-6 order-1 order-lg-2 text-center my-4">
             <div className="funfact-content funfact-res text-center">
               <h2 style={{ 
                     color: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
@@ -46,7 +48,7 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
               </div>
               <div className="funfact-btn funfact-btn-red btn-hover">
                 <Link 
-                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}
+                  to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                   style={{ 
                     backgroundColor: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
                     shadow: isDefined(selection) && isDefined(selection.textShadow) && selection.textShadow ? "0.1em 0.1em 0.2em black" : "none"
@@ -57,28 +59,17 @@ const CountDownSix = ({spaceTopClass, spaceBottomClass, dateTime, countDownImage
               </div>
             </div>
           </div>
-          <div className="col-md-4 col-lg-6 order-2 order-lg-1">
+          <div className="col-md-12 col-lg-6 order-2 order-lg-1 text-center my-4">
             <div className="funfact-image">
-              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : "/shop"}>
-                  {/* <img src={process.env.PUBLIC_URL + countDownImage} alt="" className="img-fluid"/> */}
-                  { isDefined(selection) && isDefined(selection.image) ? isDefined(selection.image.imgPath) ?
-                    <Imgix  src={ selection.image.imgPath } className="lazyload default-img" alt={ selection.image.filePath } width="549" disableSrcSet={ true } disableLibraryParam={ true }
-                            attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                    />
-                    :
-                    <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" />
-                    : <></>
-                }
+              <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}>
+                <img className="default-img" src={ api.API_DOMAIN + "/uploads/pictures/" + selection.image.filePath } alt="" style={{ maxWidth: width >= 768 ? 549 : 345 }}/>
               </Link>
             </div>
           </div>
         </div>
       </div>
-      <div className="bg-png-2">
-        <img
-          src={process.env.PUBLIC_URL + "/assets/img/bg/shape-2.png"}
-          alt=""
-        />
+      <div className="bg-png-2 my-4">
+        <img src={process.env.PUBLIC_URL + "/assets/img/bg/shape-2.png"} alt=""/>
       </div>
     </div>
   );

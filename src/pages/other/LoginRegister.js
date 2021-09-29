@@ -1,21 +1,25 @@
 import PropTypes from "prop-types";
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import MetaTags from "react-meta-tags";
 import { Link } from "react-router-dom";
 import Tab from "react-bootstrap/Tab";
 import Nav from "react-bootstrap/Nav";
 import LayoutOne from "../../layouts/LayoutOne";
 import api from "../../config/api";
+import AuthContext from "../../contexts/AuthContext";
+import { isDefined } from "../../helpers/utils";
 
 const LoginRegister = ({ location }) => {
-  const { pathname } = location;
 
-  return (
+  const { pathname } = location;
+  const { platform } = useContext(AuthContext);
+
+  return !isDefined(platform) ? <></> : (
     <Fragment>
       <MetaTags>
-          <title>{ "Frais Péi, votre maraîcher en ligne - Connexion" }</title>
-          <meta property="title" content={ "Frais Péi, votre maraîcher en ligne - Connexion" } />
-          <meta property="og:title" content={ "Frais Péi, votre maraîcher en ligne - Connexion" } />
+          <title>{ platform.name + " - Connexion" }</title>
+          <meta property="title" content={ platform.name + " - Connexion" } />
+          <meta property="og:title" content={ platform.name + " - Connexion" } />
           <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />
           <meta property="og:url" content={ api.CLIENT_DOMAIN + location.pathname } />
       </MetaTags>

@@ -1,36 +1,17 @@
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import Imgix from "react-imgix";
 import { Link } from "react-router-dom";
 import api from "../../config/api";
-import ArticleActions from "../../services/ArticleActions";
-import MercureContext from "../../contexts/MercureContext";
+import { multilanguage } from "redux-multilanguage";
+import AuthContext from "../../contexts/AuthContext";
 import {FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton} from "react-share";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
-import { updateArticles } from "../../data/dataProvider/eventHandlers/articleEvents";
 
-const BlogPostsNoSidebar = () => {
+const BlogPostsNoSidebar = ({ articles, strings }) => {
 
-  const { updatedArticles, setUpdatedArticles } = useContext(MercureContext);
-  const [articlesOpering, setArticlesOpering] = useState(false);
-  const [articles, setArticles] = useState([]);
+  const { platform } = useContext(AuthContext);
 
-  useEffect(() => fetchArticles(), []);
-
-  useEffect(() => {
-      if (isDefinedAndNotVoid(updatedArticles) && !articlesOpering) {
-          setArticlesOpering(true);
-          updateArticles(articles, setArticles, updatedArticles, setUpdatedArticles)
-              .then(response => setArticlesOpering(response));
-      }
-  }, [updatedArticles]);
-
-  const fetchArticles = () => {
-      ArticleActions
-          .findAll()
-          .then(response => setArticles(response.filter(a => a.visible)));
-  };
-
-  return (
+  return !isDefined(platform) || !isDefinedAndNotVoid(articles) ? <></> : (
     <Fragment>
       { articles.map((article, key) => {
               return (
@@ -38,7 +19,6 @@ const BlogPostsNoSidebar = () => {
                       <div className="blog-wrap-2 mb-30">
                           <div className="blog-img-2">
                               <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
-                                  {/* <img src={ api.API_DOMAIN + "/uploads/pictures/" + article.image.filePath } alt="" />   {process.env.PUBLIC_URL + "/assets/img/blog/blog-9.jpg"}  */}
                                   { isDefined(article.image.imgPath) ?
                                     <Imgix  src={ article.image.imgPath } className="lazyload" alt={ article.filePath } width={ 750 } disableSrcSet={ true } disableLibraryParam={ true }
                                             attributeConfig={{
@@ -54,7 +34,7 @@ const BlogPostsNoSidebar = () => {
                           <div className="blog-content-2">
                               <div className="blog-meta-2">
                                   <ul>
-                                      <li>Le { (new Date(article.publishedAt)).toLocaleDateString('fr-FR', { timeZone: 'UTC'}) }</li>
+                                      <li>{ strings["the_date"] } { (new Date(article.publishedAt)).toLocaleDateString('fr-FR', { timeZone: 'UTC'}) }</li>
                                       {/* <li>
                                           <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
                                             4 <i className="fa fa-comments-o" />
@@ -71,18 +51,18 @@ const BlogPostsNoSidebar = () => {
                             <div className="blog-share-comment">
                                 <div className="blog-btn-2">
                                     <Link to={ process.env.PUBLIC_URL + "/articles/" + article.id }>
-                                        Lire +
+                                    { strings["see more"] }
                                     </Link>
                                 </div>
                                 <div className="blog-share">
-                                    <span>Partager :</span>
+                                    {/* <span>{ strings["share"] } :</span> */}
                                     <div className="share-social">
                                         <ul>
                                             <li>
                                                 <FacebookShareButton 
                                                     url={ api.CLIENT_DOMAIN + "/articles/" + article.id }
-                                                    quote={"Frais Pei"}
-                                                    hashtag="#fraispei"
+                                                    quote={ platform.name }
+                                                    hashtag={ isDefined(platform.name) ? "#" + platform.name.replaceAll(' ', '').toLowerCase() : "" }
                                                     className="facebook"
                                                 >
                                                     <FacebookIcon size={36} round={true}/>
@@ -101,7 +81,7 @@ const BlogPostsNoSidebar = () => {
                                             <li>
                                                 <TwitterShareButton
                                                     url={ api.CLIENT_DOMAIN + "/articles/" + article.id }
-                                                    title={"Frais Pei"}
+                                                    title={ platform.name }
                                                 >
                                                     <TwitterIcon size={36} round={true}/> 
                                                 </TwitterShareButton>
@@ -109,8 +89,8 @@ const BlogPostsNoSidebar = () => {
                                             <li>
                                                 <LinkedinShareButton
                                                     url={ api.CLIENT_DOMAIN + "/articles/" + article.id }
-                                                    title={"Frais Pei"}
-                                                    summary="#fraispei"
+                                                    title={ platform.name }
+                                                    summary={ isDefined(platform.name) ? "#" + platform.name.replaceAll(' ', '').toLowerCase() : "" }
                                                     source={ api.CLIENT_DOMAIN }
                                                 >
                                                     <LinkedinIcon size={36} round={true}/> 
@@ -130,4 +110,4 @@ const BlogPostsNoSidebar = () => {
   );
 };
 
-export default BlogPostsNoSidebar;
+export default multilanguage(BlogPostsNoSidebar);
