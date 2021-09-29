@@ -20,7 +20,7 @@ import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
-import { RiShoppingCartLine, RiCloseLine } from "react-icons/ri";
+import { RiShoppingCartLine, RiCloseLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill} from "react-icons/ri";
 import Imgix from "react-imgix";
 
 const ProductGridPersonalizedSingle = ({
@@ -42,6 +42,9 @@ const ProductGridPersonalizedSingle = ({
   const [hasStock, setHasStock] = useState(false);
   const { country, settings, selectedCatalog } = useContext(AuthContext);
   const quantityInput = useRef();
+
+  const [wish, setWish] = useState(wishlistItem === undefined ? false : true);
+  const [comp, setComp] = useState(compareItem === undefined ? false : true);
 
   const handleChange = (number) => {
     if (number != undefined) {
@@ -98,6 +101,8 @@ const ProductGridPersonalizedSingle = ({
     setQuantity("");
   };
 
+  console.log( product.name + " wishlist : " + wish);
+  console.log( product.name + " compare  : " + comp);
   return (
     <Fragment>
       {/* Card */}
@@ -162,15 +167,18 @@ const ProductGridPersonalizedSingle = ({
             <div className="product-img-action input-group">
               {wishlistItem !== undefined ? (
                 <a className="btn py-0 px-1" title="Produit déjà ajouté">
-                  <icons.SuitHeartFill className="text-danger" size={25} />
+                  <RiHeart3Fill className="text-danger" size={25} />
                 </a>
               ) : (
                 <a
                   className="btn py-0 px-1"
                   title="Ajouter produit à la WishList"
-                  onClick={() => addToWishlist(product, addToast)}
+                  onClick={() => {
+                    setWish(true);
+                    addToWishlist(product, addToast)
+                  }}
                 >
-                  <icons.SuitHeart className="text-white" size={25} />
+                  <RiHeart3Line className="text-white" size={25} />
                 </a>
               )}
               {compareItem !== undefined ? (
@@ -178,15 +186,18 @@ const ProductGridPersonalizedSingle = ({
                   className="btn py-0 px-1"
                   title="Produit ajouté en comparaison"
                 >
-                  <icons.Shuffle className="text-orange" size={25} />
+                  <RiShuffleFill className="text-orange" size={25} />
                 </a>
               ) : (
                 <a
                   className="btn py-0 px-1"
                   title="Ajouter le produit en comparaison"
-                  onClick={() => addToCompare(product, addToast)}
+                  onClick={() => {
+                    setComp(true);
+                    addToCompare(product, addToast)
+                  }}
                 >
-                  <icons.Shuffle className="text-white" size={25} />
+                  <RiShuffleFill className="text-white" size={25} />
                 </a>
               )}
             </div>
@@ -365,7 +376,7 @@ const ProductGridPersonalizedSingle = ({
                   <div className="product-img-action input-group top-0">
                     {wishlistItem !== undefined ? (
                       <a className="btn py-0 px-1" title="Produit déjà ajouté">
-                        <icons.SuitHeartFill
+                        <RiHeart3Fill
                           className="text-danger"
                           size={25}
                         />
@@ -374,9 +385,12 @@ const ProductGridPersonalizedSingle = ({
                       <a
                         className="btn py-0 px-1"
                         title="Ajouter produit à la WishList"
-                        onClick={() => addToWishlist(product, addToast)}
+                        onClick={() => {
+                          setWish(true);
+                          addToWishlist(product, addToast)
+                        }}
                       >
-                        <icons.SuitHeart className="text-white" size={25} />
+                        <RiHeart3Line className="text-white" size={25} />
                       </a>
                     )}
                     {compareItem !== undefined ? (
@@ -384,15 +398,18 @@ const ProductGridPersonalizedSingle = ({
                         className="btn py-0 px-1"
                         title="Produit ajouté en comparaison"
                       >
-                        <icons.Shuffle className="text-orange" size={25} />
+                        <RiShuffleFill className="text-orange" size={25} />
                       </a>
                     ) : (
                       <a
                         className="btn py-0 px-1"
                         title="Ajouter le produit en comparaison"
-                        onClick={() => addToCompare(product, addToast)}
+                        onClick={() => {
+                          setComp(true);
+                          addToCompare(product, addToast)
+                        }}
                       >
-                        <icons.Shuffle className="text-white" size={25} />
+                        <RiShuffleFill className="text-white" size={25} />
                       </a>
                     )}
                   </div>
@@ -463,15 +480,6 @@ const ProductGridPersonalizedSingle = ({
                       {strings["select_option"]}
                     </a>
                   ) : getAvailableStock(product) > 0 ? (
-                    /* quantity input product*/
-                    // <div className="d-flex mr-1">
-                    /* <input
-                          type="number"
-                          className="pro-input"
-                          value={quantity}
-                          onChange={handleChange}
-                          min="0"
-                        /> */
                     <div className="input-group p-0 rounded border border-dark ">
                       <button
                         className="btn btn-dark rounded-0 py-2 px-3"
@@ -551,6 +559,8 @@ const ProductGridPersonalizedSingle = ({
         addtocart={addToCart}
         addtowishlist={addToWishlist}
         addtocompare={addToCompare}
+        wish={wish}
+        comp={comp}
       />
     </Fragment>
   );

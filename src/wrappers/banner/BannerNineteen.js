@@ -77,7 +77,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
                 }}>
                     { isDefined(mainBanner) && mainBanner.subtitle }
                 </h5>
-                <Link 
+                <Link className="rounded"
                     to={isDefined(mainBanner) && isDefined(mainBanner.product) ? "/product/" + mainBanner.product.id : "/shop"}
                     style={{ 
                       backgroundColor: isDefined(mainBanner) && isDefined(mainBanner.titleColor) ? mainBanner.titleColor : "#ED59A0",
@@ -91,7 +91,7 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
           <div className="col-lg-6 col-md-6">
               { banners.map((banner, key) => {
                 return (
-                    <div key={ key } className="single-banner mb-20">
+                    <div key={ key } className="single-banner mb-20 rounded">
                         <Link to={isDefined(banner) && isDefined(banner.product) ? "/product/" + banner.product.id : "/shop"}>
                             { isDefined(banner) && isDefined(banner.image.imgPath) ?
                                 <Imgix  src={ banner.image.imgPath } className="lazyload default-img" alt={ banner.image.filePath } width={ 575 } disableSrcSet={ true } disableLibraryParam={ true }
