@@ -1,7 +1,7 @@
-import { isDefined } from "./utils";
+import { isDefined, isDefinedAndNotVoid } from "./utils";
 
-export const checkForAlternatives = (zipcode, condition, relaypoints, settings, position, selectedCatalog) => {
-    if (isDefined(relaypoints)) {
+export const checkForAlternatives = (zipcode, condition, relaypoints, settings, position, selectedCatalog, cities) => {
+    if (isDefined(relaypoints) && isDefined(selectedCatalog) && isDefinedAndNotVoid(cities)) {
         let message = "Economisez sur les frais de livraison en choisissant un point relais près de chez vous.";
         const alternatives = relaypoints.filter(relaypoint => {
              return relaypoint.metas.zipcode === zipcode && 
@@ -18,7 +18,7 @@ export const checkForAlternatives = (zipcode, condition, relaypoints, settings, 
             else 
                 return null;
         } else {
-            if (!selectedCatalog.needsParcel) {
+            if (!selectedCatalog.needsParcel && cities.find(c => c.zipCode === zipcode && c.catalog.code === selectedCatalog.code) !== undefined) {
                 message = !isInSelectedCountry(position[0], position[1], selectedCatalog) ?
                     "Nous avons aucune offre de livraison sur votre pays ou région." :
                     alternatives.length > 0 ?
@@ -31,8 +31,8 @@ export const checkForAlternatives = (zipcode, condition, relaypoints, settings, 
     }
 };
 
-export const getCityCondition = (zipcode, cities, settings) => {
-    const userCity = cities.find(city => city.zipCode === zipcode);
+export const getCityCondition = (zipcode, cities, settings, selectedCatalog) => {
+    const userCity = cities.filter(city => city.catalog.code === selectedCatalog.code).find(city => city.zipCode === zipcode);
     return !isDefined(userCity) ? undefined : userCity.conditions.find(condition => {
         return condition.userGroups.find(group => group.value === settings.value)
     });

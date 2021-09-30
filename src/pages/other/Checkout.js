@@ -103,6 +103,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
+      console.log("click on button");
       const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
       if (!hasRestriction) {
           const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
@@ -335,8 +336,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               productCart={ productCart }
                           />
                           :
-                          <button onClick={ handleSubmit } className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
-                              {strings["place_order"]}
+                          <button onClick={ handleSubmit } className={"btn btn-hover" + (!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) ? " disabled" : "")} disabled={ !isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
+                              { strings["place_order"] }
                           </button>
                         }
                       </div>

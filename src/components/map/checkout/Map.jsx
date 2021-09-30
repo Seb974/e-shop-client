@@ -6,7 +6,7 @@ import { isDefined, isDefinedAndNotVoid } from '../../../helpers/utils';
 import { useToasts } from 'react-toast-notifications';
 import ReactMapGL, { AttributionControl, NavigationControl, FlyToInterpolator } from 'react-map-gl';
 import mapboxgl from "mapbox-gl";
-import { checkForAlternatives, getCityCondition } from '../../../helpers/map';
+import { checkForAlternatives, getCityCondition, isInSelectedCountry } from '../../../helpers/map';
 import RelaypointTools from './relaypoint/RelaypointTools';
 import LocationTools from './location/LocationTools';
 import SearchBar from './search/searchBar';
@@ -29,6 +29,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     const [locationTooltip, setLocationTooltip] = useState(undefined);
     const [locationPopup, setLocationPopup] = useState(undefined);
     const mapStyle = { top: 0, left: 0, height: '520px', width: '100', mapStyle: 'mapbox://styles/mapbox/light-v8' };
+    const [messageSent, setMessageSent] = useState(false);
 
     useEffect(() => {
         if (isDefined(selectedCatalog) && Object.keys(selectedCatalog).length > 0 && isDefinedAndNotVoid(selectedCatalog.center)) {
@@ -58,20 +59,26 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     },[currentUser]);
 
     useEffect(() => {
-        if (informations.address.length > 0 && !isRelaypoint && relaypoints.length > 0) {
+        if (informations.address.length > 0 && !isRelaypoint && relaypoints.length > 0 && isDefinedAndNotVoid(cities) && isDefined(selectedCatalog)) {
             const newCondition = setCityCondition(informations.zipcode);
-            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position, selectedCatalog);
+            const alternatives = checkForAlternatives(informations.zipcode, newCondition, relaypoints, settings, informations.position, selectedCatalog, cities);
             if (isDefined(alternatives))
                 addToast(alternatives.message, alternatives.params);
             if (isDefined(newCondition) && !isDefined(alternatives))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
-            else if (selectedCatalog.needsParcel && !isDefined(alternatives))
-                addToast("Adresse de livraison sélectionnée", { appearance: "success", autoDismiss: true });
+            else {             // else if (selectedCatalog.needsParcel && !isDefined(alternatives))
+                if (selectedCatalog.needsParcel && !isDefined(alternatives) && isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) 
+                    addToast("Adresse de livraison sélectionnée", { appearance: "success", autoDismiss: true });
+                else if (cities.find(c => c.zipCode === informations.zipcode && c.catalog.code === selectedCatalog.code) === undefined)
+                    addToast("L'adresse indiquée n'est pas accessible depuis le catalogue sélectionné. Veuillez s'il vous plaît changer de catalogue ou entrer une autre addresse.", { appearance: "error", autoDismiss: true, autoDismissTimeout: 8000 })
+            }
+            setMessageSent(true);
+            setTimeout(() => setMessageSent(false), 1000);
         } 
         else if (informations.address.length === 0) {
             onClear()
         }
-    }, [informations.address, relaypoints]);
+    }, [informations.address, relaypoints, cities, selectedCatalog]);
 
     const updatePosition = suggestion => {
         const { lat, lng } = suggestion.latlng;
@@ -112,7 +119,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     };
 
     const setCityCondition = zipcode => {
-        const cityCondition = getCityCondition(zipcode, cities, settings);
+        const cityCondition = getCityCondition(zipcode, cities, settings, selectedCatalog);
         setCondition( cityCondition);
         return cityCondition;
     };

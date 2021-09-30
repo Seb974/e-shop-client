@@ -44,6 +44,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
     }, [show]);
 
     const handleShow = () => {
+        console.log("click on payment form");
         const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
         if (!hasRestriction) {
             const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
@@ -160,7 +161,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
 
     return (
         <>
-        <Button href="#" onClick={ handleShow } disabled={ !available }>{ name }</Button>
+        <Button className="btn-hover" href="#" onClick={ handleShow } disabled={ !available }>{ name }</Button>
         <Modal show={ show } onHide={ handleClose } backdrop="static" size="md" aria-labelledby="contained-modal-title-vcenter" centered id="payment-modal">
             <Modal.Header closeButton={ !processing && !loading }>
                 <Modal.Title>{loading ? "Paiement" : "Paiement de " + amount.toFixed(2).replace('.', ',') + " €"}</Modal.Title>
