@@ -87,6 +87,9 @@ const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass,
           <Link
             className="loadMore6"
             to={process.env.PUBLIC_URL + "/shop"}
+            style={{
+              borderRadius : '0.25rem'
+            }}
           >
             EN VOIR PLUS
           </Link>

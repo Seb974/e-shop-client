@@ -45,6 +45,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
               </div>
               <div className="funfact-btn funfact-btn--round-shape funfact-btn-violet btn-hover">
                 <Link 
+                  className="rounded"
                   to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}
                   style={{ 
                     backgroundColor: isDefined(selection) && isDefined(selection.textColor) ? selection.textColor : "#ED59A0",
@@ -61,7 +62,7 @@ const CountDownFour = ({spaceTopClass, spaceBottomClass, countDownImage }) => {
               <Link to={isDefined(selection) && isDefined(selection.product) ? "/product/" + selection.product.id : isDefined(selection) && isDefined(selection.category) ? "/shop?category=" + selection.category.id : "/shop"}>
                 { isDefined(selection) && isDefined(selection.image) ? 
                     isDefined(selection.image.imgPath) ?
-                      <Imgix  src={ selection.image.imgPath } className="lazyload img-fluid" alt={ selection.image.filePath } width={ 570 } disableSrcSet={ true } disableLibraryParam={ true }
+                      <Imgix  src={ selection.image.imgPath } className="lazyload img-fluid rounded" alt={ selection.image.filePath } width={ 570 } disableSrcSet={ true } disableLibraryParam={ true }
                               attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
                       />
                       :

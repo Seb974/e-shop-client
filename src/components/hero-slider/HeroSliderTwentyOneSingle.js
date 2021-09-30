@@ -31,7 +31,7 @@ const HeroSliderTwentyOneSingle = ({ data, sliderClass }) => {
                 />
                 <div className="slider-btn btn-hover">
                   <Link
-                    className="animated rounden-btn"
+                    className="animated rounded"
                     to={isDefined(data) && isDefined(data.product) ? "/product/" + data.product.id : isDefined(data) && isDefined(data.category) ? "/shop?category=" + data.category.id : "/shop"}
                     style={{ 
                         color: isDefined(data.titleColor) ? data.titleColor : "black",
