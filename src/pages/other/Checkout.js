@@ -189,7 +189,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                           <label>{strings["order_notes"]}</label>
                           <textarea
                             className="form-control"
-                            placeholder="Notes about your order, e.g. special notes for delivery. "
+                            placeholder={ strings["order_infos"] }
                             name="message"
                             value={message}
                             onChange={({currentTarget}) => setMessage(currentTarget.value)}
