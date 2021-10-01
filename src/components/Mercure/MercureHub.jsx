@@ -54,7 +54,6 @@ const MercureHub = ({ children }) => {
 
     eventSource.onmessage = event => {
         const data = JSON.parse(event.data);
-        console.log(data);
         if (data['@id'].includes('tourings'))
             touringEvents.update(data, tourings, setTourings);
 

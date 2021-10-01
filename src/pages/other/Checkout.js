@@ -103,7 +103,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const handleSubmit = e => {
       e.preventDefault();
-      console.log("click on button");
       const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
       if (!hasRestriction) {
           const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);

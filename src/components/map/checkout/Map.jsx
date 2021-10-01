@@ -66,7 +66,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
                 addToast(alternatives.message, alternatives.params);
             if (isDefined(newCondition) && !isDefined(alternatives))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
-            else {             // else if (selectedCatalog.needsParcel && !isDefined(alternatives))
+            else {
                 if (selectedCatalog.needsParcel && !isDefined(alternatives) && isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog)) 
                     addToast("Adresse de livraison sélectionnée", { appearance: "success", autoDismiss: true });
                 else if (cities.find(c => c.zipCode === informations.zipcode && c.catalog.code === selectedCatalog.code) === undefined)
@@ -120,7 +120,7 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
 
     const setCityCondition = zipcode => {
         const cityCondition = getCityCondition(zipcode, cities, settings, selectedCatalog);
-        setCondition( cityCondition);
+        setCondition(cityCondition);
         return cityCondition;
     };
 
