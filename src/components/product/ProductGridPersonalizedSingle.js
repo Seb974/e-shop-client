@@ -536,7 +536,7 @@ const ProductGridPersonalizedSingle = ({
                   ""
                 )}
                 <div className="shop-list-actions d-inline-flex flex-row">
-                  {/* <div className=""> */}
+
                   {product.variations && product.variations.length >= 1 ? (
                     <a href="#" onClick={handleShowDetails}>
                       {strings["select_option"]}

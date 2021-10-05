@@ -118,7 +118,7 @@ const ProductModal = ({
     ),
   };
   
-console.log(product.name + " : " + wish)
+// console.log(product.name + " : " + isDefined(product.stockManaged));
   return (
     <Fragment>
       <Modal
@@ -429,8 +429,8 @@ console.log(product.name + " : " + wish)
                 )}
 
                 <div className="d-inline-flex flex-column mt-4">
-                  { console.log(product.name + " : " + getAvailableStock(product,selectedProductColor, selectedProductSize))}
-                  {( (getAvailableStock(product) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product) > 0) && (
+                  {/* { console.log(product.name + " : " + getAvailableStock(product,selectedProductColor, selectedProductSize))} */}
+                  {( (getAvailableStock(product,selectedProductColor, selectedProductSize) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product,selectedProductColor, selectedProductSize) > 0 ) && (
                       <div className="input-group p-0 rounded border border-dark mb-2">
                         <button
                           onClick={() =>
@@ -468,11 +468,13 @@ console.log(product.name + " : " + wish)
                       </div>
                     )}
                   <div className="d-inline-flex flex-row">
-                    {(getAvailableStock(
-                      product,
-                      selectedProductColor,
-                      selectedProductSize
-                    ) <= 0 && isDefined(product.stockManaged) && product.stockManaged === true ) ? (
+                    {(
+                    //   getAvailableStock(
+                    //   product,
+                    //   selectedProductColor,
+                    //   selectedProductSize
+                    // ) <= 0 && isDefined(product.stockManaged) && product.stockManaged === false 
+                    (getAvailableStock(product,selectedProductColor, selectedProductSize) <= 0 && (product.stockManaged === true || product.stockManaged == undefined)) ) ? (
                       <button className="btn btn-dark text-white">
                         <RiEmotionUnhappyLine
                           size={20}
