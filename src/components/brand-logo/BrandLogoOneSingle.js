@@ -11,7 +11,7 @@ const BrandLogoOneSingle = ({ data, sliderClassName, spaceBottomClass }) => {
       }`}
     >
       {/* <img src={process.env.PUBLIC_URL + data.image} alt="" /> default-img */}
-      {isDefined(data.image.imgPath) && (
+      {isDefined(data.image) && (
         <Imgix
           src={data.image.imgPath}
           className="lazyload default-img"

@@ -244,7 +244,7 @@ const ProductDescriptionInfo = ({
                           <></>
                         ) : (
                           <label
-                            className={`pro-details-size-content--single`}
+                            className={`pro-details-size-content--single rounded-pill`}
                             key={key}
                           >
                             <input
@@ -262,7 +262,7 @@ const ProductDescriptionInfo = ({
                                 setQuantityCount(1);
                               }}
                             />
-                            <span className="size-name">{singleSize.name}</span>
+                            <span className="size-name rounded-pill">{singleSize.name}</span>
                           </label>
                         );
                       });
@@ -300,9 +300,7 @@ const ProductDescriptionInfo = ({
           <button
             onClick={() =>
               setQuantityCount(
-                quantityCount < productStock - productCartQty
-                  ? quantityCount + 1
-                  : quantityCount
+                quantityCount + 1
               )
             }
             className="btn btn-dark rounded-0 py-2 px-3"

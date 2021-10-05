@@ -169,8 +169,8 @@ const ProductImageGallery = ({ product }) => {
         </LightgalleryProvider>
       </div>
       <div className="product-small-image-wrapper mt-15">
-        {isDefinedAndNotVoid(product.variations) && (
-          <Swiper {...thumbnailSwiperParams}>
+        {isDefinedAndNotVoid(product.variations) && (<>
+          {/* <Swiper {...thumbnailSwiperParams}>  */}
             {isDefined(product.image) && (
               <div>
                 <div className="single-image">
@@ -218,7 +218,8 @@ const ProductImageGallery = ({ product }) => {
                     </div>
                 })
               } */}
-          </Swiper>
+          {/* </Swiper> */}
+          </>
         )}
       </div>
     </Fragment>
