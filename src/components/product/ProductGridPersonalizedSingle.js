@@ -20,7 +20,14 @@ import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
-import { RiShoppingCartLine, RiCloseLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill} from "react-icons/ri";
+import {
+  RiShoppingCartLine,
+  RiCloseLine,
+  RiHeart3Line,
+  RiHeart3Fill,
+  RiShuffleFill,
+  RiEmotionUnhappyLine,
+} from "react-icons/ri";
 import Imgix from "react-imgix";
 
 const ProductGridPersonalizedSingle = ({
@@ -101,8 +108,8 @@ const ProductGridPersonalizedSingle = ({
     setQuantity("");
   };
 
-  console.log( product.name + " wishlist : " + wish);
-  console.log( product.name + " compare  : " + comp);
+  // console.log(product.name + " : " + product.stockManaged);
+  // console.log(getAvailableStock(product));
   return (
     <Fragment>
       {/* Card */}
@@ -116,20 +123,39 @@ const ProductGridPersonalizedSingle = ({
         >
           <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
-              { isDefined(product.image.imgPath) ? (
-                  <Imgix  src={ product.image.imgPath } className="lazyload default-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                  />
-                ) : (
-                  <img
-                    className="default-img"
-                    src={process.env.PUBLIC_URL + product.image[0]}
-                    alt=""
-                  />)
-              }
-              { isDefined(product.image.imgPath) ? (
-                  <Imgix  src={ product.image.imgPath } className="lazyload hover-img" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   //  height="500" 
-                          attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
+              {isDefined(product.image.imgPath) ? (
+                <Imgix
+                  src={product.image.imgPath}
+                  className="lazyload default-img"
+                  alt={product.image.filePath}
+                  width={600}
+                  disableSrcSet={true}
+                  disableLibraryParam={true} //  height="500"
+                  attributeConfig={{
+                    srcSet: "data-srcset",
+                    sizes: "data-sizes",
+                  }}
+                />
+              ) : (
+                <img
+                  className="default-img"
+                  src={process.env.PUBLIC_URL + product.image[0]}
+                  alt=""
+                />
+              )}
+              {
+                isDefined(product.image.imgPath) ? (
+                  <Imgix
+                    src={product.image.imgPath}
+                    className="lazyload hover-img"
+                    alt={product.image.filePath}
+                    width={600}
+                    disableSrcSet={true}
+                    disableLibraryParam={true} //  height="500"
+                    attributeConfig={{
+                      srcSet: "data-srcset",
+                      sizes: "data-sizes",
+                    }}
                   />
                 ) : (
                   <img
@@ -142,26 +168,26 @@ const ProductGridPersonalizedSingle = ({
                     alt=""
                   />
                 )
-              // ) : isDefined(product.image[1].imgPath) ? (
-              //   <Imgix
-              //     src={product.image[1].imgPath}
-              //     className="lazyload hover-img"
-              //     alt={product.image[1].filePath}
-              //     width="600"
-              //     disableSrcSet={true}
-              //     disableLibraryParam={true}
-              //     attributeConfig={{
-              //       srcSet: "data-srcset",
-              //       sizes: "data-sizes",
-              //     }}
-              //   />
-              // ) : (
-              //   <img
-              //     className="hover-img"
-              //     src={process.env.PUBLIC_URL + product.image[1]}
-              //     alt=""
-              //   />
-              // )
+                // ) : isDefined(product.image[1].imgPath) ? (
+                //   <Imgix
+                //     src={product.image[1].imgPath}
+                //     className="lazyload hover-img"
+                //     alt={product.image[1].filePath}
+                //     width="600"
+                //     disableSrcSet={true}
+                //     disableLibraryParam={true}
+                //     attributeConfig={{
+                //       srcSet: "data-srcset",
+                //       sizes: "data-sizes",
+                //     }}
+                //   />
+                // ) : (
+                //   <img
+                //     className="hover-img"
+                //     src={process.env.PUBLIC_URL + product.image[1]}
+                //     alt=""
+                //   />
+                // )
               }
             </a>
             <div className="product-img-action input-group">
@@ -175,7 +201,7 @@ const ProductGridPersonalizedSingle = ({
                   title="Ajouter produit à la WishList"
                   onClick={() => {
                     setWish(true);
-                    addToWishlist(product, addToast)
+                    addToWishlist(product, addToast);
                   }}
                 >
                   <RiHeart3Line className="text-white" size={25} />
@@ -194,7 +220,7 @@ const ProductGridPersonalizedSingle = ({
                   title="Ajouter le produit en comparaison"
                   onClick={() => {
                     setComp(true);
-                    addToCompare(product, addToast)
+                    addToCompare(product, addToast);
                   }}
                 >
                   <RiShuffleFill className="text-white" size={25} />
@@ -225,7 +251,7 @@ const ProductGridPersonalizedSingle = ({
               </div>
             )}
             <div className="product-action">
-              {product.variations && product.variations.length >= 1 ? (
+              {(product.variations && product.variations.length >= 1 ) ? (
                 <div className="input-group  p-0 border-0 ">
                   <a
                     href="#"
@@ -235,8 +261,8 @@ const ProductGridPersonalizedSingle = ({
                     Selectionnez option{" "}
                   </a>
                 </div>
-              ) : (product.stock && product.stock.quantity > 0) ||
-                (product.stockManaged && product.stockManaged === true) ? (
+              ) 
+            : ( (getAvailableStock(product) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product) > 0) ? (
                 <>
                   <div className="input-group  p-0 border-0 ">
                     <button
@@ -251,7 +277,10 @@ const ProductGridPersonalizedSingle = ({
                       type="number"
                       className="form-control h-100 p-2 text-center bg-white border border-white"
                       value={quantity}
-                      onChange={() => handleChange()}
+                      onChange={({ currentTarget }) => {
+                        const newQty = currentTarget.value;
+                        setQuantity(parseFloat(newQty));
+                      }}
                       min="0"
                       step="1"
                     />
@@ -282,14 +311,22 @@ const ProductGridPersonalizedSingle = ({
               ) : (
                 <div className="input-group  p-0 border-0 ">
                   <button className="btn btn-dark pro-quickview rounded-0 w-100 h-100 p-2">
-                    <RiCloseLine className="mr-2 text-danger" size={20} />
-                    Rupture de stock
+                    <RiEmotionUnhappyLine
+                      size={20}
+                      className="mr-1 text-danger"
+                    />
+                    {strings["out_of_stock"]}
                   </button>
                 </div>
               )}
 
-              {((product.stock && product.stock.quantity > 0) ||
+              {/* {((product.stock && product.stock.quantity > 0) ||
                 (product.stockManaged && product.stockManaged === true)) &&
+              !(product.variations && product.variations.length >= 1) ? ( */}
+              {(getAvailableStock(product) ||
+                (isDefined(product.stockManaged) &&
+                  product.stockManaged === false &&
+                  getAvailableStock(product) === 0)) &&
               !(product.variations && product.variations.length >= 1) ? (
                 <>
                   <div className="input-group bg-dark">
@@ -347,39 +384,64 @@ const ProductGridPersonalizedSingle = ({
               <div className="product-list-image-wrap">
                 <div className="product-img">
                   <a href="#" onClick={handleShowDetails}>
-                    { isDefined(product.image.imgPath) ?
-                        <Imgix  src={ product.image.imgPath } className="lazyload default-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }   // height="800"
-                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                        />
-                        :
-                        <img className="default-img img-fluid"
-                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
-                          alt=""
-                          height="800"
-                          width="600"
-                        />
-                    }
-                    { isDefined(product.image.imgPath) ?
-                        <Imgix  src={ product.image.imgPath } className="lazyload hover-img img-fluid" alt={ product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }  // height="800"
-                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                        />
-                        :
-                        <img className="hover-img img-fluid"
-                          src={ api.API_DOMAIN + "/uploads/pictures/" + product.image.filePath }
-                          alt=""
-                          height="800"
-                          width="600"
-                        />
-                    }{" "}
+                    {isDefined(product.image.imgPath) ? (
+                      <Imgix
+                        src={product.image.imgPath}
+                        className="lazyload default-img img-fluid"
+                        alt={product.image.filePath}
+                        width={600}
+                        disableSrcSet={true}
+                        disableLibraryParam={true} // height="800"
+                        attributeConfig={{
+                          srcSet: "data-srcset",
+                          sizes: "data-sizes",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        className="default-img img-fluid"
+                        src={
+                          api.API_DOMAIN +
+                          "/uploads/pictures/" +
+                          product.image.filePath
+                        }
+                        alt=""
+                        height="800"
+                        width="600"
+                      />
+                    )}
+                    {isDefined(product.image.imgPath) ? (
+                      <Imgix
+                        src={product.image.imgPath}
+                        className="lazyload hover-img img-fluid"
+                        alt={product.image.filePath}
+                        width={600}
+                        disableSrcSet={true}
+                        disableLibraryParam={true} // height="800"
+                        attributeConfig={{
+                          srcSet: "data-srcset",
+                          sizes: "data-sizes",
+                        }}
+                      />
+                    ) : (
+                      <img
+                        className="hover-img img-fluid"
+                        src={
+                          api.API_DOMAIN +
+                          "/uploads/pictures/" +
+                          product.image.filePath
+                        }
+                        alt=""
+                        height="800"
+                        width="600"
+                      />
+                    )}{" "}
                     :
                   </a>
                   <div className="product-img-action input-group top-0">
                     {wishlistItem !== undefined ? (
                       <a className="btn py-0 px-1" title="Produit déjà ajouté">
-                        <RiHeart3Fill
-                          className="text-danger"
-                          size={25}
-                        />
+                        <RiHeart3Fill className="text-danger" size={25} />
                       </a>
                     ) : (
                       <a
@@ -387,7 +449,7 @@ const ProductGridPersonalizedSingle = ({
                         title="Ajouter produit à la WishList"
                         onClick={() => {
                           setWish(true);
-                          addToWishlist(product, addToast)
+                          addToWishlist(product, addToast);
                         }}
                       >
                         <RiHeart3Line className="text-white" size={25} />
@@ -406,7 +468,7 @@ const ProductGridPersonalizedSingle = ({
                         title="Ajouter le produit en comparaison"
                         onClick={() => {
                           setComp(true);
-                          addToCompare(product, addToast)
+                          addToCompare(product, addToast);
                         }}
                       >
                         <RiShuffleFill className="text-white" size={25} />
@@ -513,8 +575,11 @@ const ProductGridPersonalizedSingle = ({
                     </div>
                   ) : (
                     <button className=" btn btn-dark d-inline-flex">
-                      <RiCloseLine className=" mr-1 text-danger my-auto" size={20} />
-                      {<p className="m-0">{strings["out_of_stock"]}</p>}
+                      <RiCloseLine
+                        className=" mr-1 text-danger my-auto"
+                        size={20}
+                      />
+                      <p className="m-0">{strings.out_of_stock}</p>
                     </button>
                   )}
                   {getAvailableStock(product) > 0 ? (
@@ -559,8 +624,6 @@ const ProductGridPersonalizedSingle = ({
         addtocart={addToCart}
         addtowishlist={addToWishlist}
         addtocompare={addToCompare}
-        wish={wish}
-        comp={comp}
       />
     </Fragment>
   );

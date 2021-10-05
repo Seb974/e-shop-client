@@ -47,13 +47,13 @@ const ProductModal = ({
   cartitems: cartItems,
   show,
   onHide,
-  strings,
-  wish,
-  comp,
+  strings
 }) => {
   const { addToast } = useToasts();
   const [gallerySwiper, getGallerySwiper] = useState(null);
   const [thumbnailSwiper, getThumbnailSwiper] = useState(null);
+  const [wish, setWish] = useState(wishlistItem === undefined ? false : true);
+  const [comp, setComp] = useState(compareItem === undefined ? false : true);
   const [selectedProductColor, setSelectedProductColor] = useState(
     isDefinedAndNotVoid(product.variations) ? product.variations[0] : undefined
   );
@@ -117,8 +117,8 @@ const ProductModal = ({
       </button>
     ),
   };
-
-  console.log(wish);
+  
+console.log(product.name + " : " + wish)
   return (
     <Fragment>
       <Modal
@@ -305,13 +305,16 @@ const ProductModal = ({
                     <div className="pro-details-wishlist mx-1 my-auto">
                       <span
                         className={wish ? "text-danger" : ""}
-                        disabled={wishlistItem !== undefined}
+                        disabled={wish !== undefined}
                         title={
                           wishlistItem !== undefined
                             ? strings["added_to_wishlist"]
                             : strings["add_to_wishlist"]
                         }
-                        onClick={() => addToWishlist(product, addToast)}
+                        onClick={() => {
+                          addToWishlist(product, addToast);
+                          setWish(true);
+                        }}
                       >
                         {wish ? (
                           <RiHeart3Fill size={30} className="text-danger" />
@@ -329,9 +332,13 @@ const ProductModal = ({
                             ? strings["added_to_compare"]
                             : strings["add_to_compare"]
                         }
-                        onClick={() => addToCompare(product, addToast)}
+                        onClick={() => {
+                          setComp(true);
+                          addToCompare(product, addToast)
+                        }}
                       >
-                        <RiShuffleFill size={30} className="text-dark" />
+                        
+                        <RiShuffleFill size={30} className={`${comp ? 'text-orange' : ' ' }`} />
                       </span>
                     </div>
                   </div>
@@ -420,52 +427,52 @@ const ProductModal = ({
                 ) : (
                   ""
                 )}
+
                 <div className="d-inline-flex flex-column mt-4">
-                  <div className="input-group p-0 rounded border border-dark mb-2">
-                    <button
-                      onClick={() =>
-                        setQuantityCount(
-                          quantityCount > 1 ? quantityCount - 1 : 1
-                        )
-                      }
-                      className="btn btn-dark rounded-0 py-2 px-3"
-                    >
-                      -
-                    </button>
-                    {/* <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly /> */}
-                    <input
-                      min="0"
-                      max="999"
-                      className="form-control bg-white p-2 text-center border border-dark border-right-0"
-                      type="number"
-                      value={quantityCount}
-                      onChange={({ currentTarget }) => {
-                        const newQty = currentTarget.value;
-                        setQuantityCount(parseFloat(newQty));
-                      }}
-                    />
-                    <span className="input-group-text border border-dark  border-left-0 rounded-0 bg-light">
-                      {product.unit && product.unit}{" "}
-                    </span>
-                    <button
-                      onClick={() =>
-                        setQuantityCount(
-                          quantityCount < productStock - productCartQty
-                            ? quantityCount + 1
-                            : quantityCount
-                        )
-                      }
-                      className="btn btn-dark rounded-0 py-2 px-3"
-                    >
-                      +
-                    </button>
-                  </div>
+                  { console.log(product.name + " : " + getAvailableStock(product,selectedProductColor, selectedProductSize))}
+                  {( (getAvailableStock(product) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product) > 0) && (
+                      <div className="input-group p-0 rounded border border-dark mb-2">
+                        <button
+                          onClick={() =>
+                            setQuantityCount(
+                              quantityCount > 1 ? quantityCount - 1 : 1
+                            )
+                          }
+                          className="btn btn-dark rounded-0 py-2 px-3"
+                        >
+                          -
+                        </button>
+                        {/* <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly /> */}
+                        <input
+                          min="0"
+                          max="999"
+                          className="form-control bg-white p-2 text-center border border-dark border-right-0"
+                          type="number"
+                          value={quantityCount}
+                          onChange={({ currentTarget }) => {
+                            const newQty = currentTarget.value;
+                            setQuantityCount(parseFloat(newQty));
+                          }}
+                        />
+                        <span className="input-group-text border border-dark  border-left-0 rounded-0 bg-light">
+                          {product.unit && product.unit}{" "}
+                        </span>
+                        <button
+                          onClick={() =>
+                            setQuantityCount(quantityCount + 1)
+                          }
+                          className="btn btn-dark rounded-0 py-2 px-3"
+                        >
+                          +
+                        </button>
+                      </div>
+                    )}
                   <div className="d-inline-flex flex-row">
-                    {getAvailableStock(
+                    {(getAvailableStock(
                       product,
                       selectedProductColor,
                       selectedProductSize
-                    ) <= 0 ? (
+                    ) <= 0 && isDefined(product.stockManaged) && product.stockManaged === true ) ? (
                       <button className="btn btn-dark text-white">
                         <RiEmotionUnhappyLine
                           size={20}

@@ -29,7 +29,7 @@ const ProductImageGallery = ({ product }) => {
     spaceBetween: 10,
     loopedSlides: 4,
     loop: true,
-    effect: "fade"
+    effect: "fade",
   };
 
   const thumbnailSwiperParams = {
@@ -43,7 +43,7 @@ const ProductImageGallery = ({ product }) => {
     slideToClickedSlide: true,
     navigation: {
       nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev"
+      prevEl: ".swiper-button-prev",
     },
     renderPrevButton: () => (
       <button className="swiper-button-prev ht-swiper-button-nav">
@@ -54,81 +54,156 @@ const ProductImageGallery = ({ product }) => {
       <button className="swiper-button-next ht-swiper-button-nav">
         <i className="pe-7s-angle-right" />
       </button>
-    )
+    ),
   };
 
-  return !isDefined(product) ? <></> :  (
+  return !isDefined(product) ? (
+    <></>
+  ) : (
     <Fragment>
       <div className="product-large-image-wrapper">
-        { !(product.discount || product.new) ? "":
+        {!(product.discount || product.new) ? (
+          ""
+        ) : (
           <div className="product-img-badges">
-            {product.discount ? <span className="pink">-{product.discount}%</span> : ""}
-            {product.new ? <span className="purple">New</span> : ""}
+            {product.discount ? (
+              <span className="pink rounded-pill py-2">-{product.discount}%</span>
+            ) : (
+              ""
+            )}
+            {product.new ? <span className="bg-success rounded-pill py-2">Nouveauté</span> : ""}
           </div>
-        }
+        )}
         <LightgalleryProvider>
-          <Swiper {...gallerySwiperParams}>
-            { !isDefined(product.image) ? <></> :
-                Array.isArray(product.image) ?
-                  product.image.map((single, key) => {
-                    return (
-                      <div key={key}>
-                        <div className="single-image">
-                          {/* <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" /> */}
-                          { isDefined(single.imgPath) ?
-                              <Imgix  src={ single.imgPath } className="lazyload img-fluid" alt={ single.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                                      attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                              />
-                              :
-                              <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" />
-                          }
-                        </div>
-                      </div>
-                    );
-                  })
-                :
-                <div>
-                  <div className="single-image">
-                    { isDefined(product.image.imgPath) ?
-                        <Imgix  src={ product.image.imgPath } className="lazyload img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                                attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                        />
-                        :
-                        <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
-                    }
-                  </div>
-                </div>
-            }
-            { !isDefinedAndNotVoid(product.variations) ? <></> : product.variations.map((single, key) => {
-                return !isDefined(single.image) ? <></> : 
+          {/* <Swiper {...gallerySwiperParams}> */}
+          <>
+            {!isDefined(product.image) ? (
+              <></>
+            ) : Array.isArray(product.image) ? (
+              product.image.map((single, key) => {
+                return (
+                  <>
                     <div key={key}>
-                      <div className="single-image">
-                        <img src={api.API_DOMAIN + '/uploads/pictures/' + single.image.filePath} className="img-fluid" alt="" />
+                      <div className="single-image test">
+                        {/* <img src={process.env.PUBLIC_URL + single} className="img-fluid" alt="" /> */}
+                        {isDefined(single.imgPath) ? (
+                          <Imgix
+                            src={single.imgPath}
+                            className="lazyload img-fluid"
+                            alt={single.filePath}
+                            width="600"
+                            disableSrcSet={true}
+                            disableLibraryParam={true}
+                            attributeConfig={{
+                              srcSet: "data-srcset",
+                              sizes: "data-sizes",
+                            }}
+                          />
+                        ) : (
+                          <img
+                            src={process.env.PUBLIC_URL + single}
+                            className="img-fluid"
+                            alt=""
+                          />
+                        )}
                       </div>
                     </div>
-                })
-            }
-          </Swiper>
+                  </>
+                );
+              })
+            ) : (
+              <div>
+                <div className="single-image">
+                  {isDefined(product.image.imgPath) ? (
+                    <Imgix
+                      src={product.image.imgPath}
+                      className="lazyload  rounded"
+                      alt={product.image.filePath}
+                      width="600"
+                      disableSrcSet={true}
+                      disableLibraryParam={true}
+                      attributeConfig={{
+                        srcSet: "data-srcset",
+                        sizes: "data-sizes",
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={
+                        api.API_DOMAIN +
+                        "/uploads/pictures/" +
+                        product.image.filePath
+                      }
+                      className="img-fluid"
+                      alt=""
+                    />
+                  )}
+                </div>
+              </div>
+            )}
+            {!isDefinedAndNotVoid(product.variations) ? (
+              <></>
+            ) : (
+              product.variations.map((single, key) => {
+                return !isDefined(single.image) ? (
+                  <></>
+                ) : (
+                  <div key={key}>
+                    {/* <div className="single-image">
+                      <img
+                        src={
+                          api.API_DOMAIN +
+                          "/uploads/pictures/" +
+                          single.image.filePath
+                        }
+                        className="img-fluid"
+                        alt=""
+                      />
+                    </div> */}
+                  </div>
+                );
+              })
+            )}
+          </>
+          {/* </Swiper> */}
         </LightgalleryProvider>
       </div>
       <div className="product-small-image-wrapper mt-15">
-        { isDefinedAndNotVoid(product.variations) &&
+        {isDefinedAndNotVoid(product.variations) && (
           <Swiper {...thumbnailSwiperParams}>
-              {isDefined(product.image) && 
-                  <div>
-                    <div className="single-image">
-                      {
-                        isDefined(product.image.imgPath) ?
-                          <Imgix  src={ product.image.imgPath } className="lazyload img-fluid" alt={ product.image.filePath } width="600" disableSrcSet={ true } disableLibraryParam={ true }
-                                  attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
-                          />
-                          :
-                          <img src={api.API_DOMAIN + '/uploads/pictures/' + product.image.filePath} className="img-fluid" alt="" />
-                      }
-                    </div>
-                  </div>
-              }
-              { product.variations.map((single, key) => {
+            {isDefined(product.image) && (
+              <div>
+                <div className="single-image">
+                  {isDefined(product.image.imgPath) ? (
+                    <></>
+                  ) : (
+                    // <Imgix
+                    //   src={product.image.imgPath}
+                    //   className="lazyload img-fluid"
+                    //   alt={product.image.filePath}
+                    //   width="600"
+                    //   disableSrcSet={true}
+                    //   disableLibraryParam={true}
+                    //   attributeConfig={{
+                    //     srcSet: "data-srcset",
+                    //     sizes: "data-sizes",
+                    //   }}
+                    // />
+                    <></>
+                    // <img
+                    //   src={
+                    //     api.API_DOMAIN +
+                    //     "/uploads/pictures/" +
+                    //     product.image.filePath
+                    //   }
+                    //   className="img-fluid"
+                    //   alt=""
+                    // />
+                  )}
+                </div>
+              </div>
+            )}
+            {/* { product.variations.map((single, key) => {
                 return !isDefined(single.image) ? <></> : 
                     <div key={key}>
                       <div className="single-image">
@@ -142,16 +217,16 @@ const ProductImageGallery = ({ product }) => {
                       </div>
                     </div>
                 })
-              }
+              } */}
           </Swiper>
-        }
+        )}
       </div>
     </Fragment>
   );
 };
 
 ProductImageGallery.propTypes = {
-  product: PropTypes.object
+  product: PropTypes.object,
 };
 
 export default ProductImageGallery;
