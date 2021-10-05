@@ -17,17 +17,18 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
     const [weekConstraints, setWeekConstraints] = useState([])
 
     useEffect(() => {
-        DayOffActions.findActives()
-                     .then(closedDays => {
-                         if (!isDefined(settings.value)) {
-                             setDaysOff(closedDays)
-                         } else {
-                             const applicableDays = closedDays.filter(day => {
-                                 return day.openedFor.find(group => group.value === settings.value) === undefined;
-                             });
-                             setDaysOff(applicableDays);
-                        }
-                    });
+        DayOffActions
+            .findActives()
+            .then(closedDays => {
+                    if (!isDefined(settings.value)) {
+                        setDaysOff(closedDays)
+                    } else {
+                        const applicableDays = closedDays.filter(day => {
+                            return day.openedFor.find(group => group.value === settings.value) === undefined;
+                        });
+                        setDaysOff(applicableDays);
+                }
+            });
 
     }, []);
 

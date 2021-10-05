@@ -77,6 +77,12 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
       }
   };
 
+  const getVariantName = (variantName, sizeName) => {
+    const isVariantEmpty = !isDefined(variantName) || variantName.length === 0 || variantName.replace(" ","").length === 0;
+    const isSizeEmpty = !isDefined(sizeName) || sizeName.length === 0 || sizeName.replace(" ","").length === 0;
+    return (!isVariantEmpty ? variantName + " " : "") + (!isSizeEmpty ? sizeName : "");
+};
+
   return (
     <div className={"shopping-cart-content " + active}>
       { isDefinedAndNotVoid(productCart) ?
@@ -118,28 +124,25 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                     <h4>
                     { isDefined(single.isPackage) && single.isPackage ? " " + single.product.name + " " :
                       <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
-                        {" "}{single.product.name}{" "}
+                        {" "}
+                          { single.product.name }
+                          { !(single.selectedProductColor && single.selectedProductSize) ? "" : <><br/><small>{ getVariantName(single.selectedProductColor.color, single.selectedProductSize.name) }</small></> }
+                        {" "}
                       </Link>
                     }
                     </h4>
-                    <h6>{strings["qty"]} : {single.quantity}</h6>
+                    <h6>{strings["qty"]} : {single.quantity} { isDefined(single.product) && isDefined(single.product.unit) ? single.product.unit : "U" }</h6>
                     <span>
                       { discountedPrice !== null ? 
                           finalDiscountedPrice + " " + currency.currencySymbol : 
                           finalProductPrice + " " + currency.currencySymbol 
                       }
                     </span>
-                    { !(single.selectedProductColor && single.selectedProductSize) ? "" :
-                        <div className="cart-item-variation">
-                            <span>Color: {single.selectedProductColor.color}</span>
-                            <span>Size: {single.selectedProductSize.name}</span>
-                        </div>
-                    }
                     { !isDefined(single.isPackage) || !single.isPackage ? <></> :
                         <div className="cart-item-variation">
                           { single.product.key === 0 && availableWeight >= 0.1 ? 
-                              <span className="text-warning"><i className="fas fa-info-circle mr-1"></i>{ (Math.floor(availableWeight * 10) / 10).toFixed(2) } Kg disponible</span> :
-                              <span className="text-success"><i className="fas fa-check-circle mr-1"> Colis complet</i></span>
+                              <span className="text-warning"><i className="fas fa-info-circle mr-1"></i>{ (Math.floor(availableWeight * 10) / 10).toFixed(2) } {strings["kg_available"]}</span> :
+                              <span className="text-success"><i className="fas fa-check-circle mr-1"> {strings["package_full"]}</i></span>
                           }
                         </div>
                     }
@@ -158,7 +161,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
           </ul>
           <div className="shopping-cart-total">
             <h4>
-              Total :{" "}
+              {strings["total"]} :{" "}
               <span className="shop-total">{ cartTotalPrice.toFixed(2) + " " + currency.currencySymbol }</span>
             </h4>
           </div>

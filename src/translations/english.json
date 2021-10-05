@@ -225,6 +225,14 @@
   "relay_details": "Click for more details",
   "share": "Share",
   "the_date": "The",
-  "see more": "See more"
-
+  "see more": "See more",
+  "kg_available": "Kg available",
+  "package_full": "Package full",
+  "order_infos": "Notes about your order, e.g. special notes for delivery.",
+  "no_products": "No products to display",
+  "require_legal_age": "The sale of alcoholic beverages is prohibited to minors under the legal age of your country.",
+  "confirm_age_title": "Protection of minors under the legal age",
+  "confirm_question": "Your cart contains alcoholic products. Do you certify that you are of legal age in your country of residence?",
+  "abort": "No, Abort",
+  "continue": "Yes, Continue"
 }

@@ -188,7 +188,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                           <label>{strings["order_notes"]}</label>
                           <textarea
                             className="form-control"
-                            placeholder="Notes about your order, e.g. special notes for delivery. "
+                            placeholder={ strings["order_infos"] }
                             name="message"
                             value={message}
                             onChange={({currentTarget}) => setMessage(currentTarget.value)}
@@ -335,8 +335,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               productCart={ productCart }
                           />
                           :
-                          <button onClick={ handleSubmit } className="btn-hover" disabled={ isDefinedAndNotVoid(informations.position) && !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
-                              {strings["place_order"]}
+                          <button onClick={ handleSubmit } className={"btn btn-hover" + (!isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) ? " disabled" : "")} disabled={ !isDefinedAndNotVoid(informations.position) || !isInSelectedCountry(informations.position[0], informations.position[1], selectedCatalog) }>
+                              { strings["place_order"] }
                           </button>
                         }
                       </div>

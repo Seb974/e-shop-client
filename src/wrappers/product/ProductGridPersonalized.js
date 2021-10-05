@@ -1,39 +1,17 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment } from "react";
 import { connect } from "react-redux";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
+import { multilanguage } from "redux-multilanguage";
 import ProductGridPersonalizedSingle from "../../components/product/ProductGridPersonalizedSingle";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
-import ProductsContext from "../../contexts/ProductsContext";
-import AuthContext from "../../contexts/AuthContext";
 
-const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass}) => {
-  
-  const [displayedProducts, setDisplayedProducts] = useState([]);
-  const { navSearch, selectedCategory } = useContext(ProductsContext);
-  const { selectedCatalog } = useContext(AuthContext);
-
-  useEffect(() => setProductsToDisplay(), []);
-  useEffect(() => setProductsToDisplay(), [products, navSearch, selectedCategory, selectedCatalog]);
-
-  const setProductsToDisplay = () => {
-      if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
-          let productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
-          if (isDefined(navSearch) && navSearch.length > 0)
-              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
-                                          .filter(product => product.name.toUpperCase().includes(navSearch.toUpperCase()));
-          else if (parseInt(selectedCategory) !== -1)
-              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
-                                          .filter(product => product.categories.find(category => category.id === parseInt(selectedCategory)) !== undefined);
-          setDisplayedProducts(productsToDisplay);
-      }
-  };
+const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, strings}) => {
 
   return (
     <Fragment>
-      { displayedProducts.length > 0 ? displayedProducts.map(product => {
+      { products.length > 0 ? products.map(product => {
         return (
           <ProductGridPersonalizedSingle
               sliderClassName={sliderClassName}
@@ -62,7 +40,7 @@ const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist,
       }) : 
       <div className="row">
           <div className="col-md-12 ml-3">
-              <p>Aucun produit à afficher</p>
+              <p>{ strings["no_products"] }</p>
           </div>
       </div>
       }
@@ -120,4 +98,4 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductGridPersonalized);
+export default connect(mapStateToProps, mapDispatchToProps)(multilanguage(ProductGridPersonalized));

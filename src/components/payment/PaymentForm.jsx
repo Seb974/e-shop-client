@@ -19,6 +19,7 @@ import { useToasts } from 'react-toast-notifications';
 import AuthActions from '../../services/AuthActions';
 import { cardStyle, checkForRestrictions, updateError, validateForm } from '../../helpers/checkout';
 import ProductsContext from '../../contexts/ProductsContext';
+import ConfirmationAgeModal from './ConfirmationAgeModal';
 
 const PaymentForm = ({ name, available, user, informations, cartItems, deleteAllFromCart, objectDiscount, createOrder, errors, initialErrors, setErrors, strings, productCart }) => {
 
@@ -37,6 +38,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
     const [clientSecret, setClientSecret] = useState('');
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     useEffect(() => {
         if (show)
@@ -50,7 +52,11 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
             if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
                 setErrors({...initialErrors, ...newErrors});
             } else {
-                setShow(true)
+                if (productCart.find(c => isDefined(c.product.requireLegalAge) && c.product.requireLegalAge === true) !== undefined) { 
+                    setShowConfirmation(true)
+                } else {
+                    setShow(true)
+                }
             }
         }
     };
@@ -160,7 +166,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
 
     return (
         <>
-        <Button href="#" onClick={ handleShow } disabled={ !available }>{ name }</Button>
+        <Button className="btn-hover" href="#" onClick={ handleShow } disabled={ !available }>{ name }</Button>
         <Modal show={ show } onHide={ handleClose } backdrop="static" size="md" aria-labelledby="contained-modal-title-vcenter" centered id="payment-modal">
             <Modal.Header closeButton={ !processing && !loading }>
                 <Modal.Title>{loading ? "Paiement" : "Paiement de " + amount.toFixed(2).replace('.', ',') + " €"}</Modal.Title>
@@ -224,6 +230,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
                 <img src="/assets/img/icon-img/stripe-logo.png" alt="stripe-logo"/>
             </Modal.Footer>
         </Modal>
+        <ConfirmationAgeModal show={ showConfirmation } setShow={ setShowConfirmation } onConfirm={ () => setShow(true) }/>
     </>
     );
 }
