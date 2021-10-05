@@ -9,10 +9,11 @@ import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
+import { multilanguage } from "redux-multilanguage";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 
-const ShopGridNoSidebar = ({ location, match }) => {
+const ShopGridNoSidebar = ({ location, match,  strings }) => {
 
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
@@ -23,10 +24,11 @@ const ShopGridNoSidebar = ({ location, match }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
   const [sortedProducts, setSortedProducts] = useState([]);
-  const { platform } = useContext(AuthContext);
-  const { products } = useContext(ProductsContext);
+  const { platform, selectedCatalog } = useContext(AuthContext);
+  const { products, navSearch, selectedCategory } = useContext(ProductsContext);
+  const [displayedProducts, setDisplayedProducts] = useState([]);
 
-  const pageLimit = 15;
+  const pageLimit = 6;
   const { pathname } = location;
 
   const getLayout = layout => {
@@ -38,13 +40,32 @@ const ShopGridNoSidebar = ({ location, match }) => {
     setFilterSortValue(sortValue);
   };
 
+  useEffect(() => setProductsToDisplay(), []);
+  useEffect(() => setProductsToDisplay(), [products, navSearch, selectedCategory, selectedCatalog, offset, sortType, sortValue, filterSortType, filterSortValue]);
+
   useEffect(() => {
-    let sortedProducts = getSortedProducts(products, sortType, sortValue);
-    const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
-    sortedProducts = filterSortedProducts;
-    setSortedProducts(sortedProducts);
-    setCurrentData(sortedProducts.slice(offset, offset + pageLimit));
-  }, [offset, products, sortType, sortValue, filterSortType, filterSortValue]);
+    setOffset(0);
+    setCurrentPage(1);
+  }, [navSearch, selectedCategory, selectedCatalog])
+
+  const setProductsToDisplay = () => {
+      if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
+          let sortedProducts = getSortedProducts(products, sortType, sortValue);
+          const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
+          sortedProducts = filterSortedProducts;
+          setSortedProducts(sortedProducts);
+
+          let productsToDisplay = sortedProducts.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
+          if (isDefined(navSearch) && navSearch.length > 0)
+              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
+                                          .filter(product => product.name.toUpperCase().includes(navSearch.toUpperCase()));
+          else if (parseInt(selectedCategory) !== -1)
+              productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
+                                          .filter(product => product.categories.find(category => category.id === parseInt(selectedCategory)) !== undefined);
+          setDisplayedProducts(productsToDisplay);
+          setCurrentData(productsToDisplay.slice(offset, offset + pageLimit));
+      }
+  };
 
   return !isDefined(platform) ? <></> : (
     <Fragment>
@@ -74,20 +95,26 @@ const ShopGridNoSidebar = ({ location, match }) => {
                 {/* shop page content */}
                 <ShopProductsPersonalized layout={layout} products={currentData} />
 
+                { currentData.find(p => isDefined(p.requireLegalAge) && p.requireLegalAge === true) !== undefined &&
+                    <p className="text-center my-4"><i className="fas fa-ban mr-2 text-danger"></i>{ strings["require_legal_age"] }</p>
+                }
+
                 {/* shop product pagination */}
-                <div className="pro-pagination-style text-center mt-30">
-                  <Paginator
-                    totalRecords={sortedProducts.length}
-                    pageLimit={pageLimit}
-                    pageNeighbours={2}
-                    setOffset={setOffset}
-                    currentPage={currentPage}
-                    setCurrentPage={setCurrentPage}
-                    pageContainerClass="mb-0 mt-0"
-                    pagePrevText="«"
-                    pageNextText="»"
-                  />
-                </div>
+                { displayedProducts.length > pageLimit && 
+                  <div className="pro-pagination-style text-center mt-30">
+                    <Paginator
+                      totalRecords={sortedProducts.length}
+                      pageLimit={pageLimit}
+                      pageNeighbours={2}
+                      setOffset={setOffset}
+                      currentPage={currentPage}
+                      setCurrentPage={setCurrentPage}
+                      pageContainerClass="mb-0 mt-0"
+                      pagePrevText="«"
+                      pageNextText="»"
+                    />
+                  </div>
+                 }
               </div>
             </div>
           </div>
@@ -108,4 +135,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps)(ShopGridNoSidebar);
+export default connect(mapStateToProps)(multilanguage(ShopGridNoSidebar));

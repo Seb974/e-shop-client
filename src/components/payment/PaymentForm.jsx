@@ -19,6 +19,7 @@ import { useToasts } from 'react-toast-notifications';
 import AuthActions from '../../services/AuthActions';
 import { cardStyle, checkForRestrictions, updateError, validateForm } from '../../helpers/checkout';
 import ProductsContext from '../../contexts/ProductsContext';
+import ConfirmationAgeModal from './ConfirmationAgeModal';
 
 const PaymentForm = ({ name, available, user, informations, cartItems, deleteAllFromCart, objectDiscount, createOrder, errors, initialErrors, setErrors, strings, productCart }) => {
 
@@ -37,6 +38,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
     const [clientSecret, setClientSecret] = useState('');
     const [loading, setLoading] = useState(true);
     const [amount, setAmount] = useState(0);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     useEffect(() => {
         if (show)
@@ -44,14 +46,17 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
     }, [show]);
 
     const handleShow = () => {
-        console.log("click on payment form");
         const hasRestriction = checkForRestrictions(selectedCatalog, productCart, categories, addToast);
         if (!hasRestriction) {
             const newErrors = validateForm(user, informations, selectedCatalog, condition, relaypoints, addToast);
             if (isDefined(newErrors) && Object.keys(newErrors).length > 0) {
                 setErrors({...initialErrors, ...newErrors});
             } else {
-                setShow(true)
+                if (productCart.find(c => isDefined(c.product.requireLegalAge) && c.product.requireLegalAge === true) !== undefined) { 
+                    setShowConfirmation(true)
+                } else {
+                    setShow(true)
+                }
             }
         }
     };
@@ -225,6 +230,7 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
                 <img src="/assets/img/icon-img/stripe-logo.png" alt="stripe-logo"/>
             </Modal.Footer>
         </Modal>
+        <ConfirmationAgeModal show={ showConfirmation } setShow={ setShowConfirmation } onConfirm={ () => setShow(true) }/>
     </>
     );
 }

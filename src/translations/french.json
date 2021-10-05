@@ -228,5 +228,11 @@
   "see more": "Lire +",
   "kg_available": "Kg disponible",
   "package_full": "Colis complet",
-  "order_infos": "Notes sur votre commande, par ex. notes spéciales pour la livraison."
+  "order_infos": "Notes sur votre commande, par ex. notes spéciales pour la livraison.",
+  "no_products": "Aucun produit à afficher",
+  "require_legal_age": "La vente de boissons alcoolisées est interdite aux mineurs de moins de 18 ans.",
+  "confirm_age_title": "Protection des mineurs.",
+  "confirm_question": "Votre panier contient des produits alcoolisés. Certifiez-vous être majeur dans votre pays de résidence ?",
+  "abort": "Non, Abandonner",
+  "continue": "Oui, Continuer"
 }

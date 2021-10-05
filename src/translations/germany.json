@@ -228,5 +228,11 @@
   "see more": "Mehr sehen",
   "kg_available": "Kg verfügbar",
   "package_full": "Komplettpaket",
-  "order_infos": "Hinweise zu Ihrer Bestellung, z.B. besondere Hinweise für die Lieferung."
+  "order_infos": "Hinweise zu Ihrer Bestellung, z.B. besondere Hinweise für die Lieferung.",
+  "no_products": "Keine Produkte zum Anzeigen",
+  "require_legal_age": "Der Verkauf von alkoholischen Getränken ist an Minderjährige unter dem gesetzlichen Mindestalter Ihres Landes verboten.",
+  "confirm_age_title": "Jugendschutz.",
+  "confirm_question": "Ihr Warenkorb enthält alkoholische Produkte. Bestätigen Sie, dass Sie in Ihrem Wohnsitzland volljährig sind?",
+  "abort": "Nein, Abbruch",
+  "continue": "Ja, weiter"
 }
