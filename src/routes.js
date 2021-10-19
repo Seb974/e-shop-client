@@ -1,5 +1,6 @@
 import React from 'react';
 
+const GDPRPanel = React.lazy(() => import("./pages/gdpr/GDPRSettingsPanel"));
 // home pages
 const HomeWrapper = React.lazy(() => import("./pages/home/HomeWrapper"));
 const HomePersonalized = React.lazy(() => import("./pages/home/HomePersonalized"));
@@ -95,6 +96,7 @@ const routes = [
                 // { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomePersonalized },
                 { path: process.env.PUBLIC_URL + "/", exact: true, name: 'Home', component: HomeWrapper },
                 { path: process.env.PUBLIC_URL + "/shop", exact: true, name: 'Shop', component: ShopGridPersonalized },      // exact: true,
+                { path: process.env.PUBLIC_URL + "/gdpr", exact: true, name: 'GDPRPanel', component: GDPRPanel },
 
                 // {/* Homepages */}
                 { path: process.env.PUBLIC_URL + "/home-fashion", name: 'HomeFashion', component: HomeFashion },

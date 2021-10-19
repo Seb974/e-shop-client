@@ -23,9 +23,9 @@ const store = createStore(rootReducer, load(), composeWithDevTools(applyMiddlewa
 store.dispatch(fetchProducts(products));
 
 ReactDOM.render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
+    <Provider store={store}>
+      <App />
+    </Provider>,
   document.getElementById("root")
 );
 

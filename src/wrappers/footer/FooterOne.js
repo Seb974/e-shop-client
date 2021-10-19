@@ -5,6 +5,7 @@ import { animateScroll } from "react-scroll";
 import { multilanguage } from "redux-multilanguage";
 import FooterCopyright from "../../components/footer/FooterCopyright";
 import FooterNewsletter from "../../components/footer/FooterNewsletter";
+import GDPRSettingsPanel from "../../pages/gdpr/GDPRSettingsPanel";
 
 const FooterOne = ({ backgroundColorClass, spaceTopClass, spaceBottomClass, spaceLeftClass, spaceRightClass, containerClass, extraFooterClass, sideMenu, strings }) => {
   
@@ -55,6 +56,7 @@ const FooterOne = ({ backgroundColorClass, spaceTopClass, spaceBottomClass, spac
               </div>
               <div className="footer-list">
                 <ul>
+                  <li><GDPRSettingsPanel isFooter={ true }/></li>
                   <li><Link to={process.env.PUBLIC_URL + "/legal-notices"}>{strings["legal_notice"]}</Link></li>
                   <li><Link to={process.env.PUBLIC_URL + "/terms-of-sales"}>{strings["terms_of_sales"]}</Link></li>
                   {/* <li><Link to={process.env.PUBLIC_URL + "#/"}>Size guide</Link></li>

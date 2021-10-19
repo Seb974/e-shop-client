@@ -10,12 +10,15 @@ import routes from './routes';
 import DataProvider from "./data/dataProvider/dataProvider";
 import 'mapbox-gl/dist/mapbox-gl.css';
 
+import CookieConsent from "react-cookie-consent";
+
 import { Elements } from '@stripe/react-stripe-js';
 import { loadStripe } from '@stripe/stripe-js';
 
 import en from "./translations/english.json";
 import fn from "./translations/french.json";
 import de from "./translations/germany.json";
+import GDPRSettingsPanel from "./pages/gdpr/GDPRSettingsPanel";
 // import HelmetMetaData from "./config/helmetMetadata";
 
 const loading = (
@@ -63,6 +66,22 @@ const App = (props) => {
                         </HashRouter>
                     </BreadcrumbsProvider>
                 </ToastProvider>
+                <CookieConsent
+                    debug={ false }
+                    location="bottom"
+                    buttonText="J'accepte"
+                    cookieName="gdpr-analytics"
+                    cookieValue={ 1 }
+                    declineCookieValue={ 0 }
+                    style={{ background: "#2B373B" }}
+                    buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
+                    expires={150}
+                    enableDeclineButton
+                    declineButtonText="Je refuse"
+                >
+                    <i className="fas fa-cookie mr-2 text-warning"></i>This website uses cookies to enhance the user experience.{" "}
+                    <span style={{ fontSize: "10px", marginLeft: '15px'}}><GDPRSettingsPanel /></span>
+                </CookieConsent>
             </DataProvider>
         </Elements>
   );

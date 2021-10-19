@@ -32,6 +32,7 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
         message: message,
         catalog: selectedCatalog['@id'],
         uuid: currentUser.userId,
+        notification: "Email",
         appliedCondition: isDefined(condition) ? condition['@id'] : null,
         promotion: isDefined(objectDiscount) ? objectDiscount['@id'] : null,
         items: productCart.map(item => ({
