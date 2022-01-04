@@ -234,5 +234,9 @@
   "confirm_age_title": "Jugendschutz.",
   "confirm_question": "Ihr Warenkorb enthält alkoholische Produkte. Bestätigen Sie, dass Sie in Ihrem Wohnsitzland volljährig sind?",
   "abort": "Nein, Abbruch",
-  "continue": "Ja, weiter"
+  "continue": "Ja, weiter",
+  "cookie_warning": "Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern.",
+  "privacy_policy": "Datenschutz-Bestimmungen",
+  "accept": "Ich nehme an",
+  "refuse": "ich lehne ab"
 }

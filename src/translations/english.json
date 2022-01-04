@@ -234,5 +234,9 @@
   "confirm_age_title": "Protection of minors under the legal age",
   "confirm_question": "Your cart contains alcoholic products. Do you certify that you are of legal age in your country of residence?",
   "abort": "No, Abort",
-  "continue": "Yes, Continue"
+  "continue": "Yes, Continue",
+  "cookie_warning": "This website uses cookies to enhance the user experience.",
+  "privacy_policy": "Privacy policy",
+  "accept": "I Accept",
+  "refuse": "I refuse"
 }

@@ -6,13 +6,16 @@ import { Button, Modal } from 'react-bootstrap';
 import { getActiveText, getAlwaysActiveText, getAnalyticsDescription, getAnalyticsTitle, getFunctionalsDescription, getFunctionalsTitle, getInactiveText, getLinkText, getMainButtonText, getMainDescription, getMainTitle } from '../../helpers/gdpr';
 import { isDefined } from '../../helpers/utils';
 
-const GDPRSettingsPanel = ({ strings, isFooter = false }) => {
-
-    const local_storage = JSON.parse(localStorage.getItem('redux_localstorage_simple'));
-    const language = isDefined(local_storage) && isDefined(local_storage.multilanguage) ? local_storage.multilanguage.currentLanguageCode : 'en';
+const GDPRSettingsPanel = ({ currentLanguageCode, strings, isFooter = false }) => {
 
     const [show, setShow] = useState(false);
+    const [language, setLanguage] = useState('fn');
     const [analyticsConsent, setAnalyticsConsent] = useState(cookiesTool.isActive("analytics"));
+
+    useEffect(() => {
+        const newLanguage = isDefined(currentLanguageCode) ? currentLanguageCode : 'fn';
+        setLanguage(newLanguage);
+    }, [currentLanguageCode]);
 
     let configBuilder = new GDPRConfigBuilder();
     configBuilder
@@ -40,8 +43,7 @@ const GDPRSettingsPanel = ({ strings, isFooter = false }) => {
         setAnalyticsConsent(!analyticsConsent);
     }
 
-    const handleValidate = () => {
-    }
+    const handleValidate = () => setShow(false);
 
     return (
         <>
@@ -55,9 +57,7 @@ const GDPRSettingsPanel = ({ strings, isFooter = false }) => {
                         <GDPRSettings onValidate={ handleValidate } onToggle={ handleToggle } {...config} />
                     </div>
                 </Modal.Body>
-                <Modal.Footer>
-                    <img src="/assets/img/icon-img/stripe-logo.png" alt="stripe-logo"/>
-                </Modal.Footer>
+                <Modal.Footer></Modal.Footer>
             </Modal>
         </>
     )

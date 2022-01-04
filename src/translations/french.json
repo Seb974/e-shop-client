@@ -234,5 +234,9 @@
   "confirm_age_title": "Protection des mineurs.",
   "confirm_question": "Votre panier contient des produits alcoolisés. Certifiez-vous être majeur dans votre pays de résidence ?",
   "abort": "Non, Abandonner",
-  "continue": "Oui, Continuer"
+  "continue": "Oui, Continuer",
+  "cookie_warning": "Ce site utilise des cookies pour améliorer votre expérience utilisateur.",
+  "privacy_policy": "Politique de confidentialité",
+  "accept": "J'accepte",
+  "refuse": "Je refuse"
 }

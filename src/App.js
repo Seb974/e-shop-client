@@ -19,6 +19,7 @@ import en from "./translations/english.json";
 import fn from "./translations/french.json";
 import de from "./translations/germany.json";
 import GDPRSettingsPanel from "./pages/gdpr/GDPRSettingsPanel";
+import { isDefined } from "./helpers/utils";
 // import HelmetMetaData from "./config/helmetMetadata";
 
 const loading = (
@@ -69,7 +70,7 @@ const App = (props) => {
                 <CookieConsent
                     debug={ false }
                     location="bottom"
-                    buttonText="J'accepte"
+                    buttonText={ isDefined(props) && isDefined(props.strings) && props.strings["accept"] }
                     cookieName="gdpr-analytics"
                     cookieValue={ 1 }
                     declineCookieValue={ 0 }
@@ -77,9 +78,9 @@ const App = (props) => {
                     buttonStyle={{ color: "#4e503b", fontSize: "13px" }}
                     expires={150}
                     enableDeclineButton
-                    declineButtonText="Je refuse"
+                    declineButtonText={ isDefined(props) && isDefined(props.strings) && props.strings["refuse"] }
                 >
-                    <i className="fas fa-cookie mr-2 text-warning"></i>This website uses cookies to enhance the user experience.{" "}
+                    <i className="fas fa-cookie mr-2 text-warning"></i>{ isDefined(props) && isDefined(props.strings) && props.strings["cookie_warning"] }{" "}
                     <span style={{ fontSize: "10px", marginLeft: '15px'}}><GDPRSettingsPanel /></span>
                 </CookieConsent>
             </DataProvider>
