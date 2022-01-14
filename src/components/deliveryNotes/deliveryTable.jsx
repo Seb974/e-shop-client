@@ -119,7 +119,7 @@ const DeliveryTable = ({ order, items }) => {
                                 <Text style={styles.tableCell}>{ item.price + ' €' }</Text> 
                             </View>
                             <View style={styles.tableCol}> 
-                                <Text style={styles.tableCell}>{ (Math.round(invoicedQty * item.price * 100) / 100).toFixed(2) + ' €' }</Text> 
+                                <Text style={styles.tableCell}>{ (Math.round(invoicedQty * item.price * 1000) / 1000).toFixed(2) + ' €' }</Text> 
                             </View>
                         </View> 
                     )
@@ -140,7 +140,7 @@ const DeliveryTable = ({ order, items }) => {
                                 <Text style={styles.tableCell}>{ containerPrice + ' €' }</Text> 
                             </View>
                             <View style={styles.tableCol}> 
-                                <Text style={styles.tableCell}>{ (Math.round(item.quantity * containerPrice * 100) / 100).toFixed(2) + ' €' }</Text> 
+                                <Text style={styles.tableCell}>{ (Math.round(item.quantity * containerPrice * 1000) / 1000).toFixed(2) + ' €' }</Text> 
                             </View>
                         </View> 
                     )

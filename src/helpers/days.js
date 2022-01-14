@@ -29,3 +29,11 @@ export const getWorstConstraint = (items, groupDelay) => {
     });
     return constraint;
 }
+
+export const getStringDate = date => {
+    return date.getFullYear() + "-" + getTwoDigits(date.getMonth() + 1) + "-" + getTwoDigits(date.getDate());
+};
+
+export const getTwoDigits = number => {
+    return number < 10 ? '0' + number : number;
+};

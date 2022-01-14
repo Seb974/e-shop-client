@@ -6,8 +6,9 @@ import LayoutOne from "../../layouts/LayoutOne";
 import api from "../../config/api";
 import AuthContext from "../../contexts/AuthContext";
 import { isDefined } from "../../helpers/utils";
+import { multilanguage } from "redux-multilanguage";
 
-const NotFound = ({ location }) => {
+const NotFound = ({ location, strings }) => {
 
   const { pathname } = location;
   const { platform } = useContext(AuthContext);
@@ -28,26 +29,13 @@ const NotFound = ({ location }) => {
             <div className="row justify-content-center">
               <div className="col-xl-7 col-lg-8 text-center">
                 <div className="error">
-                  <h1>404</h1>
-                  <h2>OPPS! PAGE NOT FOUND</h2>
+                  <h1 style={{ color: "#F65522" }}>404</h1>
+                  <h2>{ strings["opps"] }</h2>
                   <p>
-                    Sorry but the page you are looking for does not exist, have
-                    been removed, name changed or is temporarity unavailable.
+                  { strings["not_found"] }
                   </p>
-                  <form className="searchform mb-50">
-                    <input
-                      type="text"
-                      name="search"
-                      id="error_search"
-                      placeholder="Search..."
-                      className="searchform__input"
-                    />
-                    <button type="submit" className="searchform__submit">
-                      <i className="fa fa-search" />
-                    </button>
-                  </form>
-                  <Link to={process.env.PUBLIC_URL + "/"} className="error-btn">
-                    Back to home page
+                  <Link to={process.env.PUBLIC_URL + "/"} className="btn btn-primary" style={{ borderColor: "#02C551" ,backgroundColor: "#02C551" }}>
+                      { strings["back_to_home"] }
                   </Link>
                 </div>
               </div>
@@ -63,4 +51,4 @@ NotFound.propTypes = {
   location: PropTypes.object
 };
 
-export default NotFound;
+export default multilanguage(NotFound);

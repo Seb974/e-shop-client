@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useState, useEffect } from "react";
 import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import LayoutSeven from "../../layouts/LayoutSeven";
@@ -10,16 +10,31 @@ import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined } from "../../helpers/utils";
 import api from "../../config/api";
 import AuthContext from "../../contexts/AuthContext";
+import ProductActions from "../../services/ProductActions";
+import { Redirect } from "react-router-dom";
 
-const Product = ({ location, match }) => {
+const Product = ({ location, match, history }) => {
 
   const { id = "new" } = match.params;
   const { pathname } = location;
   const { platform } = useContext(AuthContext);
   const { products } = useContext(ProductsContext);
-  const product = products.find(product => product.id === parseInt(id));
+  const [product, setProduct] = useState(undefined);
 
-  return !isDefined(platform) ? <></> : (
+  // const product = products.find(product => product.id === parseInt(id));
+
+  useEffect(() => getProduct(id), []);
+
+  const getProduct = id => {
+      if ( id !== "new") {
+        ProductActions
+          .find(id)
+          .then(product => setProduct(product))
+          .catch(error => history.push("/not-found"));
+      }
+  };
+
+  return !isDefined(platform) || !isDefined(product) ? <></> : (
     <Fragment>
       <MetaTags>
         <meta property="url" content={ api.CLIENT_DOMAIN + location.pathname } />

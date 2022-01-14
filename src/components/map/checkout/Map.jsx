@@ -81,15 +81,17 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     }, [informations.address, relaypoints, cities, selectedCatalog]);
 
     const updatePosition = suggestion => {
-        const { lat, lng } = suggestion.latlng;
-        setInformations({
-            ...informations, 
-            position: [lat, lng], 
-            address: suggestion.value, 
-            address2: "",
-            zipcode : suggestion.postcodes[0], 
-            city: suggestion.city
-        });
+        // const { lat, lng } = suggestion.latlng;
+        // setInformations({
+        //     ...informations, 
+        //     position: [lat, lng], 
+        //     address: suggestion.value, 
+        //     address2: "",
+        //     zipcode : suggestion.postcodes[0], 
+        //     city: suggestion.city
+        // });
+        const newSelection = getNewSelectedPosition(suggestion, informations);
+        setInformations(newSelection);
         setIsRelaypoint(false);
         if (isDefined(suggestion.force)) {
             const newCondition = setCityCondition(suggestion.postcodes[0]);
@@ -99,14 +101,8 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     };
 
     const onClear = () => {
-        setInformations(informations => ({
-            ...informations, 
-            position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0],
-            address: '', 
-            address2: '', 
-            zipcode: '', 
-            city: ''
-        }));
+        const newInformations = getNeutralInformations(informations);
+        setInformations(newInformations);
         setIsRelaypoint(false);
         setCondition(undefined);
         setViewport({
@@ -116,6 +112,31 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
             transitionDuration: 1800, 
             transitionInterpolator: new FlyToInterpolator() 
         });
+    };
+
+    const getNeutralInformations = ({ phone }) => {
+        return {
+            position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0],
+            address: '', 
+            address2: '', 
+            zipcode: '', 
+            city: '',
+            phone: phone,
+            isRelaypoint: false
+        }
+    };
+
+    const getNewSelectedPosition = ({latlng, value, city, postcodes}, { phone }) => {
+        const { lat, lng } = latlng;
+        return {
+            position: [lat, lng], 
+            address: value, 
+            address2: "",
+            zipcode : postcodes[0], 
+            city: city,
+            phone: phone,
+            isRelaypoint: false
+        }
     };
 
     const setCityCondition = zipcode => {

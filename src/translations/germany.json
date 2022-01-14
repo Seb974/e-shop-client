@@ -238,5 +238,8 @@
   "cookie_warning": "Diese Website verwendet Cookies, um die Benutzererfahrung zu verbessern.",
   "privacy_policy": "Datenschutz-Bestimmungen",
   "accept": "Ich nehme an",
-  "refuse": "ich lehne ab"
+  "refuse": "ich lehne ab",
+  "opps": "OPPS! SEITE NICHT GEFUNDEN",
+  "not_found": "Es tut uns leid, aber die von Ihnen gesuchte Seite existiert nicht, wurde entfernt, der Name wurde geändert oder ist vorübergehend nicht verfügbar.",
+  "back_to_home": "ZURÜCK ZUR STARTSEITE"
 }

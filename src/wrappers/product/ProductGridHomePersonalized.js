@@ -9,49 +9,68 @@ import { addToCompare } from "../../redux/actions/compareActions";
 import ProductsContext from "../../contexts/ProductsContext";
 import AuthContext from "../../contexts/AuthContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import ProductActions from "../../services/ProductActions";
 
-const ProductGridHomePersonalized = ({currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, category, type, limit }) => {
+const ProductGridHomePersonalized = ({currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, category, type, limit, section }) => {
 
-  const { products } = useContext(ProductsContext);
+  const pageLimit = 4;
+  const { products, setProducts, setSelectedCategory } = useContext(ProductsContext);
   const { selectedCatalog } = useContext(AuthContext);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
+  // const [displayedProducts, setDisplayedProducts] = useState([]);
 
-  useEffect(() => {
-    if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
-      const productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
-      const productSet = getProducts(productsToDisplay, category, type, limit);
-      setDisplayedProducts(productSet);
+  useEffect(() => getHomeProducts(), []);
+  useEffect(() => getHomeProducts(), [selectedCatalog, section]);
+
+  // useEffect(() => {
+  //   if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
+  //     const productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
+  //     const productSet = getProducts(productsToDisplay, category, type, limit);
+  //     setDisplayedProducts(productSet);
+  //   }
+  // }, [products, selectedCatalog, type]);
+
+  const getHomeProducts = () => {
+    if (isDefined(selectedCatalog) && type === section) {
+        ProductActions
+            .findTopProducts(selectedCatalog.id, section, pageLimit)
+            .then(response => {
+                setSelectedCategory(-1);
+                setProducts(response);
+            })
+            .catch(error => console.log(error));
     }
-  }, [products]);
+  };
 
   return (
     <Fragment>
-      { displayedProducts.map(product => {
-        return (
-          <ProductGridHomePersonalizedSingle
-            sliderClassName={sliderClassName}
-            spaceBottomClass={spaceBottomClass}
-            product={product}
-            currency={currency}
-            addToCart={addToCart}
-            addToWishlist={addToWishlist}
-            addToCompare={addToCompare}
-            cartItem={
-              cartItems.filter(cartItem => cartItem.id === product.id)[0]
-            }
-            wishlistItem={
-              wishlistItems.filter(
-                wishlistItem => wishlistItem.id === product.id
-              )[0]
-            }
-            compareItem={
-              compareItems.filter(
-                compareItem => compareItem.id === product.id
-              )[0]
-            }
-            key={product.id}
-          />
-        );
+      { 
+      // displayedProducts.map(product => {
+        isDefinedAndNotVoid(products) && products.map(product => {
+            return (
+                <ProductGridHomePersonalizedSingle
+                  sliderClassName={sliderClassName}
+                  spaceBottomClass={spaceBottomClass}
+                  product={product}
+                  currency={currency}
+                  addToCart={addToCart}
+                  addToWishlist={addToWishlist}
+                  addToCompare={addToCompare}
+                  cartItem={
+                    cartItems.filter(cartItem => cartItem.id === product.id)[0]
+                  }
+                  wishlistItem={
+                    wishlistItems.filter(
+                      wishlistItem => wishlistItem.id === product.id
+                    )[0]
+                  }
+                  compareItem={
+                    compareItems.filter(
+                      compareItem => compareItem.id === product.id
+                    )[0]
+                  }
+                  key={product.id}
+                />
+            );
       })}
     </Fragment>
   );

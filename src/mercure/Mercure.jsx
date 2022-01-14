@@ -21,7 +21,7 @@ const Mercure = ({ children }) => {
     const { homepage, setHomepage } = useContext(HomeContext);
     const { containers, setContainers } = useContext(ContainerContext);
     const { currentUser, setCurrentUser, catalogs, setCatalogs } = useContext(AuthContext);
-    const { products, setProducts, categories, setCategories } = useContext(ProductsContext);
+    const { products, setProducts, categories, setCategories, selectedCategory } = useContext(ProductsContext);
     const { relaypoints, setRelaypoints, condition, setCondition, cities, setCities } = useContext(DeliveryContext);
 
     const [updatedUsers, setUpdatedUsers] = useState([]);
@@ -47,7 +47,7 @@ const Mercure = ({ children }) => {
     useEffect(() => {
         if (isDefinedAndNotVoid(updatedProducts) && !productOpering) {
             setProductOpering(true);
-            updateContext(products, setProducts, updatedProducts, setUpdatedProducts, currentUser)
+            updateContext(products, setProducts, updatedProducts, setUpdatedProducts, currentUser, selectedCategory)
                 .then(response => setProductOpering(response));
         }
     }, [updatedProducts]);

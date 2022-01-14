@@ -29,6 +29,7 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
         ...user,
         deliveryDate: date,
         metas: informations,
+        // metas: !informations.isRelaypoint ? informations : getCopiedMetas(informations),
         message: message,
         catalog: selectedCatalog['@id'],
         uuid: currentUser.userId,
@@ -43,6 +44,8 @@ export const getOrderToWrite = (user, informations, productCart, date, objectDis
         })),
     };
 };
+
+const getCopiedMetas = ({ address, address2, city, phone, zipcode, position }) => ({ address, address2, city, phone, zipcode, position })
 
 export const validateForm = (user, informations, catalog, condition, relaypoints, addToast) => {
     let errors = {};

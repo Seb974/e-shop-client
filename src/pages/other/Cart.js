@@ -83,8 +83,8 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                           { productCart.map((cartItem, key) => {
                             const taxToApply = !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                             const discountedPrice = !isDefined(cartItem.product) ? 0 : getDiscountPrice(cartItem.product.price, cartItem.product.discount, cartItem.product.offerEnd);
-                            const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
-                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+                            const finalProductPrice = !isDefined(cartItem.product) ? 0 : (cartItem.product.price * currency.currencyRate * (1 + taxToApply));   // .toFixed(2)
+                            const finalDiscountedPrice = (discountedPrice * currency.currencyRate * (1 + taxToApply));    // .toFixed(2)
 
                             cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
                             cartTotalTax += (discountedPrice != null ? discountedPrice : cartItem.product.price) * cartItem.quantity * taxToApply;
@@ -119,11 +119,11 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                                 <td className="product-price-cart">
                                   {discountedPrice !== null ?
                                     <Fragment>
-                                      <span className="amount old">{finalProductPrice + " " + currency.currencySymbol}</span>
-                                      <span className="amount">{finalDiscountedPrice + " " + currency.currencySymbol}</span>
+                                      <span className="amount old">{finalProductPrice.toFixed(2) + " " + currency.currencySymbol}</span>
+                                      <span className="amount">{finalDiscountedPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                                     </Fragment>
                                   :
-                                    <span className="amount">{finalProductPrice  + " " + currency.currencySymbol}</span>
+                                    <span className="amount">{finalProductPrice.toFixed(2) + " " + currency.currencySymbol}</span>
                                   }
                                 </td>
 

@@ -11,17 +11,19 @@ import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass, category, strings }) => {
   
-  const { products } = useContext(ProductsContext);
-  const { selectedCatalog } = useContext(AuthContext);
-  const [news, setNews] = useState([]);
+  // const { products } = useContext(ProductsContext);
+  // const { selectedCatalog } = useContext(AuthContext);
+  // const [news, setNews] = useState([]);
 
-  useEffect(() => {
-    if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
-      const newProducts = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
-                                  .filter(p => p.new);
-      setNews(newProducts);
-    }
-  }, [products]);
+  // useEffect(() => {
+  //   if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
+  //     const newProducts = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
+  //                                 .filter(p => p.new);
+  //     setNews(newProducts);
+  //   }
+  // }, [products]);
+
+  const [section, setSection] = useState("bestSeller");
 
   return (
     <div
@@ -32,20 +34,20 @@ const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass,
       <div className="container">
         <Tab.Container defaultActiveKey="bestSeller">
           <Nav variant="pills" className="product-tab-list pb-55 text-center">
-              { isDefinedAndNotVoid(news) &&
+              {/* { isDefinedAndNotVoid(news) && */}
                   <Nav.Item>
-                    <Nav.Link eventKey="newArrival">
+                    <Nav.Link eventKey="newArrival" onClick={ () => setSection("newArrival") }>
                       <h4>{ strings["new_arrivals"] }</h4>
                     </Nav.Link>
                   </Nav.Item>
-              }
+              {/* } */}
             <Nav.Item>
-              <Nav.Link eventKey="bestSeller">
+              <Nav.Link eventKey="bestSeller" onClick={ () => setSection("bestSeller") }>
                 <h4>{ strings["best_sellers"] }</h4>
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
-              <Nav.Link eventKey="saleItems">
+              <Nav.Link eventKey="saleItems" onClick={ () => setSection("saleItems") }>
                 <h4>{ strings["our_selection"] }</h4>
               </Nav.Link>
             </Nav.Item>
@@ -55,9 +57,10 @@ const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass,
               <div className="row justify-content-center">
                 <ProductGridHomePersonalized
                     category={category}
-                    type="new"
+                    type="newArrival"
                     limit={8}
                     spaceBottomClass="mb-25"
+                    section={ section }
                 />
               </div>
             </Tab.Pane>
@@ -68,6 +71,7 @@ const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass,
                     type="bestSeller"
                     limit={8}
                     spaceBottomClass="mb-25"
+                    section={ section }
                 />
               </div>
             </Tab.Pane>
@@ -78,6 +82,7 @@ const TabProductPersonalized = ({ spaceTopClass, spaceBottomClass, bgColorClass,
                     type="saleItems"
                     limit={8}
                     spaceBottomClass="mb-25"
+                    section={ section }
                 />
               </div>
             </Tab.Pane>

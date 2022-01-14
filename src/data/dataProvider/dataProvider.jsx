@@ -49,8 +49,8 @@ const DataProvider = ({ children }) => {
                        .then(response => setPlatform(response));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
-        ProductActions.findAll()
-                      .then(response => setProducts(response));
+        // ProductActions.findAll()
+        //               .then(response => setProducts(response));
         ContainerActions.findAll()
                         .then(response => setContainers(response));
         CatalogActions.findAll()

@@ -238,5 +238,8 @@
   "cookie_warning": "Ce site utilise des cookies pour améliorer votre expérience utilisateur.",
   "privacy_policy": "Politique de confidentialité",
   "accept": "J'accepte",
-  "refuse": "Je refuse"
+  "refuse": "Je refuse",
+  "opps": "OUPS! PAGE NON TROUVÉE",
+  "not_found": "Désolé mais la page que vous recherchez n'existe pas, a été supprimée, a changé de nom ou est temporairement indisponible.",
+  "back_to_home": "RETOUR À L'ACCUEIL"
 }

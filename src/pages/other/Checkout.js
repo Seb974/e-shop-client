@@ -143,6 +143,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const createOrder = (callBack = null) => {
     const order = getOrderToWrite(user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser, condition);
+    console.log(order);
     return OrderActions
         .create(order)
         .then(response => {
@@ -229,8 +230,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               { productCart.map((cartItem, key) => {
                                 const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                                 const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount, cartItem.product.offerEnd) : 0;
-                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? Math.round(cartItem.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100 : 0;
-                                const finalDiscountedPrice = Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100;
+                                const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? Math.round(cartItem.product.price * currency.currencyRate * (1 + taxToApply) * 1000) / 1000 : 0;
+                                const finalDiscountedPrice = Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 1000) / 1000;
 
                                 cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
 
@@ -259,7 +260,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                       <span className="order-price">
                                           <strong>
                                                - { objectDiscount.percentage ? 
-                                                    (Math.round(cartTotalPrice * discount * 100) / 100).toFixed(2) + " " + currency.currencySymbol :
+                                                    (Math.round(cartTotalPrice * discount * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
                                                     discount.toFixed(2) + " " + currency.currencySymbol
                                                   }
                                           </strong>
@@ -275,7 +276,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                   { isDefined(selectedCatalog) && selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
                                     !isDefined(condition) || condition.price === 0 ? strings["free_shipping"] : 
                                     condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
-                                    (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100).toFixed(2) + " " + currency.currencySymbol
+                                    (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
                                   }
                                 </li>
                             </ul>
@@ -302,16 +303,22 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             <ul>
                                 <li className="order-total">{strings["total"]}</li>
                                 <li>
-                                    { isDefined(selectedCatalog) && selectedCatalog.needsParcel ? (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + getTotalCost(packages, country)).toFixed(2) + " " + currency.currencySymbol :
+                                    { 
+                                    isDefined(selectedCatalog) && selectedCatalog.needsParcel ? (Math.round((Math.round( (cartTotalPrice * (1 - discount) + getTotalCost(packages, country)) * 1000 ) / 1000) * 100) / 100).toFixed(2) + " " + currency.currencySymbol
+                                    :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
-                                              (Math.round(cartTotalPrice * 100) / 100 - discount).toFixed(2) + " " + currency.currencySymbol
+                                              // (Math.round(cartTotalPrice * 1000) / 1000 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
+                                              // (Math.round(cartTotalPrice * 1000) / 1000 - discount).toFixed(2) + " " + currency.currencySymbol
+                                              (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round((cartTotalPrice - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
                                       :
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              (Math.round(cartTotalPrice * 100) / 100 * (1 - discount) + (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100)).toFixed(2) + " " + currency.currencySymbol :
-                                              (Math.round(cartTotalPrice * 100) / 100 - discount + (Math.round(condition.price * (1 + getConditionTax()) * 100) / 100)).toFixed(2) + " " + currency.currencySymbol
+                                              // (Math.round(cartTotalPrice * 1000) / 1000 * (1 - discount) + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
+                                              // (Math.round(cartTotalPrice * 1000) / 1000 - discount + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
+                                              (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round((cartTotalPrice - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
                                     }
                                 </li>
                             </ul>

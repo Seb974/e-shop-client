@@ -92,12 +92,12 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
               const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
                 single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount, single.product.offerEnd) : 0;
-              const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
-              const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 100) / 100).toFixed(2) : 0;
+              const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 1000) / 1000) : 0;    // .toFixed(2)
+              const finalDiscountedPrice = isDefined(single.product) ? (Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 1000) / 1000) : 0;      // .toFixed(2)
 
               discountedPrice != null ? 
-                  cartTotalPrice += Math.round(finalDiscountedPrice * single.quantity * 100) / 100 :
-                  cartTotalPrice += Math.round(finalProductPrice * single.quantity * 100) / 100;
+                  cartTotalPrice += Math.round(finalDiscountedPrice * single.quantity * 1000) / 1000 :
+                  cartTotalPrice += Math.round(finalProductPrice * single.quantity * 1000) / 1000;
 
               return !isDefined(single.product) ? <div key={ key }></div> : (
                 <li className="single-shopping-cart" key={ key }>
@@ -134,8 +134,8 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                     <h6>{strings["qty"]} : {single.quantity} { isDefined(single.product) && isDefined(single.product.unit) ? single.product.unit : "U" }</h6>
                     <span>
                       { discountedPrice !== null ? 
-                          finalDiscountedPrice + " " + currency.currencySymbol : 
-                          finalProductPrice + " " + currency.currencySymbol 
+                          finalDiscountedPrice.toFixed(2) + " " + currency.currencySymbol : 
+                          finalProductPrice.toFixed(2) + " " + currency.currencySymbol 
                       }
                     </span>
                     { !isDefined(single.isPackage) || !single.isPackage ? <></> :

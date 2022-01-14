@@ -21,7 +21,7 @@ const RelaypointPopup = ({ relaypoint, informations, setInformations, setConditi
     }, [relaypoint]);
 
     const onSelect = e => {
-            const { position, phone, user, ...mainMetas } = relaypoint.metas;
+            const { phone, user, ...mainMetas } = relaypoint.metas;     // position,
             const newCondition = relaypoint.conditions.find(condition => {
                 return condition.userGroups.find(group => group.value === settings.value) !== undefined;
             });

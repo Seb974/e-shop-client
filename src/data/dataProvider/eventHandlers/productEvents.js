@@ -1,10 +1,10 @@
 import Roles from "../../../config/Roles";
 import { isDefined } from "../../../helpers/utils";
 
-export const updateContext = (products, setProducts, data, setData, currentUser) => {
+export const updateContext = (products, setProducts, data, setData, currentUser, selectedCategory) => {
     let updatedProducts = products;
     const newData = data.map(entity => {
-        updatedProducts = entity['@id'].includes('products') ? treatProduct(entity, updatedProducts, currentUser) : 
+        updatedProducts = entity['@id'].includes('products') ? treatProduct(entity, updatedProducts, currentUser, selectedCategory) : 
                           entity['@id'].includes('prices') ? treatPrice(entity, updatedProducts, currentUser) :
                           treatStock(entity, updatedProducts);
         return {...entity, treated: true};
@@ -14,8 +14,8 @@ export const updateContext = (products, setProducts, data, setData, currentUser)
     return new Promise((resolve, reject) => resolve(false));
 };
 
-const treatProduct = (product, updatedProducts, currentUser) => {
-    return !isDefined(product.id) || !hasAccessToProduct(product, currentUser) ? [...updatedProducts].filter(p => p['@id'] !== product['@id']) : getUpdatedProducts(product, updatedProducts, currentUser);
+const treatProduct = (product, updatedProducts, currentUser, selectedCategory) => {
+    return !isDefined(product.id) || !hasAccessToProduct(product, currentUser) ? [...updatedProducts].filter(p => p['@id'] !== product['@id']) : getUpdatedProducts(product, updatedProducts, currentUser, selectedCategory);
 };
 
 const hasAccessToProduct = (product, currentUser) => !Roles.isBasicUser(currentUser) || product.available;
@@ -34,13 +34,15 @@ const treatStock = (stock, updatedProducts) => {
             updatedProducts.map(p => p.id !== product.id ? p : getProductWithNewStock(product, variation, size, stock));
 };
 
-const getUpdatedProducts = (newProduct, updatedProducts, currentUser) => {
+const getUpdatedProducts = (newProduct, updatedProducts, currentUser, selectedCategory) => {
     const userGroup = newProduct.userGroups.find(g => g.value === currentUser.roles);
     if (isDefined(userGroup)) {
         const {prices, ...publicVariables } = newProduct;
         const suitedProduct = {...publicVariables, price: (newProduct.prices.find(p => p.priceGroup.userGroup.find(ug => ug.id === userGroup.id) !== undefined)).amount};
+        const catIds = suitedProduct.categories.map(c => c.id);
         const index = updatedProducts.findIndex(o => o.id === suitedProduct.id);
-        return index !== -1 ? updatedProducts.map(o => o.id !== suitedProduct.id ? o : suitedProduct) : [...updatedProducts, suitedProduct];
+        return  index !== -1 ? updatedProducts.map(o => o.id !== suitedProduct.id ? o : suitedProduct) : 
+                catIds.includes(parseInt(selectedCategory)) ? [...updatedProducts, suitedProduct] : updatedProducts;
     }
     return updatedProducts;
 };

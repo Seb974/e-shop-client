@@ -20,7 +20,7 @@ import fn from "./translations/french.json";
 import de from "./translations/germany.json";
 import GDPRSettingsPanel from "./pages/gdpr/GDPRSettingsPanel";
 import { isDefined } from "./helpers/utils";
-// import HelmetMetaData from "./config/helmetMetadata";
+import NotFound from "./pages/other/NotFound";
 
 const loading = (
     <div className="flone-preloader-wrapper">
@@ -47,7 +47,6 @@ const App = (props) => {
                         <HashRouter>
                             <ScrollToTop>
                                 <Suspense fallback={ loading }>
-                                    {/* <HelmetMetaData></HelmetMetaData> */}
                                     <Switch>
                                         { routes.map((route, index) => {
                                             return route.component && (
@@ -61,6 +60,7 @@ const App = (props) => {
                                             )
                                         })
                                         }
+                                        <Route component={NotFound} />
                                     </Switch>
                                 </Suspense>
                             </ScrollToTop>
