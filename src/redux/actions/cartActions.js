@@ -87,12 +87,12 @@ export const deleteAllFromCart = addToast => {
 
 // get stock of cart item
 export const cartItemStock = (item, color, size) => {
-  if (isDefined(item.product.stock)) {
-    return item.product.stock.quantity;
+  if (isDefinedAndNotVoid(item.product.stocks)) {
+    return item.product.stocks[0].quantity;
   } else if (isDefinedAndNotVoid(item.product.variations) && isDefined(color) && isDefined(size)) {
     const variation = item.product.variations.find(single => single.id === color.id);
     const selectedSize = isDefined(variation) && isDefinedAndNotVoid(variation.sizes) ? variation.sizes.find(single => single.id === size.id) : undefined;
-    return isDefined(selectedSize) ? selectedSize.stock.quantity : 0;
+    return isDefined(selectedSize) && isDefinedAndNotVoid(selectedSize.stocks) ? selectedSize.stocks[0].quantity : 0;
   } else {
     return 0;
   }
