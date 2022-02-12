@@ -302,3 +302,13 @@ export const hasVariationScope = variations => {
   });
   return hasVariations;
 };
+
+export const hasSizeScope = sizes => {
+  let hasSizes = false;
+  sizes.map(size => {
+      if (size.name.trim().length > 0) {
+        hasSizes = true; 
+      }
+  });
+  return hasSizes;
+}

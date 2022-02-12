@@ -5,6 +5,7 @@ import {
   hasVariationScope,
   getProductCartQuantity,
   getAvailableStock,
+  hasSizeScope,
 } from "../../helpers/product";
 import { Modal } from "react-bootstrap";
 import Rating from "./sub-components/ProductRating";
@@ -372,7 +373,7 @@ const ProductModal = ({
                                   setSelectedProductColor(single);
                                   setSelectedProductSize(single.sizes[0]);
                                   setProductStock(
-                                    single.sizes[0].stock.quantity
+                                    single.sizes[0].stocks[0].quantity
                                   );
                                   setQuantityCount(1);
                                 }}
@@ -384,14 +385,14 @@ const ProductModal = ({
                       </div>
                     </div>
                     <div className="pro-details-size">
-                      <span>{strings["declination"]}</span>
+                      <span>{ isDefinedAndNotVoid(product.variations) && selectedProductColor.sizes.map(s => s.id).includes(selectedProductSize.id) && hasSizeScope(selectedProductColor.sizes) ? strings["declination"]: ""}</span>
                       <div className="pro-details-size-content">
                         {isDefinedAndNotVoid(product.variations) &&
                           product.variations.map((single) => {
                             return single.color !== selectedProductColor.color
                               ? ""
                               : single.sizes.map((singleSize, key) => {
-                                  return (
+                                  return singleSize.name.trim().length <= 0 ? <></> : (
                                     <label
                                       className={`pro-details-size-content--single rounded-pill`}
                                       key={key}
@@ -409,7 +410,7 @@ const ProductModal = ({
                                           setSelectedProductColor(single);
                                           setSelectedProductSize(singleSize);
                                           setProductStock(
-                                            singleSize.stock.quantity
+                                            singleSize.stocks[0].quantity
                                           );
                                           setQuantityCount(1);
                                         }}
