@@ -69,8 +69,9 @@ const MercureHub = ({ children }) => {
         if (data['@id'].includes('order_entities'))     // && updatedOrders.findIndex(o => o.id === data.id) === -1
             setUpdatedOrders([...updatedOrders, data]);
 
-        if (data['@id'].includes('products') || (data['@id'].includes('prices') && !data['@id'].includes('catalog_prices')) || data['@id'].includes('stocks'))
+        if (data['@id'].includes('products') || (data['@id'].includes('prices') && !data['@id'].includes('catalog_prices')) || data['@id'].includes('stocks')) {
             setUpdatedProducts([...updatedProducts, data]);
+        }
 
         if (data['@id'].includes('homepages') || data['@id'].includes('banners') || data['@id'].includes('heroes') || data['@id'].includes('countdowns'))
             setUpdatedHomepages([...updatedHomepages, data]);

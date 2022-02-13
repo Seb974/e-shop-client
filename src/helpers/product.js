@@ -262,12 +262,12 @@ export const hasEnoughStock = (product) => {
     let stockStatus = false;
     if (isDefinedAndNotVoid(product.components)) {
       stockStatus = !product.components.map(component => {
-        return isDefined(component.size) && component.size.stock.quantity > 0 ? true :
-              isDefined(component.product.stock) && component.product.stock.quantity > 0 ? true :
+        return isDefined(component.size) && component.size.stocks[0].quantity > 0 ? true :
+              isDefined(component.product.stocks[0]) && component.product.stocks[0].quantity > 0 ? true :
               false;
       }).includes(false);
-    } else if ( !isDefinedAndNotVoid(product.variations) && isDefined(product.stock) ) {
-      stockStatus = product.stock.quantity > 0 || product.stock > 0;
+    } else if ( !isDefinedAndNotVoid(product.variations) && isDefinedAndNotVoid(product.stocks) ) {
+      stockStatus = product.stocks[0].quantity > 0 || product.stocks[0] > 0;
     }
     return stockStatus;
 };
@@ -276,17 +276,17 @@ export const getAvailableStock = (product, variation = undefined, size = undefin
     let productStock = 0;
     let smallestStock = 100;
     if (isDefined(variation) && isDefined(size)) {
-        return isDefined(size.stock) && size.stock.quantity > size.stock.security ? size.stock.quantity - size.stock.security : 0;
+        return isDefinedAndNotVoid(size.stocks) && size.stocks[0].quantity > size.stocks[0].security ? size.stocks[0].quantity - size.stocks[0].security : 0;
     } else if (isDefined(product)) {
       if (isDefinedAndNotVoid(product.components)) {
         product.components.map(component => {
-            const stock = isDefined(component.size) ? component.size.stock : (isDefined(component.product.stock) ? component.product.stock : 0);
+            const stock = isDefined(component.size) && isDefinedAndNotVoid(component.size.stocks) ? component.size.stocks[0] : (isDefinedAndNotVoid(component.product.stocks) ? component.product.stocks[0] : 0);
             productStock = stock !== 0 && stock.security > stock.quantity ? stock.security - stock.quantity : 0;
             smallestStock = productStock < smallestStock ? productStock : smallestStock;
           });
         return smallestStock;
       } else {
-          return isDefined(product.stock) && product.stock.quantity > product.stock.security ? product.stock.quantity - product.stock.security : 0;
+          return isDefinedAndNotVoid(product.stocks) && product.stocks[0].quantity > product.stocks[0].security ? product.stocks[0].quantity - product.stocks[0].security : 0;
       }
     } else {
       return 0;
@@ -302,3 +302,13 @@ export const hasVariationScope = variations => {
   });
   return hasVariations;
 };
+
+export const hasSizeScope = sizes => {
+  let hasSizes = false;
+  sizes.map(size => {
+      if (size.name.trim().length > 0) {
+        hasSizes = true; 
+      }
+  });
+  return hasSizes;
+}

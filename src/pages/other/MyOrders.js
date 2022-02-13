@@ -66,7 +66,11 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
       addToast(message, { appearance: isComplete ? "success" : "warning", autoDismiss: true });
   };
 
-  const getStock = item => isDefined(item.size) ? item.size.stock : item.product.stock;
+  const getStock = item => isDefined(item.size) ? 
+      (isDefinedAndNotVoid(item.size.stocks) ? item.size.stocks[0] : getDefaultStock()) : 
+      (isDefinedAndNotVoid(item.product.stocks) ? item.product.stocks[0] : getDefaultStock());
+
+  const getDefaultStock = () => ({ quantity: 0, security: 0, alert: 0 });
 
   return !isDefined(platform) ? <></> : (
     <Fragment>
