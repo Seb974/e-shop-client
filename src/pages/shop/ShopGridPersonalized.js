@@ -110,7 +110,6 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
                   response['hydra:member'].sort((a, b) => (a.name > b.name) ? 1 : -1) : 
                   response['hydra:member'].sort(() => Math.random() - 0.5);
               setProducts(sortedProducts);
-              console.log(sortedProducts);
               setTotalItems(response['hydra:totalItems']);
             })
     }

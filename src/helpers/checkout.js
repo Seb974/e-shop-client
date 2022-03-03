@@ -127,7 +127,7 @@ const isRelaypoint = (condition, relaypoints) => {
 
 export const checkForRestrictions = (catalog, cart, categories, addToast = null) => {
     let hasRestriction = false;
-    if (isDefinedAndNotVoid(cart) && isDefined(catalog)) {
+    if (isDefinedAndNotVoid(cart) && isDefined(catalog) && isDefinedAndNotVoid(categories)) {
         let activeCategories = [];
         cart.map(item => {
           if (isDefined(item.product) && isDefinedAndNotVoid(item.product.categories)) {

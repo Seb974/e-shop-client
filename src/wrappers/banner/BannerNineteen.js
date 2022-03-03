@@ -34,9 +34,11 @@ const BannerNineteen = ({ spaceTopClass, spaceBottomClass }) => {
   const getProductPrice = (product) => {
     if (isDefinedAndNotVoid(products)) {
       const selection = products.find(p => p.id === product.id);
-      const tax = selection.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.id === selectedCatalog.id);
-      const discount = hasValidDiscount(selection) ? selection.discount / 100 : 0;
-      return (selection.price * (1 + tax.percent) * (1 - discount)).toFixed(2);
+      if (isDefined(selection)) {
+        const tax = selection.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.id === selectedCatalog.id);
+        const discount = hasValidDiscount(selection) ? selection.discount / 100 : 0;
+        return (selection.price * (1 + tax.percent) * (1 - discount)).toFixed(2);
+      }
     }
     return 0;
   }

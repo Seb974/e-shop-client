@@ -73,8 +73,6 @@ const ProductDescriptionInfo = ({
         selectedProductSize
       );
 
-  useEffect(() => console.log(selectedCatalog), []);
-
   const getRestrictions = () => {
     let restrictions = [];
     product.categories.map((c) => {
