@@ -23,8 +23,6 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
 
-  useEffect(() => console.log(product), []);
-
   const handleChange = (number) => {
     if (number != undefined) {
       const quant =
