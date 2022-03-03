@@ -60,9 +60,12 @@ const styles = StyleSheet.create({
     pageNumber: {
         textAlign: 'right',
         fontSize: 8,
-        marginRight: 30,
-        width: '100%',
-        paddingRight: 30
+        marginRight: 90,
+        marginLeft: 'auto'
+        // marginRight: 30,
+        // width: '100%',
+        // paddingRight: 30
+
     },
     pageText: {
         marginLeft: 12,
@@ -101,6 +104,8 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 18,
         textAlign: 'center',
+        // marginLeft: 'auto',
+        // marginRight: 'auto'
     },
     footer: {
         position: 'absolute',
