@@ -1,8 +1,8 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext,useRef, useState } from "react";
+import React, { Fragment, useContext,useEffect,useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-import { getDiscountPrice, getElementsFromIds } from "../../helpers/product";
+import { getDiscountPrice, getElementsFromIds, getAvailableStock } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from '../../config/api';
@@ -22,6 +22,8 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
   const discountedPrice = getDiscountPrice(product.price, product.discount, product.offerEnd);
   const finalProductPrice = +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+
+  useEffect(() => console.log(product), []);
 
   const handleChange = (number) => {
     if (number != undefined) {
@@ -163,8 +165,10 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                     Selectionnez option{" "}
                   </a>
                 </div>
-              ) : (product.stock && product.stock.quantity > 0) ||
-                (product.stockManaged && product.stockManaged === true) ? (
+              ) : 
+                // (product.stock && product.stock.quantity > 0) ||
+                // (product.stockManaged && product.stockManaged === true) ? (
+                  ( (getAvailableStock(product) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product) > 0) ? (
                 <>
                   <div className="input-group  p-0 border-0 ">
                     <button
@@ -215,8 +219,13 @@ const ProductGridHomePersonalizedSingle = ({ product, currency, addToCart, addTo
                 </div>
               )}
 
-              {((product.stock && product.stock.quantity > 0) ||
-              (product.stockManaged && product.stockManaged === true)) && !(product.variations && product.variations.length >= 1) ? (
+              {/* {((product.stock && product.stock.quantity > 0) ||
+              (product.stockManaged && product.stockManaged === true)) && !(product.variations && product.variations.length >= 1) ? ( */}
+              {(getAvailableStock(product) ||
+                (isDefined(product.stockManaged) &&
+                  product.stockManaged === false &&
+                  getAvailableStock(product) === 0)) &&
+                !(product.variations && product.variations.length >= 1) ? (
                 <>
                   <div className="input-group bg-dark">
                     <button
