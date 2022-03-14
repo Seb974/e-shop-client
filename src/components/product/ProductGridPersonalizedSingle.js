@@ -1,48 +1,19 @@
 import PropTypes from "prop-types";
-import React, {
-  Fragment,
-  useContext,
-  useEffect,
-  useState,
-  useRef,
-} from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useContext, useEffect, useState, useRef } from "react";
 import { useToasts } from "react-toast-notifications";
-import {
-  getDiscountPrice,
-  hasEnoughStock,
-  getAvailableStock,
-} from "../../helpers/product";
+import { getDiscountPrice, hasEnoughStock, getAvailableStock } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import * as icons from "react-bootstrap-icons";
-import {
-  RiShoppingCartLine,
-  RiCloseLine,
-  RiHeart3Line,
-  RiHeart3Fill,
-  RiShuffleFill,
-  RiEmotionUnhappyLine,
-} from "react-icons/ri";
+import { RiShoppingCartLine, RiCloseLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill, RiEmotionUnhappyLine } from "react-icons/ri";
 import Imgix from "react-imgix";
 
-const ProductGridPersonalizedSingle = ({
-  product,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItem,
-  wishlistItem,
-  compareItem,
-  sliderClassName,
-  spaceBottomClass,
-  strings,
-}) => {
+const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass, strings }) => {
+
   const { addToast } = useToasts();
   const [modalShow, setModalShow] = useState(false);
   const [quantity, setQuantity] = useState("");
@@ -71,35 +42,33 @@ const ProductGridPersonalizedSingle = ({
     setHasStock(stockStatus);
   }, [product]);
 
-  const taxToApply = !settings.subjectToTaxes
-    ? 0
-    : product.tax.catalogTaxes.find(
+  const taxToApply = !settings.subjectToTaxes ? 0 : 
+      product.tax.catalogTaxes.find(
         (catalogTax) =>
           catalogTax.catalog.code ===
           (isDefined(selectedCatalog) ? selectedCatalog.code : country)
-      ).percent; // country
+      ).percent; 
+
   const discountedPrice = getDiscountPrice(
     product.price,
     product.discount,
     product.offerEnd
   );
+
   const finalProductPrice = +(
     product.price *
     currency.currencyRate *
     (1 + taxToApply)
   ).toFixed(2);
+
   const finalDiscountedPrice = +(
     discountedPrice *
     currency.currencyRate *
     (1 + taxToApply)
   ).toFixed(2);
 
-  // const handleChange = ({ currentTarget }) => {
-  //   setQuantity(currentTarget.value);
-  // };
-
-  const handleShowDetails = (event) => {
-    event.preventDefault();
+  const handleShowDetails = e => {
+    e.preventDefault();
     setModalShow(true);
   };
 
@@ -108,8 +77,6 @@ const ProductGridPersonalizedSingle = ({
     setQuantity("");
   };
 
-  // console.log(product.name + " : " + product.stockManaged);
-  // console.log(getAvailableStock(product));
   return (
     <Fragment>
       {/* Card */}
@@ -130,7 +97,7 @@ const ProductGridPersonalizedSingle = ({
                   alt={product.image.filePath}
                   width={600}
                   disableSrcSet={true}
-                  disableLibraryParam={true} //  height="500"
+                  disableLibraryParam={true}
                   attributeConfig={{
                     srcSet: "data-srcset",
                     sizes: "data-sizes",
@@ -151,7 +118,7 @@ const ProductGridPersonalizedSingle = ({
                     alt={product.image.filePath}
                     width={600}
                     disableSrcSet={true}
-                    disableLibraryParam={true} //  height="500"
+                    disableLibraryParam={true}
                     attributeConfig={{
                       srcSet: "data-srcset",
                       sizes: "data-sizes",
@@ -168,26 +135,6 @@ const ProductGridPersonalizedSingle = ({
                     alt=""
                   />
                 )
-                // ) : isDefined(product.image[1].imgPath) ? (
-                //   <Imgix
-                //     src={product.image[1].imgPath}
-                //     className="lazyload hover-img"
-                //     alt={product.image[1].filePath}
-                //     width="600"
-                //     disableSrcSet={true}
-                //     disableLibraryParam={true}
-                //     attributeConfig={{
-                //       srcSet: "data-srcset",
-                //       sizes: "data-sizes",
-                //     }}
-                //   />
-                // ) : (
-                //   <img
-                //     className="hover-img"
-                //     src={process.env.PUBLIC_URL + product.image[1]}
-                //     alt=""
-                //   />
-                // )
               }
             </a>
             <div className="product-img-action input-group">
@@ -294,18 +241,6 @@ const ProductGridPersonalizedSingle = ({
                       {" "}
                       +{" "}
                     </button>
-                    {/* <button
-                      className="btn btn-success pro-quickview rounded-0 w-100 h-100 p-2"
-                      onClick={handleAddToCart}
-                      title="Quick View"
-                      disabled={quantity <= 0}
-                    >
-                      <RiShoppingCartLine
-                        className="mb-1"
-                        color={"white"}
-                        size={20}
-                      />
-                    </button> */}
                   </div>
                 </>
               ) : (
@@ -319,10 +254,6 @@ const ProductGridPersonalizedSingle = ({
                   </button>
                 </div>
               )}
-
-              {/* {((product.stock && product.stock.quantity > 0) ||
-                (product.stockManaged && product.stockManaged === true)) &&
-              !(product.variations && product.variations.length >= 1) ? ( */}
               {(getAvailableStock(product) ||
                 (isDefined(product.stockManaged) &&
                   product.stockManaged === false &&
@@ -391,7 +322,7 @@ const ProductGridPersonalizedSingle = ({
                         alt={product.image.filePath}
                         width={600}
                         disableSrcSet={true}
-                        disableLibraryParam={true} // height="800"
+                        disableLibraryParam={true}
                         attributeConfig={{
                           srcSet: "data-srcset",
                           sizes: "data-sizes",
@@ -417,7 +348,7 @@ const ProductGridPersonalizedSingle = ({
                         alt={product.image.filePath}
                         width={600}
                         disableSrcSet={true}
-                        disableLibraryParam={true} // height="800"
+                        disableLibraryParam={true}
                         attributeConfig={{
                           srcSet: "data-srcset",
                           sizes: "data-sizes",
@@ -603,7 +534,6 @@ const ProductGridPersonalizedSingle = ({
                   ) : (
                     <></>
                   )}
-                  {/* </div> */}
                 </div>
               </div>
             </div>

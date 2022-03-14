@@ -137,7 +137,7 @@ export const checkForRestrictions = (catalog, cart, categories, addToast = null)
         const selectedCategories = [...new Set(activeCategories)];
         const quantitiesPerCategory = selectedCategories.map(category => {
           const quantity = cart.reduce((sum, item) => {
-              return sum += isDefinedAndNotVoid(item.product.categories) && item.product.categories.find(c => c.id === category) !== undefined ? item.quantity : 0;
+              return sum += isDefined(item.product) && isDefinedAndNotVoid(item.product.categories) && item.product.categories.find(c => c.id === category) !== undefined ? item.quantity : 0;
           }, 0);
           const selection = categories.find(c => c.id === category);
           return {category: selection, quantity};

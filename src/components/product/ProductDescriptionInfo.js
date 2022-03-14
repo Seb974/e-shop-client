@@ -1,38 +1,18 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import {
-  hasVariationScope,
-  getAvailableStock,
-  getProductCartQuantity,
-} from "../../helpers/product";
+import { hasVariationScope, getAvailableStock, getProductCartQuantity } from "../../helpers/product";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 import Rating from "./sub-components/ProductRating";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
-import {
-  FacebookShareButton,
-  FacebookIcon,
-  TwitterIcon,
-  FacebookMessengerShareButton,
-  FacebookMessengerIcon,
-  TwitterShareButton,
-  LinkedinIcon,
-  LinkedinShareButton,
-} from "react-share";
-import api from "../../config/api";
+import { FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton } from "react-share";
+import { RiShoppingCartLine, RiCloseLine, RiEmotionUnhappyLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill } from "react-icons/ri";
 import AuthContext from "../../contexts/AuthContext";
-import {
-  RiShoppingCartLine,
-  RiCloseLine,
-  RiEmotionUnhappyLine,
-  RiHeart3Line,
-  RiHeart3Fill,
-  RiShuffleFill,
-} from "react-icons/ri";
+import api from "../../config/api";
 
 const ProductDescriptionInfo = ({
   product,
@@ -205,16 +185,16 @@ const ProductDescriptionInfo = ({
                   >
                     <input
                       type="radio"
-                      value={single.color}
+                      value={isDefined(single) ? single.color : 0}
                       checked={
-                        single.color === selectedProductColor.color
+                        isDefined(single) && isDefined(selectedProductColor) && single.color === selectedProductColor.color
                           ? "checked"
                           : ""
                       }
                       onChange={() => {
                         setSelectedProductColor(single);
                         setSelectedProductSize(single.sizes[0]);
-                        setProductStock(single.sizes[0].stock.quantity);
+                        setProductStock(getAvailableStock(product));
                         setQuantityCount(1);
                       }}
                     />
@@ -256,7 +236,7 @@ const ProductDescriptionInfo = ({
                               onChange={() => {
                                 setSelectedProductColor(single);
                                 setSelectedProductSize(singleSize);
-                                setProductStock(singleSize.stock.quantity);
+                                setProductStock(getAvailableStock(product));
                                 setQuantityCount(1);
                               }}
                             />
@@ -280,7 +260,6 @@ const ProductDescriptionInfo = ({
           >
             -
           </button>
-          {/* <input className="cart-plus-minus-box" type="text" value={quantityCount} readOnly /> */}
           <input
             min="0"
             max="999"

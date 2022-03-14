@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import '../../assets/css/search-input.css';
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { setActiveLayout } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
@@ -8,6 +8,7 @@ import AuthContext from "../../contexts/AuthContext";
 
 const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProductCount, location}) => {
 
+  const [search, setSearch] = useState("");
   const { selectedCatalog } = useContext(AuthContext);
   const { categories, navSearch, setNavSearch, selectedCategory, setSelectedCategory } = useContext(ProductsContext);
 
@@ -24,41 +25,35 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
     }
   }, []);
 
-  const handleSearchChange = ({ currentTarget }) => setNavSearch(currentTarget.value);
-
+  const handleSearchChange = ({ currentTarget }) => setSearch(currentTarget.value);
+  const handleCategoryChange = ({ currentTarget }) => setSelectedCategory(currentTarget.value);
+  
+  const handleSearch = e => {
+      e.preventDefault();
+      setNavSearch(search);
+  };
+  
   const handleClear = e => {
       e.preventDefault();
+      setSearch("");
       setNavSearch("");
   };
 
-  const handleCategoryChange = ({ currentTarget }) => {
-    setSelectedCategory(currentTarget.value);
-  };
-  
   return (
-    // shop-top-bar
     <div className="row shop-top-bar mb-35"> 
       <div className="col-md-9">
           <div className="row select-shoing-wrap d-flex align-items-center">
             <div className="col-md-6 shop-select pb-2">
-              {/* <select className="form-control" onChange={e => getFilterSortParams("filterSort", e.target.value)}>
-                <option value="default">Default</option>
-                <option value="priceHighToLow">Price - High to Low</option>
-                <option value="priceLowToHigh">Price - Low to High</option>
-              </select> */}
               <select className="form-control" value={ selectedCategory } onChange={ handleCategoryChange }>
                 <option value={-1}>Toutes</option>
                 { categories.filter(c => isDefinedAndNotVoid(c.catalogs) ? c.catalogs.find(cat => cat.id === (isDefined(selectedCatalog) ? selectedCatalog.id : cat.id)) !== undefined : false).map(category => <option key={ category.id } value={ category.id }>{ category.name }</option>) }
               </select>
             </div>
-            {/* <p>
-              Showing {sortedProductCount} of {productCount} result
-            </p> */}
             <div className="col-md-6 mb-3 d-flex flex-row">
-                <i className="fas fa-search mt-3 mr-2" style={{ color: "#333"}}></i>
-                <input id="search-input" className="mb-1" value={ navSearch } placeholder={" rechercher..."} onChange={ handleSearchChange }/>
-                { isDefined(navSearch) && navSearch.length > 0 &&
-                  <a href="#" onClick={ handleClear }><i className="fas fa-times-circle mt-3" style={{ color: "#333"}}></i></a>
+                <input id="search-input" className="mb-1" value={ search } placeholder={" rechercher..."} onChange={ handleSearchChange }/>
+                { isDefined(navSearch) && navSearch.length > 0 ?
+                  <a href="#" onClick={ handleClear }><i className="fas fa-times-circle mt-3" style={{ color: search.length <= 0 ? "#333" : "#ff5722" }}></i></a>  :
+                  <a href="#" onClick={ handleSearch }><i className="fas fa-search mt-3 mr-2" style={{ color: search.length <= 0 ? "#333" : "#ff5722" }}></i></a>
                 }
             </div>
           </div>

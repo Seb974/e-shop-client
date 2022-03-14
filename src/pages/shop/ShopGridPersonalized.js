@@ -3,19 +3,18 @@ import React, { Fragment, useState, useEffect, useContext } from "react";
 import MetaTags from "react-meta-tags";
 import Paginator from "react-hooks-paginator";
 import { connect } from "react-redux";
-import { getSortedProducts } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
 import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersonalized";
 import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 
 import ProductActions from "../../services/ProductActions";
 
-const ShopGridNoSidebar = ({ location, match, strings }) => {
+const ShopGridNoSidebar = ({ location, strings }) => {
 
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
@@ -25,13 +24,11 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
   const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
-  // const [sortedProducts, setSortedProducts] = useState([]);
   const { platform, selectedCatalog } = useContext(AuthContext);
   const { products, navSearch, selectedCategory, setProducts } = useContext(ProductsContext);
-  // const [displayedProducts, setDisplayedProducts] = useState([]);
   const [totalItems, setTotalItems] = useState(0);
 
-  const pageLimit = 3;
+  const pageLimit = 12;
   const { pathname } = location;
 
   const getLayout = layout => {
@@ -43,14 +40,10 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
     setFilterSortValue(sortValue);
   };
 
-  // useEffect(() => setProductsToDisplay(), []);
   useEffect(() => getProducts(), []);
   useEffect(() => getProducts(currentPage), [currentPage]);
 
-  // useEffect(() => console.log(selectedCategory), [selectedCategory]);
-  // useEffect(() => console.log(totalItems), [totalItems]);
-  
-  useEffect(() => setProductsToDisplay(), [products, offset, sortType, sortValue, filterSortType, filterSortValue]);    // navSearch, selectedCategory, selectedCatalog,
+  useEffect(() => setProductsToDisplay(), [products, offset, sortType, sortValue, filterSortType, filterSortValue]);
 
   useEffect(() => {
       setOffset(0);
@@ -62,42 +55,26 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
       setOffset(0);
       setCurrentPage(1);
       getProducts();
-  }, [selectedCategory, selectedCatalog]);    // navSearch, 
+  }, [selectedCategory, selectedCatalog]);
 
   const setProductsToDisplay = () => {
     if (isDefined(products) && isDefined(selectedCatalog)) {
-        // setDisplayedProducts(products);
         setCurrentData(products);
-        // setCurrentData(products.slice(offset, offset + pageLimit));
     }
-
-      // if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
-      //     let sortedProducts = getSortedProducts(products, sortType, sortValue);
-      //     const filterSortedProducts = getSortedProducts(sortedProducts, filterSortType, filterSortValue);
-      //     sortedProducts = filterSortedProducts;
-      //     setSortedProducts(sortedProducts);
-
-      //     let productsToDisplay = sortedProducts.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
-      //     if (isDefined(navSearch) && navSearch.length > 0)
-      //         productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
-      //                                     .filter(product => product.name.toUpperCase().includes(navSearch.toUpperCase()));
-      //     else if (parseInt(selectedCategory) !== -1)
-      //         productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id))
-      //                                     .filter(product => product.categories.find(category => category.id === parseInt(selectedCategory)) !== undefined);
-      //     setDisplayedProducts(productsToDisplay);
-      //     setCurrentData(productsToDisplay.slice(offset, offset + pageLimit));
-      // }
   };
 
   const searchWord = () => {
       if (isDefined(navSearch) && navSearch.length > 0) {
           ProductActions
               .findSearchedProducts(selectedCatalog.id, navSearch)
-              .then(response => setProducts(response));
+              .then(response => {
+                setProducts(response['hydra:member']);
+                setTotalItems(response['hydra:totalItems']);
+              });
       } else {
           setOffset(0);
           setCurrentPage(1);
-          getProducts();    //-1
+          getProducts();
       }
   };
 
@@ -106,18 +83,11 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
         ProductActions
             .findPerCategory(selectedCatalog.id, selectedCategory, page, pageLimit)
             .then(response => {
-              const sortedProducts = parseInt(selectedCategory) !== -1 ? 
-                  response['hydra:member'].sort((a, b) => (a.name > b.name) ? 1 : -1) : 
-                  response['hydra:member'].sort(() => Math.random() - 0.5);
-              setProducts(sortedProducts);
+              setProducts(response['hydra:member']);
               setTotalItems(response['hydra:totalItems']);
             })
     }
   };
-
-  // const onPageChange = (page) => {
-  //     setCurrentPage(page);
-  // }
 
   return !isDefined(platform) ? <></> : (
     <Fragment>
@@ -139,33 +109,28 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
                 <ShopTopbar
                   getLayout={getLayout}
                   getFilterSortParams={getFilterSortParams}
-                  // productCount={products.length}
                   productCount={totalItems}
                   sortedProductCount={currentData.length}
                   location={ location }
                 />
 
                 {/* shop page content */}
-                <ShopProductsPersonalized layout={layout} products={currentData} />
+                <ShopProductsPersonalized layout={ layout } products={ currentData } />
 
                 { currentData.find(p => isDefined(p.requireLegalAge) && p.requireLegalAge === true) !== undefined &&
                     <p className="text-center my-4"><i className="fas fa-ban mr-2 text-danger"></i>{ strings["require_legal_age"] }</p>
                 }
 
                 {/* shop product pagination */}
-                { 
-                // displayedProducts.length > 
-                totalItems > pageLimit && 
+                { totalItems > pageLimit && 
                   <div className="pro-pagination-style text-center mt-30">
                     <Paginator
-                      // totalRecords={sortedProducts.length}
                       totalRecords={ totalItems }
                       pageLimit={ pageLimit }
                       pageNeighbours={ 3 }
                       setOffset={ setOffset }
                       currentPage={ currentPage }
                       setCurrentPage={ setCurrentPage }
-                      // setCurrentPage={ page => onPageChange(page, selectedCategory) }
                       pageContainerClass="mb-0 mt-0"
                       pagePrevText="«"
                       pageNextText="»"
@@ -181,10 +146,7 @@ const ShopGridNoSidebar = ({ location, match, strings }) => {
   );
 };
 
-ShopGridNoSidebar.propTypes = {
-  location: PropTypes.object,
-  // products: PropTypes.array
-};
+ShopGridNoSidebar.propTypes = { location: PropTypes.object };
 
 const mapStateToProps = state => {
   return {

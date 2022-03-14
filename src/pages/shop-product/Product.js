@@ -21,9 +21,8 @@ const Product = ({ location, match, history }) => {
   const { products } = useContext(ProductsContext);
   const [product, setProduct] = useState(undefined);
 
-  // const product = products.find(product => product.id === parseInt(id));
-
   useEffect(() => getProduct(id), []);
+  useEffect(() => getProduct(id), [id]);
 
   const getProduct = id => {
       if ( id !== "new") {

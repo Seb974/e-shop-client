@@ -1,35 +1,47 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useState } from "react";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
-import { getDiscountPrice } from "../../helpers/product";
+import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from "../../config/api";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
+import * as icons from "react-bootstrap-icons";
+import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import Imgix from "react-imgix";
 
-const ProductGridSingle = ({
-  product,
-  currency,
-  addToCart,
-  addToWishlist,
-  addToCompare,
-  cartItem,
-  wishlistItem,
-  compareItem,
-  sliderClassName,
-  spaceBottomClass
-}) => {
+const ProductGridSingle = ({product, currency, addToCart, addToWishlist, addToCompare, cartItem, wishlistItem, compareItem, sliderClassName, spaceBottomClass }) => {
+
   const [modalShow, setModalShow] = useState(false);
+  const [quantity, setQuantity] = useState(0);
   const { addToast } = useToasts();
+  const quantityInput = useRef();
   const { country, selectedCatalog } = useContext(AuthContext);
 
   const taxToApply = isDefined(product) ? product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent : 0;
   const discountedPrice = getDiscountPrice(product.price, product.discount);
   const finalProductPrice = +(product.price * currency.currencyRate* (1 + taxToApply)).toFixed(2);
   const finalDiscountedPrice = +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2);
+
+  const handleShowDetails = e => {
+    e.preventDefault();
+    setModalShow(true);
+  };
+
+  const handleChange = (number) => {
+    if (number != undefined) {
+      const quant = quantityInput.current.value === "" ? 0 : parseFloat(quantityInput.current.value);
+      setQuantity(quant + number < 0 ? 0 : quant + number);
+    } else {
+      setQuantity(quantityInput.current.value);
+    }
+  };
+
+  const handleAddToCart = (event) => {
+    addToCart(product, addToast, parseFloat(quantity));
+    setQuantity(0);
+  };
 
   return (
     <Fragment>
@@ -86,66 +98,93 @@ const ProductGridSingle = ({
             ) : (
               ""
             )}
-
             <div className="product-action">
-              <div className="pro-same-action pro-wishlist">
-                <button
-                  className={wishlistItem !== undefined ? "active" : ""}
-                  disabled={wishlistItem !== undefined}
-                  title={
-                    wishlistItem !== undefined
-                      ? "Added to wishlist"
-                      : "Add to wishlist"
-                  }
-                  onClick={() => addToWishlist(product, addToast)}
-                >
-                  <i className="pe-7s-like" />
-                </button>
-              </div>
-              <div className="pro-same-action pro-cart">
-                {product.affiliateLink ? (
+              {product.variations && product.variations.length >= 1 ? (
+                <div className="input-group  p-0 border-0 ">
                   <a
-                    href={product.affiliateLink}
-                    rel="noopener noreferrer"
-                    target="_blank"
+                    href="#"
+                    onClick={handleShowDetails}
+                    className="btn btn-dark h-100 w-100 rounded-0 py-2 px-3"
                   >
-                    {" "}
-                    Buy now{" "}
+                    Selectionnez option{" "}
                   </a>
-                ) : isDefinedAndNotVoid(product.variations) ? (
-                  <Link to={`${process.env.PUBLIC_URL}/product/${product.id}`}>
-                      Select Option
-                  </Link>
-                ) : isDefined(product.stock) && product.stock.quantity > 0 ? (
+                </div>
+              ) : 
+                  ( (getAvailableStock(product) === 0 && isDefined(product.stockManaged) && product.stockManaged === false) || getAvailableStock(product) > 0) ? (
+                <>
+                  <div className="input-group  p-0 border-0 ">
                     <button
-                      onClick={() => addToCart(product, addToast)}
-                      className={
-                        cartItem !== undefined && cartItem.quantity > 0
-                          ? "active"
-                          : ""
-                      }
-                      disabled={cartItem !== undefined && cartItem.quantity > 0}
-                      title={
-                        cartItem !== undefined ? "Added to cart" : "Add to cart"
-                      }
+                      className="btn btn-dark h-100 rounded-0 py-2 px-3"
+                      onClick={() => handleChange(-1)}
                     >
                       {" "}
-                      <i className="pe-7s-cart"></i>{" "}
-                      {cartItem !== undefined && cartItem.quantity > 0
-                        ? "Added"
-                        : "Add to cart"}
+                      -{" "}
                     </button>
-                ) : (
-                  <button disabled className="active">
-                    Out of Stock
+                    <input
+                      ref={quantityInput}
+                      type="number"
+                      className="form-control h-100 p-2 text-center bg-white border border-white"
+                      value={quantity}
+                      onChange={() => handleChange()}
+                      min="0"
+                      step="1"
+                    />
+                    <span className="input-group-text h-100 border border-white rounded-0 bg-white">
+                      {product.unit && product.unit}{" "}
+                    </span>
+                    <button
+                      className="btn btn-dark h-100 rounded-0 py-2 px-3"
+                      onClick={() => handleChange(1)}
+                    >
+                      {" "}
+                      +{" "}
+                    </button>
+                    <button
+                      className="btn btn-success pro-quickview rounded-0 w-100 h-100 p-2"
+                      onClick={handleAddToCart}
+                      title="Quick View"
+                      disabled={quantity <= 0}
+                    >
+                      <icons.CartPlus
+                        className="mb-1"
+                        color={"white"}
+                        size={20}
+                      />
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <div className="input-group  p-0 border-0 ">
+                  <button className="btn btn-dark pro-quickview rounded-0 w-100 h-100 p-2">
+                    Rupture de stock
                   </button>
-                )}
-              </div>
-              <div className="pro-same-action pro-quickview">
-                <button onClick={() => setModalShow(true)} title="Quick View">
-                  <i className="pe-7s-look" />
-                </button>
-              </div>
+                </div>
+              )}
+              {(getAvailableStock(product) ||
+                (isDefined(product.stockManaged) &&
+                  product.stockManaged === false &&
+                  getAvailableStock(product) === 0)) &&
+                !(product.variations && product.variations.length >= 1) ? (
+                <>
+                  <div className="input-group bg-dark">
+                    <button
+                      className="btn btn-success pro-quickview rounded-0 w-100 h-100 p-2"
+                      onClick={handleAddToCart}
+                      title="Quick View"
+                      disabled={quantity <= 0}
+                    >
+                      <icons.CartPlus
+                        className="mb-1"
+                        color={"white"}
+                        size={20}
+                      />{" "}
+                      <span className="fs-2 text">Ajouter au panier</span>
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
           <div className="product-content text-center">
