@@ -90,7 +90,7 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
         >
           <div className="product-img rounded">
             <a href="#" onClick={handleShowDetails}>
-              {isDefined(product.image.imgPath) ? (
+              {isDefined(product.image) && (isDefined(product.image.imgPath) ? (
                 <Imgix
                   src={product.image.imgPath}
                   className="lazyload default-img"
@@ -109,8 +109,8 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
                   src={process.env.PUBLIC_URL + product.image[0]}
                   alt=""
                 />
-              )}
-              {
+              ))}
+              { isDefined(product.image) && (
                 isDefined(product.image.imgPath) ? (
                   <Imgix
                     src={product.image.imgPath}
@@ -134,7 +134,7 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
                     }
                     alt=""
                   />
-                )
+                ))
               }
             </a>
             <div className="product-img-action input-group">
@@ -315,7 +315,7 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
               <div className="product-list-image-wrap">
                 <div className="product-img">
                   <a href="#" onClick={handleShowDetails}>
-                    {isDefined(product.image.imgPath) ? (
+                    {isDefined(product.image) && (isDefined(product.image.imgPath) ? (
                       <Imgix
                         src={product.image.imgPath}
                         className="lazyload default-img img-fluid"
@@ -340,8 +340,8 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
                         height="800"
                         width="600"
                       />
-                    )}
-                    {isDefined(product.image.imgPath) ? (
+                    ))}
+                    {isDefined(product.image) && (isDefined(product.image.imgPath) ? (
                       <Imgix
                         src={product.image.imgPath}
                         className="lazyload hover-img img-fluid"
@@ -366,7 +366,7 @@ const ProductGridPersonalizedSingle = ({ product, currency, addToCart, addToWish
                         height="800"
                         width="600"
                       />
-                    )}{" "}
+                    ))}{" "}
                     :
                   </a>
                   <div className="product-img-action input-group top-0">
