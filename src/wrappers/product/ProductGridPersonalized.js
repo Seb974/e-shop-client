@@ -1,17 +1,28 @@
 import PropTypes from "prop-types";
 import React, { Fragment } from "react";
 import { connect } from "react-redux";
+import Spinner from 'react-bootstrap/Spinner';
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 import { multilanguage } from "redux-multilanguage";
 import ProductGridPersonalizedSingle from "../../components/product/ProductGridPersonalizedSingle";
+import { Col, Container, Row } from "react-bootstrap";
 
-const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, strings}) => {
+const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, strings, loading}) => {
 
   return (
     <Fragment>
-      { products.length > 0 ? products.map(product => {
+
+      { loading ?
+        <Container>
+          <Row>
+            <Col className="text-center mx-5 my-4">
+                <Spinner animation="border" variant="danger"/>
+            </Col>
+          </Row>
+        </Container>
+        : products.length > 0 ? products.map(product => {
         return (
           <ProductGridPersonalizedSingle
               sliderClassName={sliderClassName}

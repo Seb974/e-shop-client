@@ -19,6 +19,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   const [layout, setLayout] = useState("grid three-column");
   const sortType = "";
   const sortValue = "";
+  const [loading, setLoading] = useState(false);
   const [filterSortType, setFilterSortType] = useState("");
   const [filterSortValue, setFilterSortValue] = useState("");
   const [offset, setOffset] = useState(0);
@@ -65,27 +66,34 @@ const ShopGridNoSidebar = ({ location, strings }) => {
 
   const searchWord = () => {
       if (isDefined(navSearch) && navSearch.length > 0) {
+          setLoading(true);
           ProductActions
               .findSearchedProducts(selectedCatalog.id, navSearch)
               .then(response => {
                 setProducts(response['hydra:member']);
                 setTotalItems(response['hydra:totalItems']);
-              });
+                setLoading(false);
+              })
+              .catch(error => setLoading(false));
       } else {
           setOffset(0);
           setCurrentPage(1);
           getProducts();
+          setLoading(false);
       }
   };
 
   const getProducts = (page = 1) => {
     if (isDefined(selectedCatalog)) {
+        setLoading(true);
         ProductActions
             .findPerCategory(selectedCatalog.id, selectedCategory, page, pageLimit)
             .then(response => {
               setProducts(response['hydra:member']);
               setTotalItems(response['hydra:totalItems']);
+              setLoading(false);
             })
+            .catch(error => setLoading(false));
     }
   };
 
@@ -115,14 +123,14 @@ const ShopGridNoSidebar = ({ location, strings }) => {
                 />
 
                 {/* shop page content */}
-                <ShopProductsPersonalized layout={ layout } products={ currentData } />
+                <ShopProductsPersonalized layout={ layout } products={ currentData } loading={ loading }/>
 
-                { currentData.find(p => isDefined(p.requireLegalAge) && p.requireLegalAge === true) !== undefined &&
+                { !loading && currentData.find(p => isDefined(p.requireLegalAge) && p.requireLegalAge === true) !== undefined &&
                     <p className="text-center my-4"><i className="fas fa-ban mr-2 text-danger"></i>{ strings["require_legal_age"] }</p>
                 }
 
                 {/* shop product pagination */}
-                { totalItems > pageLimit && 
+                { !loading && totalItems > pageLimit && 
                   <div className="pro-pagination-style text-center mt-30">
                     <Paginator
                       totalRecords={ totalItems }

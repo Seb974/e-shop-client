@@ -184,8 +184,3 @@ const routes = [
 ];
 
 export default routes;
-
-// <Route
-//   path={process.env.PUBLIC_URL + "/product/:id"}
-//   render={(routeProps) => <Product {...routeProps} key={routeProps.match.params.id} /> }
-// />
