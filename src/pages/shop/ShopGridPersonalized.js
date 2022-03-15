@@ -30,7 +30,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   const { products, navSearch, selectedCategory, setProducts } = useContext(ProductsContext);
   const [totalItems, setTotalItems] = useState(0);
 
-  const pageLimit = 3;
+  const pageLimit = 12;
   const { pathname } = location;
 
   const getLayout = layout => setLayout(layout);
