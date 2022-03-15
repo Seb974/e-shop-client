@@ -226,7 +226,6 @@ export const setActiveLayoutById = id => {
     item.classList.remove("active");
   });
   const selection = document.getElementById(id);
-  console.log(selection);
   if (isDefined(selection))
     selection.classList.add("active");
 };

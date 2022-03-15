@@ -43,29 +43,29 @@ const App = (props) => {
         <Elements stripe={ stripePromise }>
             <DataProvider>
                 <ToastProvider placement="bottom-left">
-                    <BreadcrumbsProvider>
-                        <HashRouter>
-                            <ScrollToTop>
-                                <Suspense fallback={ loading }>
-                                    <Switch>
-                                        { routes.map((route, index) => {
-                                            return route.component && (
-                                                <Route
-                                                    key={ index }
-                                                    path={ route.path }
-                                                    exact={ route.exact }
-                                                    name={ route.name }
-                                                    render={ props => <route.component {...props} />}
-                                                />
-                                            )
-                                        })
-                                        }
-                                        <Route component={NotFound} />
-                                    </Switch>
-                                </Suspense>
-                            </ScrollToTop>
-                        </HashRouter>
-                    </BreadcrumbsProvider>
+                        <BreadcrumbsProvider>
+                            <HashRouter>
+                                <ScrollToTop>
+                                    <Suspense fallback={ loading }>
+                                        <Switch>
+                                            { routes.map((route, index) => {
+                                                return route.component && (
+                                                    <Route
+                                                        key={ index }
+                                                        path={ route.path }
+                                                        exact={ route.exact }
+                                                        name={ route.name }
+                                                        render={ props => <route.component {...props} />}
+                                                    />
+                                                )
+                                            })
+                                            }
+                                            <Route component={NotFound} />
+                                        </Switch>
+                                    </Suspense>
+                                </ScrollToTop>
+                            </HashRouter>
+                        </BreadcrumbsProvider>
                 </ToastProvider>
                 <CookieConsent
                     debug={ false }

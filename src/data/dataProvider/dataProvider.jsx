@@ -6,6 +6,7 @@ import DeliveryContext from '../../contexts/DeliveryContext';
 import ProductsContext from '../../contexts/ProductsContext';
 import HomeContext from '../../contexts/HomeContext';
 import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
+import { ToastProvider } from "react-toast-notifications";
 import AuthActions from '../../services/AuthActions';
 import CatalogActions from '../../services/CatalogActions';
 import ContainerActions from '../../services/ContainerActions';
@@ -82,19 +83,21 @@ const DataProvider = ({ children }) => {
     }, [selectedCatalog]);
 
     return (
-        <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog, catalogs, setCatalogs, platform, setPlatform} }>
-        <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
-        <ContainerContext.Provider value={{ containers, setContainers }}>
-        <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
-        <HomeContext.Provider value={{ homepage, setHomepage }}>
-            <Mercure>
-                { children }
-            </Mercure>
-        </HomeContext.Provider>
-        </ProductsContext.Provider>
-        </ContainerContext.Provider>
-        </DeliveryContext.Provider>
-        </AuthContext.Provider>
+        <ToastProvider placement="top-right">
+            <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog, catalogs, setCatalogs, platform, setPlatform} }>
+            <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
+            <ContainerContext.Provider value={{ containers, setContainers }}>
+            <ProductsContext.Provider value={ {products, setProducts, categories, setCategories, selectedCategory, setSelectedCategory, navSearch, setNavSearch} }>
+            <HomeContext.Provider value={{ homepage, setHomepage }}>
+                <Mercure>
+                    { children }
+                </Mercure>
+            </HomeContext.Provider>
+            </ProductsContext.Provider>
+            </ContainerContext.Provider>
+            </DeliveryContext.Provider>
+            </AuthContext.Provider>
+        </ToastProvider>
     );
 }
  

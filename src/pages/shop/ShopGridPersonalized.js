@@ -13,7 +13,6 @@ import { setActiveLayoutById } from "../../helpers/product";
 import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import Paginator from "../../components/paginator/paginator";
-
 import ProductActions from "../../services/ProductActions";
 
 const ShopGridNoSidebar = ({ location, strings }) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useContext } from 'react';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 import AuthContext from '../../contexts/AuthContext';
 import api from '../../config/api';
-import eventHandler from '../../data/dataProvider/eventHandlers/eventHandler';
+import { useToasts } from "react-toast-notifications";
 import MercureContext from '../../contexts/MercureContext';
 import DeliveryContext from '../../contexts/DeliveryContext';
 import touringEvents from '../../data/dataProvider/eventHandlers/touringEvents';
@@ -10,6 +10,7 @@ import { isDefined } from '../../helpers/utils';
 
 const MercureHub = ({ children }) => {
     
+    const { addToast } = useToasts();
     const url = new URL(api.MERCURE_DOMAIN + "/.well-known/mercure");
     const { currentUser, eventSource, setEventSource } = useContext(AuthContext);
     const { packages, setPackages, tourings, setTourings, relaypoints, setRelaypoints } = useContext(DeliveryContext);
@@ -17,6 +18,7 @@ const MercureHub = ({ children }) => {
     const { updatedUsers, setUpdatedUsers, updatedContainers, setUpdatedContainers, updatedHomepages, setUpdatedHomepages } = useContext(MercureContext);
     const { updatedRelaypoints, setUpdatedRelaypoints, updatedCities, setUpdatedCities, updatedArticles, setUpdatedArticles } = useContext(MercureContext);
     const { updatedCatalogs, setUpdatedCatalogs } = useContext(MercureContext);
+    const networkMessage = "Vous avez été déconnecté d' internet. Vérifiez l'état de votre connexion et rafraîchissez la page.";
 
     useEffect(() => {
         closeIfExists();
@@ -47,10 +49,14 @@ const MercureHub = ({ children }) => {
             eventSource.close();
     };
 
-    // eventSource.onopen = event => console.log(event);
-    // eventSource.onmessage = event => eventHandler.dispatch(event);
-
-    // eventSource.onerror = event => console.log(event);
+    eventSource.onerror = errorEvent => {
+        console.log(errorEvent);
+        console.log(errorEvent.error.message);
+        if (errorEvent.error.message === 'network error') {
+            closeIfExists();
+            addToast(networkMessage, { placement: "top-right", appearance: "error", autoDismiss: false });
+        }
+    };
 
     eventSource.onmessage = event => {
         const data = JSON.parse(event.data);

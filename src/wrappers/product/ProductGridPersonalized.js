@@ -9,13 +9,12 @@ import { multilanguage } from "redux-multilanguage";
 import ProductGridPersonalizedSingle from "../../components/product/ProductGridPersonalizedSingle";
 import { Col, Container, Row } from "react-bootstrap";
 
-const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, strings, loading}) => {
+const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist, addToCompare, cartItems, wishlistItems, compareItems, sliderClassName, spaceBottomClass, strings, loading }) => {
 
   return (
     <Fragment>
 
-      {
-       loading ?
+      { loading ?
         <Container>
           <Row>
             <Col className="text-center mx-5 my-4">
