@@ -49,8 +49,12 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   // offset, sortType, sortValue, filterSortType, filterSortValue
 
   useEffect(() => {
-      setCurrentPage(1);
-      searchWord();
+    setCurrentPage(1);
+    if (isDefined(navSearch) && navSearch.length > 0) {
+        searchWord();
+    } else {
+        getProducts();
+    }
   }, [navSearch]);
 
   useEffect(() => {
