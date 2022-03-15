@@ -1,20 +1,15 @@
 import PropTypes from "prop-types";
 import React, { useContext, useEffect, useState } from "react";
-import bannerData from "../../data/banner/banner-eighteen.json";
 import BannerEighteenSingle from "../../components/banner/BannerEighteenSingle.js";
 import HomeContext from "../../contexts/HomeContext";
-import ProductsContext from "../../contexts/ProductsContext";
 import AuthContext from "../../contexts/AuthContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const BannerEighteen = ({ spaceTopClass, spaceBottomClass }) => {
 
   const { homepage } = useContext(HomeContext);
-  const { products } = useContext(ProductsContext);
   const { selectedCatalog } = useContext(AuthContext);
   const [banners, setBanners] = useState([]);
-
-  useEffect(() => console.log(banners), [banners]);
 
   useEffect(() => fetchBanners(),[homepage, selectedCatalog]);
 
