@@ -61,7 +61,6 @@ const MyAccount = ({ location, strings }) => {
                     });
                     setInformationsErrors(apiErrors);
                 }
-                //TODO : Flash notification d'erreur
             }
         });
   }
@@ -81,7 +80,6 @@ const MyAccount = ({ location, strings }) => {
                   setAuthenticationError();
           })
           .catch( error => {
-              // setAuthenticationError()
               addToast(strings["error_occured"], { appearance: "error", autoDismiss: true});
           });
   };

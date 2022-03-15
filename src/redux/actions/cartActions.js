@@ -50,7 +50,6 @@ export const decreaseQuantity = (item, addToast) => {
         autoDismiss: true
       });
     }
-    // dispatch({ type: DECREASE_QUANTITY, payload: item });
     dispatch({ type: DECREASE_QUANTITY, payload: setSecuredProduct(item) });
   };
 };
@@ -66,12 +65,10 @@ export const deleteFromCart = (item, addToast) => {
       addToast(message, { appearance: "error", autoDismiss: true });
     }
     dispatch({ type: DELETE_FROM_CART, payload: item });
-    // dispatch({ type: DELETE_FROM_CART, payload: setSecuredProduct(item) });
   };
 };
 //delete all from cart
 export const deleteAllFromCart = addToast => {
-  console.log("In deleteFromCart function");
   return dispatch => {
     if (isDefined(addToast)) {
       const local_storage = JSON.parse(localStorage.getItem('redux_localstorage_simple'));

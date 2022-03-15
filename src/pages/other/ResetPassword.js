@@ -1,11 +1,9 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import MetaTags from "react-meta-tags";
 import Card from "react-bootstrap/Card";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
-import AuthContext from "../../contexts/AuthContext";
 import Field from "../../components/forms/Field";
 import AuthActions from "../../services/AuthActions";
 import { useToasts } from "react-toast-notifications";
@@ -17,7 +15,6 @@ const ResetPassword = ({ location, strings, match, history }) => {
   const { id = "new" } = match.params;
   const { pathname } = location;
   const { addToast } = useToasts();
-  const { currentUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [reset, setReset] = useState(null);
   const defaultEmail = "unexisting";
@@ -58,12 +55,9 @@ const ResetPassword = ({ location, strings, match, history }) => {
           setSizeError();
           return ;
       }
-      console.log(reset);
       AuthActions
           .resetAccountPassword(reset, newPassword)
           .then(response => {
-            console.log(response);
-            console.log(response.data);
             response.data.success ? setUpdatePasswordSuccess() : setAuthenticationError()
             })
           .catch( error => addToast(strings["email_not_found"], { appearance: "error", autoDismiss: true}));
@@ -92,7 +86,6 @@ const ResetPassword = ({ location, strings, match, history }) => {
       addToast(strings["update_password_successful"], { appearance: "success", autoDismiss: true});
       setPasswordErrors(defaultPasswordErrors);
       setChangePassword(defaultPasswordErrors);
-      // setTimeout(() => history.push("/"), 4000);
   };
 
   return email === defaultEmail ? <Redirect to="/"/> : (

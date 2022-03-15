@@ -31,16 +31,7 @@ export const getDiscountPrice = (price, discount, offerEnd = new Date()) => {
 
 // get product cart quantity
 export const getProductCartQuantity = (cartItems, selectedProduct, color, size) => {
-  // let productInCart = cartItems.find(single => {
-  //     return single.product.id === product.id && 
-  //     (isDefined(single.selectedProductColor) && isDefined(color) ? single.selectedProductColor.id === color.id : true) &&
-  //     (isDefined(single.selectedProductSize) && isDefined(size) ? single.selectedProductSize.id === size.id : true)
-  //   });
-  // console.log(product.name);
-  // console.log(productInCart);
-  // if (cartItems.length >= 1 && isDefined(productInCart)) {
   if (isDefinedAndNotVoid(cartItems)) {
-    // if (product.variations) {
     if (isDefined(color) && isDefined(size)) {
       let productInCart = cartItems.find( ({ selectedProductColor, selectedProductSize, product }) => {
           return product.id === selectedProduct.id &&
@@ -48,15 +39,9 @@ export const getProductCartQuantity = (cartItems, selectedProduct, color, size) 
           (isDefined(selectedProductSize) ? selectedProductSize.id === size.id : true)
       });
       return isDefined(productInCart) ? productInCart.quantity : 0;
-        
-      //   cartItems.find(single =>
-      //       single.product.id === product.id &&
-      //       (isDefined(single.selectedProductColor) ? single.selectedProductColor.id === color.id : true) &&
-      //       (isDefined(single.selectedProductSize) ? single.selectedProductSize.id === size.id : true)
-      // ).quantity;
     } else {
         let productInCart = cartItems.find(single => selectedProduct.id === single.product.id);
-        return isDefined(productInCart) ? productInCart.quantity : 0;     // cartItems.find(single => product.id === single.product.id).quantity;
+        return isDefined(productInCart) ? productInCart.quantity : 0;
     }
   } else {
       return 0;

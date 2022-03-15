@@ -4,21 +4,17 @@ import MetaTags from "react-meta-tags";
 import { connect } from "react-redux";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import RelatedProductSlider from "../../wrappers/product/RelatedProductSlider";
-import ProductDescriptionTab from "../../wrappers/product/ProductDescriptionTab";
 import ProductImageDescription from "../../wrappers/product/ProductImageDescription";
-import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined } from "../../helpers/utils";
 import api from "../../config/api";
 import AuthContext from "../../contexts/AuthContext";
 import ProductActions from "../../services/ProductActions";
-import { Redirect } from "react-router-dom";
 
 const Product = ({ location, match, history }) => {
 
   const { id = "new" } = match.params;
   const { pathname } = location;
   const { platform } = useContext(AuthContext);
-  const { products } = useContext(ProductsContext);
   const [product, setProduct] = useState(undefined);
 
   useEffect(() => getProduct(id), []);
@@ -82,12 +78,6 @@ Product.propTypes = {
 };
 
 const mapStateToProps = (state, ownProps) => {
-  // const itemId = ownProps.match.params.id;
-  // return {
-  //   product: state.productData.products.filter(
-  //     single => single.product.id === itemId
-  //   )[0]
-  // };
   return {};
 };
 

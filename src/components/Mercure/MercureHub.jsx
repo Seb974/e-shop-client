@@ -13,7 +13,7 @@ const MercureHub = ({ children }) => {
     const { addToast } = useToasts();
     const url = new URL(api.MERCURE_DOMAIN + "/.well-known/mercure");
     const { currentUser, eventSource, setEventSource } = useContext(AuthContext);
-    const { packages, setPackages, tourings, setTourings, relaypoints, setRelaypoints } = useContext(DeliveryContext);
+    const { tourings, setTourings } = useContext(DeliveryContext);
     const { updatedOrders, setUpdatedOrders, updatedProducts, setUpdatedProducts, updatedCategories, setUpdatedCategories } = useContext(MercureContext);
     const { updatedUsers, setUpdatedUsers, updatedContainers, setUpdatedContainers, updatedHomepages, setUpdatedHomepages } = useContext(MercureContext);
     const { updatedRelaypoints, setUpdatedRelaypoints, updatedCities, setUpdatedCities, updatedArticles, setUpdatedArticles } = useContext(MercureContext);
@@ -50,8 +50,6 @@ const MercureHub = ({ children }) => {
     };
 
     eventSource.onerror = errorEvent => {
-        console.log(errorEvent);
-        console.log(errorEvent.error.message);
         if (errorEvent.error.message === 'network error') {
             closeIfExists();
             addToast(networkMessage, { placement: "top-right", appearance: "error", autoDismiss: false });
@@ -72,7 +70,7 @@ const MercureHub = ({ children }) => {
         if (data['@id'].includes('users') || (data['@id'].includes('metas') && (!isDefined(data.isRelaypoint) || !data.isRelaypoint)))
             setUpdatedUsers([...updatedUsers, data]);
 
-        if (data['@id'].includes('order_entities'))     // && updatedOrders.findIndex(o => o.id === data.id) === -1
+        if (data['@id'].includes('order_entities'))
             setUpdatedOrders([...updatedOrders, data]);
 
         if (data['@id'].includes('products') || (data['@id'].includes('prices') && !data['@id'].includes('catalog_prices')) || data['@id'].includes('stocks')) {

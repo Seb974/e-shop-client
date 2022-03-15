@@ -7,7 +7,6 @@ import { isDefined } from "../../helpers/utils";
 import ContactMap from "../../components/map/contact/Map";
 import AuthContext from "../../contexts/AuthContext";
 import api from "../../config/api";
-import Field from "../../components/forms/Field";
 import MessageActions from "../../services/MessageActions";
 import { multilanguage } from "redux-multilanguage";
 import { useToasts } from "react-toast-notifications";
@@ -41,7 +40,6 @@ const Contact = ({ location, strings }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    console.log(message);
     MessageActions
         .create(message)
         .then(response => {
@@ -52,7 +50,6 @@ const Contact = ({ location, strings }) => {
           setMessage(defaultMessage);
       })
       .catch(error => {
-        console.log(error);
         addToast(
           "Une erreur est survenue lors de l'envoi de votre message. Veuillez réessayer ultérieurement.", 
           { appearance: "warning", autoDismiss: true, autoDismissTimeout: 8000 });
@@ -151,7 +148,6 @@ const Contact = ({ location, strings }) => {
                       <div className="col-lg-6">
                         <input 
                             name="email" 
-                            placeholder="Email*" 
                             type="email"
                             value={ message.email }
                             onChange={ handleChange }
@@ -163,7 +159,6 @@ const Contact = ({ location, strings }) => {
                       <div className="col-lg-12">
                         <input
                           name="subject"
-                          placeholder="Subject*"
                           type="text"
                           value={ message.subject }
                           onChange={ handleChange }

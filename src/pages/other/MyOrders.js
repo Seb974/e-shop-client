@@ -48,7 +48,6 @@ const MyOrders = ({ location, cartItems, currency, addToCart, wishlistItems, del
   }, [updatedOrders]);
 
   const handleResendOrder = ({ currentTarget }, items) => {
-      // deleteAllFromCart();
       let isComplete = true;
       items.map(item => {
           const stock = getStock(item);

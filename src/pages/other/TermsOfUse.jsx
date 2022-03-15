@@ -1,19 +1,15 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import MetaTags from "react-meta-tags";
-import BlogComment from "../../wrappers/blog/BlogComment";
-import BlogPost from "../../wrappers/blog/BlogPost";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import ArticleActions from "../../services/ArticleActions";
 import { isDefined } from "../../helpers/utils";
 import parse from 'html-react-parser';
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
 
-const TermsOfUse = ({ match, history, location, strings }) => {
+const TermsOfUse = ({ location, strings }) => {
 
-  const { id = "new" } = match.params;
   const { platform } = useContext(AuthContext);
 
   return !isDefined(platform) ? <></> : (

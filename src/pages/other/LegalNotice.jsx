@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import MetaTags from "react-meta-tags";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import { isDefined } from "../../helpers/utils";

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import { connect } from "react-redux";
-import { getProducts } from "../../helpers/product";
 import ProductGridHomePersonalizedSingle from "../../components/product/ProductGridHomePersonalizedSingle";
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
@@ -16,18 +15,9 @@ const ProductGridHomePersonalized = ({currency, addToCart, addToWishlist, addToC
   const pageLimit = 4;
   const { products, setProducts, setSelectedCategory } = useContext(ProductsContext);
   const { selectedCatalog } = useContext(AuthContext);
-  // const [displayedProducts, setDisplayedProducts] = useState([]);
 
   useEffect(() => getHomeProducts(), []);
   useEffect(() => getHomeProducts(), [selectedCatalog, section]);
-
-  // useEffect(() => {
-  //   if (isDefinedAndNotVoid(products) && isDefined(selectedCatalog)) {
-  //     const productsToDisplay = products.filter(p => p.catalogs.find(c => c.id === selectedCatalog.id));
-  //     const productSet = getProducts(productsToDisplay, category, type, limit);
-  //     setDisplayedProducts(productSet);
-  //   }
-  // }, [products, selectedCatalog, type]);
 
   const getHomeProducts = () => {
     if (isDefined(selectedCatalog) && type === section) {
@@ -44,7 +34,6 @@ const ProductGridHomePersonalized = ({currency, addToCart, addToWishlist, addToC
   return (
     <Fragment>
       { 
-      // displayedProducts.map(product => {
         isDefinedAndNotVoid(products) && products.map(product => {
             return (
                 <ProductGridHomePersonalizedSingle
@@ -91,12 +80,6 @@ ProductGridHomePersonalized.propTypes = {
 
 const mapStateToProps = (state, ownProps) => {
   return {
-    // products: getProducts(
-    //   state.productData.products,
-    //   ownProps.category,
-    //   ownProps.type,
-    //   ownProps.limit
-    // ),
     currency: state.currencyData,
     cartItems: state.cartData,
     wishlistItems: state.wishlistData,

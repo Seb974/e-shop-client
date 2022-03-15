@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { Fragment, useContext, useRef, useState } from "react";
 import { useToasts } from "react-toast-notifications";
-import { getDiscountPrice, getElementsFromIds, getAvailableStock } from "../../helpers/product";
+import { getDiscountPrice, getAvailableStock } from "../../helpers/product";
 import Rating from "./sub-components/ProductRating";
 import ProductModal from "./ProductModal";
 import api from '../../config/api';

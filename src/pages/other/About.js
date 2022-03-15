@@ -10,8 +10,6 @@ import TeamMemberOne from "../../wrappers/team-member/TeamMemberOne";
 import BrandLogoSliderOne from "../../wrappers/brand-logo/BrandLogoSliderOne";
 import api from "../../config/api";
 import AboutUsActions from "../../services/AboutUsActions";
-import HeroSliderThirty from "../../wrappers/hero-slider/HeroSliderThirty";
-import HeroSliderThirteen from "../../wrappers/hero-slider/HeroSliderThirteen";
 import HeroSliderEight from "../../wrappers/hero-slider/HeroSliderEight";
 import ProductsContext from "../../contexts/ProductsContext";
 import DeliveryContext from "../../contexts/DeliveryContext";

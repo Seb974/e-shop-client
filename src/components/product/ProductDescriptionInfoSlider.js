@@ -8,20 +8,7 @@ import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
 import Rating from "./sub-components/ProductRating";
 
-const ProductDescriptionInfoSlider = ({
-  product,
-  discountedPrice,
-  currency,
-  finalDiscountedPrice,
-  finalProductPrice,
-  cartItems,
-  wishlistItem,
-  compareItem,
-  addToast,
-  addToCart,
-  addToWishlist,
-  addToCompare
-}) => {
+const ProductDescriptionInfoSlider = ({ product, discountedPrice, currency, finalDiscountedPrice, finalProductPrice, cartItems, wishlistItem, compareItem, addToast, addToCart, addToWishlist, addToCompare }) => {
   const [selectedProductColor, setSelectedProductColor] = useState(
     product.variation ? product.variation[0].color : ""
   );
@@ -33,12 +20,7 @@ const ProductDescriptionInfoSlider = ({
   );
   const [quantityCount, setQuantityCount] = useState(1);
 
-  const productCartQty = getProductCartQuantity(
-    cartItems,
-    product,
-    selectedProductColor,
-    selectedProductSize
-  );
+  const productCartQty = getProductCartQuantity( cartItems, product, selectedProductColor, selectedProductSize);
 
   return (
     <div className="product-details-content pro-details-slider-content">

@@ -6,11 +6,10 @@ import { hasVariationScope, getAvailableStock, getProductCartQuantity } from "..
 import { addToCart } from "../../redux/actions/cartActions";
 import { addToWishlist } from "../../redux/actions/wishlistActions";
 import { addToCompare } from "../../redux/actions/compareActions";
-import Rating from "./sub-components/ProductRating";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import { FacebookShareButton, FacebookIcon, TwitterIcon, FacebookMessengerShareButton, FacebookMessengerIcon, TwitterShareButton, LinkedinIcon, LinkedinShareButton } from "react-share";
-import { RiShoppingCartLine, RiCloseLine, RiEmotionUnhappyLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill } from "react-icons/ri";
+import { RiShoppingCartLine, RiEmotionUnhappyLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill } from "react-icons/ri";
 import AuthContext from "../../contexts/AuthContext";
 import api from "../../config/api";
 

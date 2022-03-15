@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
-import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
-import DeliveryTable from '../../components/deliveryNotes/deliveryTable';
+import { Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
+import { isDefined } from '../../helpers/utils';
 import DeliveryInformations from '../../components/deliveryNotes/deliveryInformations';
 import OrderActions from '../../services/OrderActions';
 
@@ -80,7 +79,6 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         textAlign: 'left',
-        // color: 'grey'
     }
 });
 

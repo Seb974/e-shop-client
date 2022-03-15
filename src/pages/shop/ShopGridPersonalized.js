@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import MetaTags from "react-meta-tags";
-// import Paginator from "react-hooks-paginator";
 import { connect } from "react-redux";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
@@ -45,7 +44,6 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   useEffect(() => getProducts(currentPage), [currentPage]);
 
   useEffect(() => setProductsToDisplay(), [products]);
-  // offset, sortType, sortValue, filterSortType, filterSortValue
 
   useEffect(() => {
     setCurrentPage(1);
@@ -157,9 +155,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
 ShopGridNoSidebar.propTypes = { location: PropTypes.object };
 
 const mapStateToProps = state => {
-  return {
-    // products: state.productData.products
-  };
+  return {};
 };
 
 export default connect(mapStateToProps)(multilanguage(ShopGridNoSidebar));

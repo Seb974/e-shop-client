@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import MercureHub from '../../components/Mercure/MercureHub';
 import AuthContext from '../../contexts/AuthContext';
 import ContainerContext from '../../contexts/ContainerContext';
 import DeliveryContext from '../../contexts/DeliveryContext';
@@ -11,11 +10,8 @@ import AuthActions from '../../services/AuthActions';
 import CatalogActions from '../../services/CatalogActions';
 import ContainerActions from '../../services/ContainerActions';
 import CategoryActions from '../../services/CategoryActions';
-import ProductActions from '../../services/ProductActions';
 import HomepageActions from '../../services/HomepageActions';
-import dbProducts from "../products.json";
 import Mercure from '../../mercure/Mercure';
-import Roles from '../../config/Roles';
 import PlatformActions from '../../services/PlatformActions';
 
 const DataProvider = ({ children }) => {
@@ -44,14 +40,10 @@ const DataProvider = ({ children }) => {
 
     useEffect(() => {
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
-        // AuthActions.getGeolocation()
-        //            .then(response => setCountry(response));
         PlatformActions.find()
                        .then(response => setPlatform(response));
         AuthActions.getUserSettings()
                    .then(response => setSettings(response));
-        // ProductActions.findAll()
-        //               .then(response => setProducts(response));
         ContainerActions.findAll()
                         .then(response => setContainers(response));
         CatalogActions.findAll()

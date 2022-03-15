@@ -32,7 +32,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const { products, categories } = useContext(ProductsContext);
   const initialErrors = {name:"", email: "", phone: "", address: ""};
   const { currentUser, country, settings, selectedCatalog, platform } = useContext(AuthContext);
-  const { setCities, setRelaypoints, condition, packages, relaypoints, totalWeight, availableWeight } = useContext(DeliveryContext);
+  const { setCities, setRelaypoints, condition, packages, relaypoints } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const initialInformations = { phone: '', address: '', address2: '', zipcode: '', city: '', position: isDefined(selectedCatalog) ? selectedCatalog.center : [0, 0]};
   const [informations, setInformations] = useState(initialInformations);
@@ -143,7 +143,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   const createOrder = (callBack = null) => {
     const order = getOrderToWrite(user, informations, productCart, date, objectDiscount, message, selectedCatalog, currentUser, condition);
-    console.log(order);
     return OrderActions
         .create(order)
         .then(response => {
@@ -175,7 +174,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
             { isDefinedAndNotVoid(productCart) ?
-              // <form>
                 <div className="row">
                   <div className="col-lg-7">
                   <form>
@@ -309,14 +307,10 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              // (Math.round(cartTotalPrice * 1000) / 1000 * (1 - discount)).toFixed(2) + " " + currency.currencySymbol :
-                                              // (Math.round(cartTotalPrice * 1000) / 1000 - discount).toFixed(2) + " " + currency.currencySymbol
                                               (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
                                               (Math.round((cartTotalPrice - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
                                       :
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              // (Math.round(cartTotalPrice * 1000) / 1000 * (1 - discount) + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
-                                              // (Math.round(cartTotalPrice * 1000) / 1000 - discount + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
                                               (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
                                               (Math.round((cartTotalPrice - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
                                     }
@@ -350,7 +344,6 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                     </div>
                   </div>
                 </div>
-              // {/* </form> */}
             :
               <div className="row">
                 <div className="col-lg-12">

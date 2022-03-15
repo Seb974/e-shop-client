@@ -1,5 +1,4 @@
-import PropTypes from "prop-types";
-import React, { Fragment, useContext, useEffect, useState } from "react";
+import React, { Fragment, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useToasts } from "react-toast-notifications";
 import { isDefined, isDefinedAndNotVoid } from "../../../helpers/utils";
