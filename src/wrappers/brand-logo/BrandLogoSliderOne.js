@@ -19,7 +19,7 @@ const BrandLogoSliderOne = ({ spaceBottomClass, spaceTopClass, strings }) => {
 
   const fetchSellers = () => {
       SellerActions
-        .findAll()
+        .findSellersWithLogo()
         .then(response => setSellers(response));
   };
 

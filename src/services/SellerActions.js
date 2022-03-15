@@ -2,8 +2,14 @@ import api from '../config/api';
 
 function findAll() {
     return api
-        .get('/api/sellers')
-        .then(response => response.data['hydra:member'].sort((a, b) => (a.name > b.name) ? 1 : -1));
+        .get('/api/sellers?order[name]=asc')
+        .then(response => response.data['hydra:member']);
+}
+
+function findSellersWithLogo() {
+    return api
+    .get('/api/sellers?existingImage=1&order[name]=asc')
+    .then(response => response.data['hydra:member']);
 }
 
 function deleteSeller(id) {
@@ -26,6 +32,7 @@ function create(seller) {
 
 export default {
     findAll,
+    findSellersWithLogo,
     delete: deleteSeller,
     find,
     update,
