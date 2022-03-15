@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import '../../assets/css/search-input.css';
 import React, { useContext, useEffect, useState } from "react";
-import { setActiveLayout } from "../../helpers/product";
+import { setActiveLayoutById } from "../../helpers/product";
 import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
@@ -60,23 +60,23 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
       </div>
 
       <div className="col-md-2 shop-tab text-right mr-1">
-        <button onClick={e => {
-            getLayout("grid two-column");
-            setActiveLayout(e);
-          }}
-        >
-          <i className="fa fa-th-large" />
-        </button>
-        <button onClick={e => {
-            getLayout("grid three-column");
-            setActiveLayout(e);
+        <button id="grid three-column" onClick={({currentTarget}) => {
+            getLayout(currentTarget.id);
+            setActiveLayoutById(currentTarget.id);
           }}
         >
           <i className="fa fa-th" />
         </button>
-        <button onClick={e => {
+        <button id="grid two-column" onClick={({currentTarget}) => {
+            getLayout(currentTarget.id);
+            setActiveLayoutById(currentTarget.id);
+          }}
+        >
+          <i className="fa fa-th-large" />
+        </button>
+        <button id="grid column-list" onClick={({currentTarget}) => {
             getLayout("list");
-            setActiveLayout(e);
+            setActiveLayoutById(currentTarget.id);
           }}
         >
           <i className="fa fa-list-ul" />

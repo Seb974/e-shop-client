@@ -14,7 +14,8 @@ const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist,
   return (
     <Fragment>
 
-      { loading ?
+      {
+       loading ?
         <Container>
           <Row>
             <Col className="text-center mx-5 my-4">
@@ -22,7 +23,8 @@ const ProductGridPersonalized = ({ products, currency, addToCart, addToWishlist,
             </Col>
           </Row>
         </Container>
-        : products.length > 0 ? products.map(product => {
+        : 
+        products.length > 0 ? products.map(product => {
         return (
           <ProductGridPersonalizedSingle
               sliderClassName={sliderClassName}

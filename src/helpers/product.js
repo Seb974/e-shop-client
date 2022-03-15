@@ -220,6 +220,17 @@ export const setActiveLayout = e => {
   e.currentTarget.classList.add("active");
 };
 
+export const setActiveLayoutById = id => {
+  const gridSwitchBtn = document.querySelectorAll(".shop-tab button");
+  gridSwitchBtn.forEach(item => {
+    item.classList.remove("active");
+  });
+  const selection = document.getElementById(id);
+  console.log(selection);
+  if (isDefined(selection))
+    selection.classList.add("active");
+};
+
 export const toggleShopTopFilter = e => {
   const shopTopFilterWrapper = document.querySelector(
     "#product-filter-wrapper"

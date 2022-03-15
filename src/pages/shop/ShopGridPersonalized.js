@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Fragment, useState, useEffect, useContext } from "react";
 import MetaTags from "react-meta-tags";
-import Paginator from "react-hooks-paginator";
+// import Paginator from "react-hooks-paginator";
 import { connect } from "react-redux";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import ShopTopbar from "../../wrappers/product/ShopTopbar";
@@ -9,8 +9,10 @@ import ShopProductsPersonalized from "../../wrappers/product/ShopProductsPersona
 import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
+import { setActiveLayoutById } from "../../helpers/product";
 import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
+import Paginator from "../../components/paginator/paginator";
 
 import ProductActions from "../../services/ProductActions";
 
@@ -22,19 +24,16 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   const [loading, setLoading] = useState(false);
   const [filterSortType, setFilterSortType] = useState("");
   const [filterSortValue, setFilterSortValue] = useState("");
-  const [offset, setOffset] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
   const { platform, selectedCatalog } = useContext(AuthContext);
   const { products, navSearch, selectedCategory, setProducts } = useContext(ProductsContext);
   const [totalItems, setTotalItems] = useState(0);
 
-  const pageLimit = 12;
+  const pageLimit = 3;
   const { pathname } = location;
 
-  const getLayout = layout => {
-    setLayout(layout);
-  };
+  const getLayout = layout => setLayout(layout);
 
   const getFilterSortParams = (sortType, sortValue) => {
     setFilterSortType(sortType);
@@ -42,26 +41,26 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   };
 
   useEffect(() => getProducts(), []);
+  useEffect(() => setActiveLayoutById(layout), [platform]);
+
   useEffect(() => getProducts(currentPage), [currentPage]);
 
-  useEffect(() => setProductsToDisplay(), [products, offset, sortType, sortValue, filterSortType, filterSortValue]);
+  useEffect(() => setProductsToDisplay(), [products]);
+  // offset, sortType, sortValue, filterSortType, filterSortValue
 
   useEffect(() => {
-      setOffset(0);
       setCurrentPage(1);
       searchWord();
   }, [navSearch]);
 
   useEffect(() => {
-      setOffset(0);
-      setCurrentPage(1);
-      getProducts();
+        setCurrentPage(1);
+        getProducts();
   }, [selectedCategory, selectedCatalog]);
 
   const setProductsToDisplay = () => {
-    if (isDefined(products) && isDefined(selectedCatalog)) {
+    if (isDefined(products) && isDefined(selectedCatalog))
         setCurrentData(products);
-    }
   };
 
   const searchWord = () => {
@@ -75,8 +74,8 @@ const ShopGridNoSidebar = ({ location, strings }) => {
                 setLoading(false);
               })
               .catch(error => setLoading(false));
-      } else {
-          setOffset(0);
+      } 
+      else {
           setCurrentPage(1);
           getProducts();
           setLoading(false);
@@ -84,7 +83,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   };
 
   const getProducts = (page = 1) => {
-    if (isDefined(selectedCatalog)) {
+    if (page >= 1 && isDefined(selectedCatalog)) {
         setLoading(true);
         ProductActions
             .findPerCategory(selectedCatalog.id, selectedCategory, page, pageLimit)
@@ -116,6 +115,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
                 {/* shop topbar default */}
                 <ShopTopbar
                   getLayout={getLayout}
+                  layout={layout}
                   getFilterSortParams={getFilterSortParams}
                   productCount={totalItems}
                   sortedProductCount={currentData.length}
@@ -136,13 +136,10 @@ const ShopGridNoSidebar = ({ location, strings }) => {
                       totalRecords={ totalItems }
                       pageLimit={ pageLimit }
                       pageNeighbours={ 3 }
-                      setOffset={ setOffset }
                       currentPage={ currentPage }
                       setCurrentPage={ setCurrentPage }
-                      pageContainerClass="mb-0 mt-0"
-                      pagePrevText="«"
-                      pageNextText="»"
                     />
+                    <Paginator />
                   </div>
                  }
               </div>
