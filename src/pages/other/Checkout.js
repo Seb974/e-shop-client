@@ -25,6 +25,7 @@ import PromotionActions from "../../services/PromotionActions";
 import OrderActions from "../../services/OrderActions";
 import { checkForRestrictions, getOrderToWrite, validateForm } from "../../helpers/checkout";
 import api from "../../config/api";
+import { Display } from "react-bootstrap-icons";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
@@ -45,6 +46,8 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
   const [objectDiscount, setObjectDiscount] = useState(null);
   const [errors, setErrors] = useState(initialErrors);
   let cartTotalPrice = 0;
+  let cartTotalTax = 0;
+  let packageTotalTax = 0;
 
   useEffect(() => {
      setCurrentUser();
@@ -227,11 +230,13 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                             <ul>
                               { productCart.map((cartItem, key) => {
                                 const taxToApply = !isDefined(cartItem) || !isDefined(cartItem.product) || !settings.subjectToTaxes ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
+                                const taxLevel = !isDefined(cartItem) || !isDefined(cartItem.product) ? 0 : cartItem.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;  // || !settings.subjectToTaxes
                                 const discountedPrice = isDefined(cartItem) && isDefined(cartItem.product) ? getDiscountPrice(cartItem.product.price, cartItem.product.discount, cartItem.product.offerEnd) : 0;
                                 const finalProductPrice = isDefined(cartItem) && isDefined(cartItem.product) ? Math.round(cartItem.product.price * currency.currencyRate * (1 + taxToApply) * 1000) / 1000 : 0;
                                 const finalDiscountedPrice = Math.round(discountedPrice * currency.currencyRate * (1 + taxToApply) * 1000) / 1000;
 
                                 cartTotalPrice += (discountedPrice != null ? finalDiscountedPrice : finalProductPrice) * cartItem.quantity;
+                                cartTotalTax += (discountedPrice != null ? finalDiscountedPrice : cartItem.product.price) * cartItem.quantity * taxLevel;
 
                                 return !(isDefined(cartItem) && isDefined(cartItem.product)) ? <div key={key}></div> :
                                     <li key={key}>
@@ -283,7 +288,9 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               <div className="your-order-middle"> 
                                     <ul>
                                       { packages.map((_package, key) => {
+                                        const packageTax = !isDefined(_package) || !isDefined(_package.container) ? 0 : _package.container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
                                         const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+                                        packageTotalTax += (isDefined(catalogPrice) ? catalogPrice.amount : 0) * _package.quantity * packageTax; 
                                         return <li key={ key }>
                                                 <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
                                                 <span className="order-price">
@@ -316,6 +323,23 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                     }
                                 </li>
                             </ul>
+                            { ((isDefined(cartTotalTax) ? cartTotalTax : 0) + (isDefined(packageTotalTax) ? packageTotalTax : 0)) > 0 &&
+                              <div style={{ color: 'black'}}><ul>
+                                  <li style={{ color: 'black', fontSize: '0.9em', display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+                                    <span style={{ textAlign: 'left'}}> 
+                                    {/*  width: '50%',  */}
+                                        {settings.subjectToTaxes ? "Dont TVA" : "TVA"}
+                                    </span>
+                                    {" "}
+                                    <span style={{ textAlign: 'right' }}>
+                                      {/*  width: '50%',  */}
+                                        { ((isDefined(cartTotalTax) ? cartTotalTax : 0) + (isDefined(packageTotalTax) ? packageTotalTax : 0)).toFixed(2) 
+                                          + " " + currency.currencySymbol
+                                        }
+                                    </span>
+                                  </li>
+                              </ul></div>
+                            }
                           </div>
                         </div>
                         <div className="payment-method"></div>
