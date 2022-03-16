@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     },
     page: {
       position: 'absolute',
-      backgroundColor: '#E4E4E4',
+    //   backgroundColor: '#E4E4E4',
       width: 100,
       height: 100
     },
