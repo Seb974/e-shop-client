@@ -7,9 +7,6 @@ import { connect } from "react-redux";
 import { getDiscountPrice } from "../../helpers/product";
 import { addToCart, decreaseQuantity, deleteFromCart, cartItemStock, deleteAllFromCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import ProductsContext from "../../contexts/ProductsContext";
-import { getProductsFromIds } from '../../helpers/product';
-import ProductActions from "../../services/ProductActions";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
@@ -23,31 +20,14 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
 
   const [quantityCount] = useState(1);
   const { addToast } = useToasts();
-  const { pathname } = location;
   const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
   const { packages } = useContext(DeliveryContext);
-  const { products, setProducts } = useContext(ProductsContext);
   const [productCart, setProductCart] = useState([]);
   const totalPackages = isDefinedAndNotVoid(packages) ? getTotalCost(packages, country) : 0;
   let cartTotalPrice = 0;
   let cartTotalTax = 0;
 
-  useEffect(() => {
-    let productSet = [];
-    if (products.length <= 0) {
-        ProductActions
-            .findAll()
-            .then(response => {
-                setProducts(response);
-                productSet = getProductsFromIds(cartItems, response);
-                setProductCart(productSet);
-            });
-
-    } else {
-        productSet = getProductsFromIds(cartItems, products);
-        setProductCart(productSet);
-    }
-  }, [cartItems, products])
+  useEffect(() => setProductCart(cartItems), [cartItems]);
 
   return !isDefined(productCart) || !isDefined(platform) ? <></> : (
     <Fragment>

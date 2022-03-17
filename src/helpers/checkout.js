@@ -127,7 +127,7 @@ const isRelaypoint = (condition, relaypoints) => {
 
 export const checkForRestrictions = (catalog, cart, categories, addToast = null) => {
     let hasRestriction = false;
-    if (isDefinedAndNotVoid(cart) && isDefined(catalog) && isDefinedAndNotVoid(categories)) {
+    if (isDefinedAndNotVoid(cart) && Array.isArray(cart) && isDefined(catalog) && isDefinedAndNotVoid(categories)) {
         let activeCategories = [];
         cart.map(item => {
           if (isDefined(item.product) && isDefinedAndNotVoid(item.product.categories)) {
@@ -149,9 +149,8 @@ export const checkForRestrictions = (catalog, cart, categories, addToast = null)
                 if (isDefined(restriction) && c.quantity > restriction.quantity) {
                     hasRestriction = true;
                     const message = "Les livraisons sur la " + catalog.name + " de " + c.category.name + " sont limitées à " + restriction.quantity + " " + restriction.unit + '/envoi';
-                    isDefined(addToast) ?
-                        addToast(message, { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 }) :
-                        console.log(message);
+                    isDefined(addToast) &&
+                        addToast(message, { appearance: "error", autoDismiss: true, autoDismissTimeout: 10000 });
                 }
             });
         }

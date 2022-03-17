@@ -1,3 +1,4 @@
+import ProductActions from "../services/ProductActions";
 import { isDefined, isDefinedAndNotVoid } from "./utils";
 
 // get products
@@ -229,22 +230,42 @@ export const toggleShopTopFilter = e => {
   e.currentTarget.classList.toggle("active");
 };
 
-export const getProductsFromIds = (ids, products) => {
-    return ids.length <= 0 ? [] : ids.map(element => {
-        let i = products.find(product => product.id == element.product.id);
-        return {...element, product: i};
+export const getProductsFromIds = async (cart, products) => {
+  if (cart.length > 0) {
+    const ids = cart.map(item => item.product.id);
+    const dbProducts = await ProductActions.findProductWithIds(ids);
+    const newCart = cart.map(item => {
+        const dbProduct = dbProducts.find(p => p.id == item.product.id);
+        return {...item, product: dbProduct}
     });
+    return newCart.filter(item => isDefined(item.product) && isDefined(item.product.name));
+  }
+  return [];
 };
+
+// export const getProductsFromIds = (ids, products) => {
+//   return ids.length <= 0 ? [] : ids.map(element => {
+//       let i = products.find(product => product.id == element.product.id);
+//       return {...element, product: i};
+//   });
+// };
 
 export const setSecuredProducts = products => {
     return products.map(product => {
-        return Object.keys(product).includes('product') ? {...product, product: {id: product.product.id}} : { id: product.id };
+        const productObject = Object.keys(product).includes('product') ? product.product : product;
+        const { saleCount, needsTraceability, department, storeAvailable, costs, suppliers, accountingId,
+                lastCost, isSold, isFabricated, updatedAt, stock, ...publicVariables } = productObject;
+        return Object.keys(product).includes('product') ? {...product, product: publicVariables} : publicVariables;
     });
 };
 
 export const setSecuredProduct = product => {
-    const securedProduct = Object.keys(product).includes('product') ? {id: product.product.id} : { id: product.id };
-    return securedProduct;
+    // const securedProduct = Object.keys(product).includes('product') ? {id: product.product.id} : { id: product.id };
+    const productObject = Object.keys(product).includes('product') ? product.product : product;
+    const { saleCount, needsTraceability, department, storeAvailable, costs, suppliers, accountingId,
+            lastCost, isSold, isFabricated, updatedAt, stock, ...publicVariables } = productObject;
+    return publicVariables;
+    // return  Object.keys(product).includes('product') ? ;
 };
 
 export const getElementsFromIds = (ids, products) => {

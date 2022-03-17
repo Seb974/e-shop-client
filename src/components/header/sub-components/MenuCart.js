@@ -5,7 +5,6 @@ import { useToasts } from "react-toast-notifications";
 import ProductsContext from "../../../contexts/ProductsContext";
 import { getDiscountPrice } from "../../../helpers/product";
 import { isDefined, isDefinedAndNotVoid } from "../../../helpers/utils";
-import { getProductsFromIds } from '../../../helpers/product';
 import api from "../../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../../contexts/AuthContext";
@@ -28,50 +27,58 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
 
   useEffect(() => {
       setPackageUpdate(false);
-      const productSet = getProductsFromIds(cartData, products);
-      setProductCart(productSet);
-  }, [cartData, products]);
+      setProductCart(cartData);
+  }, [cartData]);
 
   useEffect(() => {
     if (isDefined(selectedCatalog) && isDefinedAndNotVoid(categories))
-        checkForRestrictions(selectedCatalog, getProductsFromIds(cartData, products), categories, addToast);
+        checkForRestrictions(selectedCatalog, cartData, categories, addToast);
   }, [cartData, selectedCatalog]);
 
   useEffect(() => {
-    if (!packageUpdate)
-      updatePackages();
+      if (!packageUpdate)
+        updatePackages();
   }, [productCart]);
 
-  useEffect(() => updatePackages(), [containers, selectedCatalog]);
+  useEffect(() => {
+      updatePackages();
+    }, [cartData, containers, selectedCatalog]);
 
   useEffect(() => {
-      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {     // && selectedCatalog.needsParcel
-          if (isDefinedAndNotVoid(packages) && selectedCatalog.needsParcel) {
-              setPackageUpdate(true);
-              const packageProducts = formatPackages(packages, country);
-              setProductCart([
-                  ...productCart.filter(product => !isDefined(product.isPackage)), 
-                  ...packageProducts
-              ]);
-              setTotalWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))));
-              setAvailableWeight(getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages));
-          } else if (packages.length === 0) {
-                  setPackageUpdate(false);
-                  const productSet = getProductsFromIds(cartData, products);
-                  setProductCart(productSet);
-                  setTotalWeight(0);
-                  setAvailableWeight(0);
-          }
-      } else if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && !selectedCatalog.needsParcel && productCart.filter(product => isDefined(product.isPackage)).length > 0) {
-          const productSet = getProductsFromIds(cartData, products);
-          setProductCart(productSet);
-          setTotalWeight(0);
-          setAvailableWeight(0);
-      }
+    getPackagesAssociatedToCart();
   }, [packages]);
 
+  useEffect(()  => {
+    if (!isDefinedAndNotVoid(packages))
+      getPackagesAssociatedToCart();
+  }, [cartData]);
+
+  const getPackagesAssociatedToCart = () => {
+    if (isDefinedAndNotVoid(productCart) && Array.isArray(productCart) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
+      if (isDefinedAndNotVoid(packages) && selectedCatalog.needsParcel) {
+          setPackageUpdate(true);
+          const packageProducts = formatPackages(packages, country);
+          setProductCart([
+              ...productCart.filter(product => !isDefined(product.isPackage)), 
+              ...packageProducts
+          ]);
+          setTotalWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))));
+          setAvailableWeight(getAvailableWeight(getOrderWeight(productCart.filter(product => !isDefined(product.isPackage))), packages));
+      } else if (packages.length === 0) {
+              setPackageUpdate(false);
+              setProductCart(cartData);
+              setTotalWeight(0);
+              setAvailableWeight(0);
+      }
+  } else if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && !selectedCatalog.needsParcel && productCart.filter(product => isDefined(product.isPackage)).length > 0) {
+      setProductCart(cartData);
+      setTotalWeight(0);
+      setAvailableWeight(0);
+  }
+  };
+
   const updatePackages = () => {
-      if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog)) {
+      if (isDefinedAndNotVoid(productCart) && Array.isArray(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog)) {
           setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
           setPackageUpdate(false);
       }
@@ -85,7 +92,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
 
   return (
     <div className={"shopping-cart-content " + active}>
-      { isDefinedAndNotVoid(productCart) ?
+      { isDefinedAndNotVoid(productCart) && Array.isArray(productCart) ?
         <Fragment>
           <ul>
             { productCart.map((single, key) => {

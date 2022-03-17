@@ -39,6 +39,13 @@ function findSearchedProducts(catalog, word) {
             .then(response =>response.data);
 }
 
+function findProductWithIds(enabledIds) {
+    const ids = getIdsList(enabledIds);
+    return api
+        .get(`/api/products?${ ids }&available=true&order[saleCount]=desc`)
+        .then(response => response.data['hydra:member']);
+}
+
 function deleteProduct(id) {
     return api
         .delete('/api/products/' + id);
@@ -67,10 +74,20 @@ function deleteFromMercure(products, id) {
     return products.filter(item => parseInt(item.id) !== parseInt(id));
 }
 
+function getIdsList(ids) {
+    let idsList = "";
+    ids.map((id, i) => {
+        const separator = i < ids.length - 1 ? "&" : "";
+        idsList += "id[]=" + id + separator;
+    });
+    return idsList;
+}
+
 export default { 
     findAll,
     findPerCategory,
     findTopProducts,
+    findProductWithIds,
     findSearchedProducts,
     delete: deleteProduct,
     find, 

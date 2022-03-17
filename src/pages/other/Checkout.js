@@ -69,10 +69,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   useEffect(() => setCurrentUser(), [currentUser]);
 
-  useEffect(() => {
-      const productSet = getProductsFromIds(cartItems, products);
-      setProductCart(productSet);
-  }, [cartItems, products]);
+  useEffect(() => setProductCart(cartItems), [cartItems]);
 
   const onUserInputChange = (newUser) => setUser(newUser);
   const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
@@ -176,7 +173,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
       <LayoutSeven stick="stick">
         <div className="checkout-area pt-130 pb-100 mt-5">
           <div className="container">
-            { isDefinedAndNotVoid(productCart) ?
+            { isDefinedAndNotVoid(productCart) && Array.isArray(productCart) ?
                 <div className="row">
                   <div className="col-lg-7">
                   <form>
