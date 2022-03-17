@@ -7,23 +7,20 @@ import ProductImageGallery from "../../components/product/ProductImageGallery";
 import ProductDescriptionInfo from "../../components/product/ProductDescriptionInfo";
 import ProductImageGallerySideThumb from "../../components/product/ProductImageGallerySideThumb";
 import ProductImageFixed from "../../components/product/ProductImageFixed";
-import { getElementsFromIds } from "../../helpers/product";
-import ProductsContext from "../../contexts/ProductsContext";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 
 const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, currency, cartItems, wishlistItems, compareItems, product}) => {    // product: storedProduct,
   
   const { addToast } = useToasts();
-  const { products } = useContext(ProductsContext);
   const { country, settings, selectedCatalog } = useContext(AuthContext);
   const taxToApply = !isDefined(product) || !settings.subjectToTaxes ? 0 : product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
   const discountedPrice = isDefined(product) ? getDiscountPrice(product.price, product.discount) : 0;
   const finalProductPrice = isDefined(product) ? +(product.price * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
   const finalDiscountedPrice = isDefined(product) ? +(discountedPrice * currency.currencyRate * (1 + taxToApply)).toFixed(2) : 0;
 
-  const wishlistItem = isDefined(product) && isDefinedAndNotVoid(products) && isDefinedAndNotVoid(wishlistItems) ? getElementsFromIds(wishlistItems, products).filter(wishlistItem => isDefined(wishlistItem) && wishlistItem.id === product.id)[0] : null;
-  const compareItem = isDefined(product) && isDefinedAndNotVoid(products) && isDefinedAndNotVoid(compareItems) ? getElementsFromIds(compareItems, products).filter(compareItem => isDefined(compareItem) && compareItem.id === product.id)[0] : null;
+  const wishlistItem = isDefined(product) && isDefinedAndNotVoid(wishlistItems) ? wishlistItems.filter(wishlistItem => isDefined(wishlistItem) && wishlistItem.id === product.id)[0] : null;
+  const compareItem = isDefined(product) && isDefinedAndNotVoid(compareItems) ? compareItems.filter(compareItem => isDefined(compareItem) && compareItem.id === product.id)[0] : null;
   
   return (
     <div
@@ -69,14 +66,14 @@ const ProductImageDescription = ({spaceTopClass, spaceBottomClass, galleryType, 
 };
 
 ProductImageDescription.propTypes = {
-  cartItems: PropTypes.array,
-  compareItems: PropTypes.array,
-  currency: PropTypes.object,
-  galleryType: PropTypes.string,
-  product: PropTypes.object,
-  spaceBottomClass: PropTypes.string,
-  spaceTopClass: PropTypes.string,
-  wishlistItems: PropTypes.array
+    cartItems: PropTypes.array,
+    compareItems: PropTypes.array,
+    currency: PropTypes.object,
+    galleryType: PropTypes.string,
+    product: PropTypes.object,
+    spaceBottomClass: PropTypes.string,
+    spaceTopClass: PropTypes.string,
+    wishlistItems: PropTypes.array
 };
 
 const mapStateToProps = state => {

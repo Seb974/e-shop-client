@@ -9,8 +9,6 @@ import { deleteFromCompare } from "../../redux/actions/compareActions";
 import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import LayoutSeven from "../../layouts/LayoutSeven";
 import Rating from "../../components/product/sub-components/ProductRating";
-import ProductsContext from "../../contexts/ProductsContext";
-import { getElementsFromIds } from '../../helpers/product';
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
 import api from "../../config/api";
@@ -19,16 +17,11 @@ import Imgix from "react-imgix";
 
 const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompare, currency, strings }) => {
   
-  const { pathname } = location;
   const { addToast } = useToasts();
   const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
-  const { products } = useContext(ProductsContext);
   const [compareList, setCompareList] = useState([]);
 
-  useEffect(() => {
-      const compareSet = getElementsFromIds(compareItems, products);
-      setCompareList(compareSet);
-  }, [compareItems, products]);
+  useEffect(() => setCompareList(compareItems), [compareItems]);
 
   return !isDefined(platform) ? <></> : (
     <Fragment>
@@ -71,7 +64,7 @@ const Compare = ({ location, cartItems, compareItems, addToCart, deleteFromCompa
                                       }
                                   </Link>
                                   <div className="product-title">
-                                    <Link to={ process.env.PUBLIC_URL + "/product/" + compareItem.id }>
+                                    <Link to={`${process.env.PUBLIC_URL}/product/${compareItem.id}`}>
                                       {compareItem.name}
                                     </Link>
                                   </div>

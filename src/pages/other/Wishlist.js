@@ -8,8 +8,6 @@ import { getAvailableStock, getDiscountPrice } from "../../helpers/product";
 import { addToWishlist, deleteFromWishlist, deleteAllFromWishlist } from "../../redux/actions/wishlistActions";
 import { addToCart } from "../../redux/actions/cartActions";
 import LayoutSeven from "../../layouts/LayoutSeven";
-import ProductsContext from "../../contexts/ProductsContext";
-import { getElementsFromIds } from '../../helpers/product';
 import api from "../../config/api";
 import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import { multilanguage } from "redux-multilanguage";
@@ -19,15 +17,10 @@ import Imgix from "react-imgix";
 const Wishlist = ({ location, cartItems, currency, addToCart, wishlistItems, deleteFromWishlist, deleteAllFromWishlist, strings }) => {
   
   const { addToast } = useToasts();
-  const { pathname } = location;
   const { country, settings, selectedCatalog, platform } = useContext(AuthContext);
-  const { products } = useContext(ProductsContext);
   const [favourites, setFavourites] = useState([]);
 
-  useEffect(() => {
-      const favouriteSet = getElementsFromIds(wishlistItems, products);
-      setFavourites(favouriteSet);
-  }, [wishlistItems, products]);
+  useEffect(() => setFavourites(wishlistItems), [wishlistItems]);
 
   return !isDefined(platform) ? <></> : (
     <Fragment>

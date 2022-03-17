@@ -8,7 +8,6 @@ import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import { isDefined } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
-import * as icons from "react-bootstrap-icons";
 import { RiShoppingCartLine, RiCloseLine, RiHeart3Line, RiHeart3Fill, RiShuffleFill, RiEmotionUnhappyLine } from "react-icons/ri";
 import Imgix from "react-imgix";
 

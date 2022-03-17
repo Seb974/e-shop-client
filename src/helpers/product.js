@@ -231,7 +231,7 @@ export const toggleShopTopFilter = e => {
 };
 
 export const getProductsFromIds = async (cart, products) => {
-  if (cart.length > 0) {
+  if (isDefinedAndNotVoid(cart)) {
     const ids = cart.map(item => item.product.id);
     const dbProducts = await ProductActions.findProductWithIds(ids);
     const newCart = cart.map(item => {
@@ -260,18 +260,26 @@ export const setSecuredProducts = products => {
 };
 
 export const setSecuredProduct = product => {
-    // const securedProduct = Object.keys(product).includes('product') ? {id: product.product.id} : { id: product.id };
     const productObject = Object.keys(product).includes('product') ? product.product : product;
     const { saleCount, needsTraceability, department, storeAvailable, costs, suppliers, accountingId,
             lastCost, isSold, isFabricated, updatedAt, stock, ...publicVariables } = productObject;
     return publicVariables;
-    // return  Object.keys(product).includes('product') ? ;
 };
 
-export const getElementsFromIds = (ids, products) => {
-    return ids.map(element => {
-        return products.find(product => product.id == element.id);
-    });
+export const getElementsFromIds = async (compares, products) => {
+    if (isDefinedAndNotVoid(compares)) {
+        const ids = compares.map(compare => compare.id);
+        const dbProducts = await ProductActions.findProductWithIds(ids);
+        const newCompare = compares.map(compare => {
+            const dbProduct = dbProducts.find(p => p.id == compare.id);
+            return dbProduct;
+        });
+        return newCompare.filter(compare => isDefined(compare) && isDefined(compare.name));
+    }
+    return [];
+    // return ids.map(element => {
+    //     return products.find(product => product.id == element.id);
+    // });
 };
 
 export const hasEnoughStock = (product) => {
