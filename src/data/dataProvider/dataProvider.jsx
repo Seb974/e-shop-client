@@ -13,6 +13,7 @@ import CategoryActions from '../../services/CategoryActions';
 import HomepageActions from '../../services/HomepageActions';
 import Mercure from '../../mercure/Mercure';
 import PlatformActions from '../../services/PlatformActions';
+import PlatformContext from '../../contexts/PlatformContext';
 
 const DataProvider = ({ children }) => {
 
@@ -76,6 +77,7 @@ const DataProvider = ({ children }) => {
 
     return (
         <ToastProvider placement="top-right">
+            <PlatformContext.Provider value={ {platform, setPlatform} }>
             <AuthContext.Provider value={ {isAuthenticated, setIsAuthenticated, currentUser, setCurrentUser, eventSource, setEventSource, country, setCountry, settings, setSettings, selectedCatalog, setSelectedCatalog, catalogs, setCatalogs, platform, setPlatform} }>
             <DeliveryContext.Provider value={ {cities, setCities, relaypoints, setRelaypoints, condition, setCondition, packages, setPackages, totalWeight, setTotalWeight, availableWeight, setAvailableWeight, tourings, setTourings} }>
             <ContainerContext.Provider value={{ containers, setContainers }}>
@@ -89,6 +91,7 @@ const DataProvider = ({ children }) => {
             </ContainerContext.Provider>
             </DeliveryContext.Provider>
             </AuthContext.Provider>
+            </PlatformContext.Provider>
         </ToastProvider>
     );
 }

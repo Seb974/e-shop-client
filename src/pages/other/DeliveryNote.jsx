@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 import { isDefined } from '../../helpers/utils';
 import DeliveryInformations from '../../components/deliveryNotes/deliveryInformations';
 import OrderActions from '../../services/OrderActions';
+import PlatformContext from '../../contexts/PlatformContext';
 
 const styles = StyleSheet.create({
     viewer: {
@@ -87,6 +88,7 @@ const DeliveryNote = ({ match }) => {
     const { id = "new" } = match.params;
     const maxPerPage = 15;
     const [order, setOrder] = useState(null);
+    const { platform } = useContext(PlatformContext);
 
     useEffect(() => {
         if (id !== "new")
@@ -103,7 +105,7 @@ const DeliveryNote = ({ match }) => {
     return !isDefined(order) ? <></> : (
         <PDFViewer id="deliveryViewer" style={ styles.viewer }>
             <Document style={ styles.viewer }>
-                <DeliveryInformations order={ order } ordersLength={ order.items.length } maxPerPage={ maxPerPage } packagesLength={ isDefined(order.packages) ? order.packages.length : 0 }/> 
+                <DeliveryInformations order={ order } ordersLength={ order.items.length } maxPerPage={ maxPerPage } packagesLength={ isDefined(order.packages) ? order.packages.length : 0 } platform={ platform }/> 
             </Document>
         </PDFViewer>
     );
