@@ -5,9 +5,8 @@ import Col from 'react-bootstrap/Col';
 import Field from '../../components/forms/Field';
 import AuthActions from '../../services/AuthActions';
 import AuthContext from '../../contexts/AuthContext';
-// import FacebookLogin from 'react-facebook-login';
 
-const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
+const Login = ({ onEnd, forgetPassword, setForgetPassword, setLoading }) => {
 
     const { setIsAuthenticated } = useContext(AuthContext);
     const [credentials, setCredentials] = useState({username: '', password: ''});
@@ -19,22 +18,20 @@ const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
         AuthActions.authenticate(credentials)
                    .then(response => {
                        setError("");
                        setIsAuthenticated(true);
+                       setLoading(false);
                        onEnd();
                     })
                    .catch(error => {
                        console.log(error);
+                       setLoading(false);
                        setError("Paramètres de connexion invalides")
                     });
     }
-
-    // const responseFacebook = response => {
-    //     console.log(response);
-    //   }
-
     return forgetPassword ? <></> : (
         <>
             <Form onSubmit={ handleSubmit }>
@@ -60,7 +57,7 @@ const Login = ({ onEnd, forgetPassword, setForgetPassword }) => {
                 </Form.Group>
                 <Form.Row>
                     <Form.Group as={Col} md={12} className="text-center" >
-                        <Button variant="success" type="submit">S'IDENTIFIER</Button>  {/* variant="primary" style={{ backgroundColor: '#4C69B9' }} */}
+                        <Button variant="success" type="submit">S'IDENTIFIER</Button>
                     </Form.Group>
                 </Form.Row>
             </Form>

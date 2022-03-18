@@ -8,7 +8,7 @@ import AuthActions from '../../services/AuthActions';
 import AuthContext from '../../contexts/AuthContext';
 import { useToasts } from "react-toast-notifications";
 
-const ForgotPassword = ({ onEnd, strings }) => {
+const ForgotPassword = ({ onEnd, setLoading, strings }) => {
 
     const { addToast } = useToasts();
     const { setIsAuthenticated } = useContext(AuthContext);
@@ -21,15 +21,18 @@ const ForgotPassword = ({ onEnd, strings }) => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setLoading(true);
         AuthActions.resetPassword(credentials.username)
                    .then(response => {
                        setError("");
                        setIsAuthenticated(true);
+                       setLoading(false);
                        onEnd();
                        addToast(strings["reset_password_success"], { appearance: "success", autoDismiss: true});
                     })
                    .catch(error => {
                        console.log(error);
+                       setLoading(false);
                        setError("Paramètres de connexion invalides")
                     });
     }

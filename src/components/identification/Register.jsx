@@ -6,7 +6,7 @@ import Col from 'react-bootstrap/Col';
 import Field from '../forms/Field';
 import UserActions from '../../services/UserActions';
 
-const Register = ({ onEnd }) => {
+const Register = ({ onEnd, setLoading }) => {
 
     const [user, setUser] = useState({name:"", email: "", password: "", confirmPassword: "", acceptCGV: false, acceptRGPD: false});
     const [errors, setErrors] = useState({name:"", email: "", password: "", confirmPassword: "", acceptCGV: "", acceptRGPD: ""});
@@ -34,10 +34,13 @@ const Register = ({ onEnd }) => {
             return ;
         }
         try {
-            UserActions.register(user);
+            setLoading(true);
+            const newUser = await UserActions.register(user);
             setErrors({});
+            setLoading(false);
             onEnd();
         } catch ( e ) {
+            setLoading(false);
             if (e.response !== undefined) {
                 const { violations } = e.response.data;
                 if (violations) {
