@@ -96,7 +96,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
         <Fragment>
           <ul>
             { productCart.map((single, key) => {
-              const taxToApply = !isDefined(single) || !isDefined(single.product) || !settings.subjectToTaxes ? 0 : 
+              const taxToApply = !isDefined(single) || !isDefined(single.product) || !isDefined(single.product.tax) || !settings.subjectToTaxes ? 0 : 
                 single.product.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
               const discountedPrice = isDefined(single.product) ? getDiscountPrice(single.product.price, single.product.discount, single.product.offerEnd) : 0;
               const finalProductPrice = isDefined(single.product) ? (Math.round(single.product.price * currency.currencyRate * (1 + taxToApply) * 1000) / 1000) : 0;    // .toFixed(2)
@@ -110,7 +110,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                 <li className="single-shopping-cart" key={ key }>
                   <div className="shopping-cart-img">
                     <Link to={process.env.PUBLIC_URL + "/product/" + single.product.id}>
-                      { isDefined(single.isPackage) && single.isPackage ?
+                      { isDefined(single.product.image) && (isDefined(single.isPackage) && single.isPackage  ?
                             isDefined(single.product.image.imgPath) ?
                                 <Imgix  src={ single.product.image.imgPath } className="lazyload img-fluid" alt={ single.product.image.filePath } width={ 600 } disableSrcSet={ true } disableLibraryParam={ true }
                                         attributeConfig={{ srcSet: 'data-srcset', sizes: 'data-sizes'}}
@@ -124,7 +124,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
                                 />
                                 :
                                 <img alt="" src={ api.API_DOMAIN + '/uploads/pictures/' + single.product.image.filePath } className="img-fluid"/>
-                      }
+                     )}
                     </Link>
                   </div>
                   <div className="shopping-cart-title">

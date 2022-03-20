@@ -29,7 +29,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   const { products, navSearch, selectedCategory, categories, setProducts, setSelectedCategory } = useContext(ProductsContext);
   const [totalItems, setTotalItems] = useState(0);
 
-  const pageLimit = 6;
+  const pageLimit = 12;
 
   const getLayout = layout => setLayout(layout);
 
@@ -102,7 +102,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
 
   const updateProducts = async (page = 1) => {
     setCurrentPage(page);
-    const newData = await getProducts();
+    const newData = await getProducts(page);
     uploadDatas(newData);
   };
 
