@@ -24,7 +24,7 @@ const DataProvider = ({ children }) => {
     const [cities, setCities] = useState([]);
     const [catalogs, setCatalogs] = useState([]);
     const [selectedCatalog, setSelectedCatalog] = useState(null);
-    const [selectedCategory, setSelectedCategory] = useState(-1);
+    const [selectedCategory, setSelectedCategory] = useState(null);
     const [relaypoints, setRelaypoints] = useState([]);
     const [condition, setCondition] = useState(undefined);
     const [eventSource, setEventSource] = useState({});

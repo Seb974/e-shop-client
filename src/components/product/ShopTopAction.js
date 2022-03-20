@@ -12,18 +12,18 @@ const ShopTopAction = ({getLayout, getFilterSortParams, productCount, sortedProd
   const { selectedCatalog } = useContext(AuthContext);
   const { categories, navSearch, setNavSearch, selectedCategory, setSelectedCategory } = useContext(ProductsContext);
 
-  useEffect(() => {
-    if (location.search.length > 0) {
-      const urlSearchParams = new URLSearchParams(location.search);
-      const params = Object.fromEntries(urlSearchParams.entries());
-      if (isDefinedAndNotVoid(params['category'])) {
-          const newSelection = categories.find(c => c.id === parseInt(params['category']));
-          if (isDefined(newSelection))
-              setSelectedCategory(newSelection.id);
-      }
-      window.history.replaceState({}, document.title, "#" + location.pathname);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (location.search.length > 0) {
+  //     const urlSearchParams = new URLSearchParams(location.search);
+  //     const params = Object.fromEntries(urlSearchParams.entries());
+  //     if (isDefinedAndNotVoid(params['category'])) {
+  //         const newSelection = categories.find(c => c.id === parseInt(params['category']));
+  //         if (isDefined(newSelection))
+  //             setSelectedCategory(newSelection.id);
+  //     }
+  //     window.history.replaceState({}, document.title, "#" + location.pathname);
+  //   }
+  // }, []);
 
   const handleSearchChange = ({ currentTarget }) => setSearch(currentTarget.value);
   const handleCategoryChange = ({ currentTarget }) => setSelectedCategory(currentTarget.value);

@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     background: {
         position: 'relative',
         top: 180,
-        zIndex: -20,
+        zIndex: -20
     },
     body: {
         position: 'absolute',
@@ -61,10 +61,6 @@ const styles = StyleSheet.create({
         fontSize: 8,
         marginRight: 90,
         marginLeft: 'auto'
-        // marginRight: 30,
-        // width: '100%',
-        // paddingRight: 30
-
     },
     pageText: {
         marginLeft: 12,
@@ -102,9 +98,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 18,
-        textAlign: 'center',
-        // marginLeft: 'auto',
-        // marginRight: 'auto'
+        textAlign: 'center'
     },
     footer: {
         position: 'absolute',
@@ -112,8 +106,7 @@ const styles = StyleSheet.create({
         bottom: 10,
         left: 0,
         right: 0,
-        textAlign: 'left',
-        // color: 'grey'
+        textAlign: 'left'
     }
 });
 

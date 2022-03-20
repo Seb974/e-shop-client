@@ -9,7 +9,7 @@ import ProductsContext from "../../contexts/ProductsContext";
 import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import { setActiveLayoutById } from "../../helpers/product";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 import AuthContext from "../../contexts/AuthContext";
 import Paginator from "../../components/paginator/paginator";
 import ProductActions from "../../services/ProductActions";
@@ -24,12 +24,12 @@ const ShopGridNoSidebar = ({ location, strings }) => {
   const [filterSortValue, setFilterSortValue] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [currentData, setCurrentData] = useState([]);
+  const [loadedCategory, setLoadedCategory] = useState(null);
   const { platform, selectedCatalog } = useContext(AuthContext);
-  const { products, navSearch, selectedCategory, setProducts } = useContext(ProductsContext);
+  const { products, navSearch, selectedCategory, categories, setProducts, setSelectedCategory } = useContext(ProductsContext);
   const [totalItems, setTotalItems] = useState(0);
 
-  const pageLimit = 12;
-  const { pathname } = location;
+  const pageLimit = 6;
 
   const getLayout = layout => setLayout(layout);
 
@@ -38,63 +38,78 @@ const ShopGridNoSidebar = ({ location, strings }) => {
     setFilterSortValue(sortValue);
   };
 
-  useEffect(() => getProducts(), []);
-  useEffect(() => setActiveLayoutById(layout), [platform]);
+  useEffect(() => {
+    if (location.search.length > 0) {
+      const urlSearchParams = new URLSearchParams(location.search);
+      const params = Object.fromEntries(urlSearchParams.entries());
+      if (isDefinedAndNotVoid(params['category'])) {
+          const newSelection = categories.find(c => c.id === parseInt(params['category']));
+          if (isDefined(newSelection))
+              setSelectedCategory(newSelection.id);
+      }
+      window.history.replaceState({}, document.title, "#" + location.pathname);
+    } else {
+      setSelectedCategory(-1);
+    }
+  }, []);
 
-  useEffect(() => getProducts(currentPage), [currentPage]);
+  useEffect(() => setActiveLayoutById(layout), [platform]);
 
   useEffect(() => setProductsToDisplay(), [products]);
 
-  useEffect(() => {
-    setCurrentPage(1);
-    if (isDefined(navSearch) && navSearch.length > 0) {
-        searchWord();
-    } else {
-        getProducts();
-    }
-  }, [navSearch]);
+  useEffect(() => updateSearchedProducts(), [navSearch]);
 
-  useEffect(() => {
-        setCurrentPage(1);
-        getProducts();
-  }, [selectedCategory, selectedCatalog]);
+  useEffect(() => updateProducts(), [selectedCategory, selectedCatalog]);
 
   const setProductsToDisplay = () => {
-    if (isDefined(products) && isDefined(selectedCatalog))
+    if (isDefined(products) && isDefined(selectedCatalog) && loadedCategory === selectedCategory)
         setCurrentData(products);
   };
 
-  const searchWord = () => {
+  const searchWord = async () => {
       if (isDefined(navSearch) && navSearch.length > 0) {
           setLoading(true);
-          ProductActions
+          return await ProductActions
               .findSearchedProducts(selectedCatalog.id, navSearch)
-              .then(response => {
-                setProducts(response['hydra:member']);
-                setTotalItems(response['hydra:totalItems']);
-                setLoading(false);
-              })
               .catch(error => setLoading(false));
       } 
       else {
-          setCurrentPage(1);
-          getProducts();
-          setLoading(false);
+        updateProducts();
+        setLoading(false);
       }
   };
 
-  const getProducts = (page = 1) => {
-    if (page >= 1 && isDefined(selectedCatalog)) {
+  const getProducts = async (page = 1) => {
+    if (page >= 1 && isDefined(selectedCatalog) && isDefined(selectedCategory)) {
         setLoading(true);
-        ProductActions
+        return await ProductActions
             .findPerCategory(selectedCatalog.id, selectedCategory, page, pageLimit)
-            .then(response => {
-              setProducts(response['hydra:member']);
-              setTotalItems(response['hydra:totalItems']);
-              setLoading(false);
-            })
             .catch(error => setLoading(false));
     }
+    return null;
+  };
+
+  const onPageChange = (newPage) => updateProducts(newPage);
+
+  const uploadDatas = newData => {
+    if (isDefined(newData)) {
+      setLoadedCategory(selectedCategory);
+      setProducts(newData['hydra:member']);
+      setTotalItems(newData['hydra:totalItems']);
+      setLoading(false);
+    }
+  };
+
+  const updateProducts = async (page = 1) => {
+    setCurrentPage(page);
+    const newData = await getProducts();
+    uploadDatas(newData);
+  };
+
+  const updateSearchedProducts = async () => {
+      setCurrentPage(1);
+      const newData = isDefined(navSearch) && navSearch.length > 0 ? await searchWord() : await getProducts();
+      uploadDatas(newData);
   };
 
   return !isDefined(platform) ? <></> : (
@@ -138,7 +153,7 @@ const ShopGridNoSidebar = ({ location, strings }) => {
                       pageLimit={ pageLimit }
                       pageNeighbours={ 3 }
                       currentPage={ currentPage }
-                      setCurrentPage={ setCurrentPage }
+                      setCurrentPage={ onPageChange }
                     />
                     <Paginator />
                   </div>
