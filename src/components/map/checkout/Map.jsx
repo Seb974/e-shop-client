@@ -13,7 +13,7 @@ import SearchBar from './search/searchBar';
 // eslint-disable-next-line import/no-webpack-loader-syntax
 mapboxgl.workerClass = require("worker-loader!mapbox-gl/dist/mapbox-gl-csp-worker").default;
 
-const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount, objectDiscount, setObjectDiscount, errors }) => {
+const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount, objectDiscount, setObjectDiscount, errors, setErrors }) => {
 
     const map = useRef(null);
     const searchInput = useRef(null);
@@ -81,15 +81,6 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
     }, [informations.address, relaypoints, cities, selectedCatalog]);
 
     const updatePosition = suggestion => {
-        // const { lat, lng } = suggestion.latlng;
-        // setInformations({
-        //     ...informations, 
-        //     position: [lat, lng], 
-        //     address: suggestion.value, 
-        //     address2: "",
-        //     zipcode : suggestion.postcodes[0], 
-        //     city: suggestion.city
-        // });
         const newSelection = getNewSelectedPosition(suggestion, informations);
         setInformations(newSelection);
         setIsRelaypoint(false);
@@ -98,6 +89,8 @@ const Map = ({ informations, setInformations, displayedRelaypoints, setDiscount,
             if (isDefined(newCondition))
                 addToast("Livraison à domicile sélectionné", { appearance: "success", autoDismiss: true });
         }
+        if (isDefined(errors.address) && errors.address.length > 0)
+            setErrors({...errors, address: ""});
     };
 
     const onClear = () => {

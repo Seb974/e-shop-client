@@ -15,7 +15,7 @@ import Mercure from '../../mercure/Mercure';
 import PlatformActions from '../../services/PlatformActions';
 import PlatformContext from '../../contexts/PlatformContext';
 
-const DataProvider = ({ children }) => {
+const DataProvider = ({ loadedPlatform, children }) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(AuthActions.isAuthenticated());
     const [currentUser, setCurrentUser] = useState(AuthActions.getCurrentUser());
@@ -40,13 +40,13 @@ const DataProvider = ({ children }) => {
     const [platform, setPlatform] = useState(null);
 
     useEffect(() => {
+        fetchPlatform();
+        fetchSettings();
         AuthActions.setErrorHandler(setCurrentUser, setIsAuthenticated);
-        PlatformActions.find()
-                       .then(response => setPlatform(response));
-        AuthActions.getUserSettings()
-                   .then(response => setSettings(response));
-        ContainerActions.findAll()
-                        .then(response => setContainers(response));
+        // AuthActions.getUserSettings()
+        //            .then(response => setSettings(response));
+        // ContainerActions.findAll()
+        //                 .then(response => setContainers(response));
         CatalogActions.findAll()
                       .then(response => setCatalogs(response));
         CategoryActions.findAll()
@@ -57,10 +57,15 @@ const DataProvider = ({ children }) => {
 
     useEffect(() => {
         setCurrentUser(AuthActions.getCurrentUser());
-        AuthActions
-            .getUserSettings()
-            .then(response => setSettings(response));
+        fetchSettings();
+        // AuthActions
+        //     .getUserSettings()
+        //     .then(response => setSettings(response));
     }, [isAuthenticated]);
+
+    useEffect(() => console.log(settings), [settings]);
+
+    useEffect(() => console.log(containers), [containers]);
 
     useEffect(() => {
         if (isDefinedAndNotVoid(catalogs) && isDefined(country)) {
@@ -74,6 +79,23 @@ const DataProvider = ({ children }) => {
         if (isDefined(selectedCatalog))
             setCountry(selectedCatalog.code);
     }, [selectedCatalog]);
+
+    const fetchPlatform = () => {
+        if (!isDefined(loadedPlatform))
+            PlatformActions
+                .find()
+                .then(response => setPlatform(response))
+                .catch(error => error)
+        else
+            setPlatform(loadedPlatform);
+    };
+
+    const fetchSettings = async () => {
+        const newSettings = await AuthActions.getUserSettings();
+        const newContainers = await ContainerActions.findAvailable(newSettings);
+        setSettings(newSettings);
+        setContainers(newContainers);
+    };
 
     return (
         <ToastProvider placement="top-right">

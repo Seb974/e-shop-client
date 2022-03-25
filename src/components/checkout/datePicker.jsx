@@ -74,7 +74,7 @@ const DatePicker = ({date, setDate, condition, productCart, strings}) => {
 
     return (
         <>
-            <h3>{ isDefined(selectedCatalog) && selectedCatalog.needsParcel ? strings["shipping_date"] : strings["delivery_date"]}</h3>
+            <h3>{ isDefined(selectedCatalog) && selectedCatalog.deliveredByChronopost  ? strings["shipping_date"] : strings["delivery_date"]}</h3>
             <div className="row">
                 <div className="col-md-12 row-date mb-5">
                     <Flatpickr

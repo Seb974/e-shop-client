@@ -241,5 +241,6 @@
   "refuse": "ich lehne ab",
   "opps": "OPPS! SEITE NICHT GEFUNDEN",
   "not_found": "Es tut uns leid, aber die von Ihnen gesuchte Seite existiert nicht, wurde entfernt, der Name wurde geändert oder ist vorübergehend nicht verfügbar.",
-  "back_to_home": "ZURÜCK ZUR STARTSEITE"
+  "back_to_home": "ZURÜCK ZUR STARTSEITE",
+  "included": "inbegriffen"
 }

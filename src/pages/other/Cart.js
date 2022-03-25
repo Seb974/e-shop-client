@@ -12,7 +12,7 @@ import api from "../../config/api";
 import { multilanguage } from "redux-multilanguage";
 import AuthContext from "../../contexts/AuthContext";
 import Packages from "../../components/cartPage/packages";
-import { getTotalCost } from "../../helpers/containers";
+import { getTotalCost, getTotalPackageTax } from "../../helpers/containers";
 import DeliveryContext from "../../contexts/DeliveryContext";
 import Imgix from "react-imgix";
 
@@ -24,6 +24,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
   const { packages } = useContext(DeliveryContext);
   const [productCart, setProductCart] = useState([]);
   const totalPackages = isDefinedAndNotVoid(packages) ? getTotalCost(packages, country) : 0;
+  const totalPackagesTax = isDefinedAndNotVoid(packages) ? getTotalPackageTax(packages, country) : 0;
   let cartTotalPrice = 0;
   let cartTotalTax = 0;
 
@@ -191,7 +192,7 @@ const Cart = ({ location, cartItems, currency, decreaseQuantity, addToCart, dele
                       }
                       { cartTotalTax > 0 && 
                         <h5>{strings["total_tax"]}{" "}
-                        <span>{ cartTotalTax.toFixed(2) + " " + currency.currencySymbol}</span>
+                        <span>{ (cartTotalTax + totalPackagesTax).toFixed(2) + " " + currency.currencySymbol}</span>
                       </h5>
                       }
 

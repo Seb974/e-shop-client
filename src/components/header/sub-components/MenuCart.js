@@ -42,7 +42,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
 
   useEffect(() => {
       updatePackages();
-    }, [cartData, containers, selectedCatalog]);
+    }, [cartData, containers, selectedCatalog, settings]);
 
   useEffect(() => {
     getPackagesAssociatedToCart();
@@ -54,8 +54,8 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
   }, [cartData]);
 
   const getPackagesAssociatedToCart = () => {
-    if (isDefinedAndNotVoid(productCart) && Array.isArray(productCart) && isDefined(selectedCatalog) && selectedCatalog.needsParcel) {
-      if (isDefinedAndNotVoid(packages) && selectedCatalog.needsParcel) {
+    if (isDefinedAndNotVoid(productCart) && Array.isArray(productCart) && isDefined(selectedCatalog) ) {
+      if (isDefinedAndNotVoid(packages) && selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) {
           setPackageUpdate(true);
           const packageProducts = formatPackages(packages, country);
           setProductCart([
@@ -70,7 +70,7 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
               setTotalWeight(0);
               setAvailableWeight(0);
       }
-  } else if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && !selectedCatalog.needsParcel && productCart.filter(product => isDefined(product.isPackage)).length > 0) {
+  } else if (isDefinedAndNotVoid(productCart) && isDefinedAndNotVoid(products) && isDefined(selectedCatalog) && !(selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) && productCart.filter(product => isDefined(product.isPackage)).length > 0) {    // && !selectedCatalog.needsParcel
       setProductCart(cartData);
       setTotalWeight(0);
       setAvailableWeight(0);
@@ -79,10 +79,12 @@ const MenuCart = ({ cartData, currency, deleteFromCart, active = "", strings }) 
 
   const updatePackages = () => {
       if (isDefinedAndNotVoid(productCart) && Array.isArray(productCart) && isDefinedAndNotVoid(containers) && isDefined(selectedCatalog)) {
-          setPackages(selectedCatalog.needsParcel ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), containers) : []);
-          setPackageUpdate(false);
+        setPackages(selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel) ? definePackages(productCart.filter(product => !isDefined(product.isPackage)), getCatalogContainers(containers)) : []);
+        setPackageUpdate(false);
       }
   };
+
+  const getCatalogContainers = containers => containers.filter(c => c.catalogPrices.find(cp => cp.catalog.code === selectedCatalog.code) !== undefined);
 
   const getVariantName = (variantName, sizeName) => {
     const isVariantEmpty = !isDefined(variantName) || variantName.length === 0 || variantName.replace(" ","").length === 0;

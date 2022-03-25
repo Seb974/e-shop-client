@@ -25,7 +25,6 @@ import PromotionActions from "../../services/PromotionActions";
 import OrderActions from "../../services/OrderActions";
 import { checkForRestrictions, getOrderToWrite, validateForm } from "../../helpers/checkout";
 import api from "../../config/api";
-import { Display } from "react-bootstrap-icons";
 
 const Checkout = ({ location, cartItems, currency, strings }) => {
 
@@ -71,8 +70,17 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
 
   useEffect(() => setProductCart(cartItems), [cartItems]);
 
-  const onUserInputChange = (newUser) => setUser(newUser);
-  const onPhoneChange = (phone) => setInformations(informations => ({...informations, phone}));
+  const onUserInputChange = (newUser, input) => {
+    setUser(newUser);
+    if (isDefined(input) && input.length > 0)
+      setErrors({...errors, [input]: ""});
+  };
+
+  const onPhoneChange = (phone) => {
+    setInformations(informations => ({...informations, phone}));
+    if (isDefined(errors.phone) && errors.phone.length > 0)
+        setErrors({...errors, phone: ""});
+  };
 
   const handleCouponChange = ({ currentTarget }) =>{ 
       setCoupon(currentTarget.value);
@@ -180,7 +188,7 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                     <div className="billing-info-wrap">
                       <h3 className="mb-0">{strings["shipping_details"]}</h3>
                       <ContactPanel user={ user } phone={ informations.phone } onUserChange={ onUserInputChange } onPhoneChange={ onPhoneChange } errors={ errors }/>
-                      <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } displayedRelaypoints={ displayedRelaypoints } setDiscount={ setDiscount } objectDiscount={ objectDiscount } setObjectDiscount={ setObjectDiscount }/>
+                      <CheckoutMap informations={ informations } setInformations={ setInformations } errors={ errors } displayedRelaypoints={ displayedRelaypoints } setDiscount={ setDiscount } objectDiscount={ objectDiscount } setObjectDiscount={ setObjectDiscount } setErrors={ setErrors }/>
                       <div className="additional-info-wrap">
                         <h3>{strings["additional_information"]}</h3>
                         <div className="additional-info">
@@ -267,13 +275,34 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                       </span>
                                   </li>
                               }
+                               { isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) ?    // selectedCatalog.needsParcel        !isDefined(condition) && 
+                              // <div className="your-order-middle"> 
+                                  <ul>
+                                    { packages.map((_package, key) => {
+                                      const packageTax = !isDefined(_package) || !isDefined(_package.container) ? 0 : _package.container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country));
+                                      const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+                                      packageTotalTax += (isDefined(catalogPrice) ? catalogPrice.amount : 0) * _package.quantity * packageTax.percent; 
+                                      return <li key={ key }>
+                                              <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
+                                              <span className="order-price">
+                                                { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 " + currency.currencySymbol : 
+                                                  (catalogPrice.amount * _package.quantity * (1 + (isDefined(packageTax) ? packageTax.percent : 0))).toFixed(2) + " " + currency.currencySymbol 
+                                                }
+                                              </span>
+                                            </li>
+                                      })
+                                    }
+                                  </ul>
+                              // {/* </div>  */}
+                              : <></>
+                          }
                             </ul>
                           </div>
-                          <div className="your-order-bottom">
+                          <div className="your-order-bottom mb-3">
                             <ul>
                                 <li className="your-order-shipping"><strong>{strings["shipping"]}</strong></li>
                                 <li>
-                                  { isDefined(selectedCatalog) && selectedCatalog.needsParcel ? <strong>{strings["total"]}</strong> :
+                                  { isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost) ? <>{strings["included"]}</> :     // selectedCatalog.needsParcel       || (settings.paymentParcel && selectedCatalog.paymentParcel)    <strong>{strings["included"]}</strong> 
                                     !isDefined(condition) || condition.price === 0 ? strings["free_shipping"] : 
                                     condition.minForFree <= cartTotalPrice ? strings["shipping_offered"] : 
                                     (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
@@ -281,18 +310,18 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                 </li>
                             </ul>
                           </div>
-                          { !isDefined(condition) && isDefined(selectedCatalog) && selectedCatalog.needsParcel ? 
+                          {/* { isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) ?    // selectedCatalog.needsParcel        !isDefined(condition) && 
                               <div className="your-order-middle"> 
                                     <ul>
                                       { packages.map((_package, key) => {
-                                        const packageTax = !isDefined(_package) || !isDefined(_package.container) ? 0 : _package.container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country)).percent;
+                                        const packageTax = !isDefined(_package) || !isDefined(_package.container) ? 0 : _package.container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === (isDefined(selectedCatalog) ? selectedCatalog.code : country));
                                         const catalogPrice = _package.container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
-                                        packageTotalTax += (isDefined(catalogPrice) ? catalogPrice.amount : 0) * _package.quantity * packageTax; 
+                                        packageTotalTax += (isDefined(catalogPrice) ? catalogPrice.amount : 0) * _package.quantity * packageTax.percent; 
                                         return <li key={ key }>
                                                 <span className="order-middle-left">{ _package.container.name + " X " + _package.quantity + " U"}</span>
                                                 <span className="order-price">
                                                   { !isDefined(settings) || !isDefined(catalogPrice) || !isDefined(catalogPrice) ? "0 " + currency.currencySymbol : 
-                                                    (catalogPrice.amount * _package.quantity).toFixed(2) + " " + currency.currencySymbol 
+                                                    (catalogPrice.amount * _package.quantity * (1 + (isDefined(packageTax) ? packageTax.percent : 0))).toFixed(2) + " " + currency.currencySymbol 
                                                   }
                                                 </span>
                                               </li>
@@ -300,23 +329,36 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                                       }
                                     </ul> 
                               </div> : <></>
-                          }
-                          <div className={isDefined(selectedCatalog) && selectedCatalog.needsParcel ? "your-order-top" : "your-order-total"}>
+                          } */}
+                          <div className={isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) ? "your-order-top" : "your-order-total"}>       {/* selectedCatalog.needsParcel */}
                             <ul>
                                 <li className="order-total">{strings["total"]}</li>
                                 <li>
                                     { 
-                                    isDefined(selectedCatalog) && selectedCatalog.needsParcel ? (Math.round((Math.round( (cartTotalPrice * (1 - discount) + getTotalCost(packages, country)) * 1000 ) / 1000) * 100) / 100).toFixed(2) + " " + currency.currencySymbol
-                                    :
+                                    // isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) ? 
+                                    //   (Math.round((Math.round( (cartTotalPrice * (1 - discount) + getTotalCost(packages, country)) * 1000 ) / 1000) * 100) / 100).toFixed(2) + " " + currency.currencySymbol      // selectedCatalog.needsParcel
+                                    // :
+                                    
+                                    //   !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
+                                    //       !isDefined(objectDiscount) || objectDiscount.percentage ? 
+                                    //           (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
+                                    //           (Math.round((cartTotalPrice - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
+                                    //   :
+                                    //       !isDefined(objectDiscount) || objectDiscount.percentage ? 
+                                    //           (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
+                                    //           (Math.round((cartTotalPrice - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
+                                    // isDefined(selectedCatalog) && (selectedCatalog.deliveredByChronopost || (settings.paymentParcel && selectedCatalog.paymentParcel)) ? 
+                                    //   (Math.round((Math.round( (cartTotalPrice * (1 - discount) + getTotalCost(packages, country)) * 1000 ) / 1000) * 100) / 100).toFixed(2) + " " + currency.currencySymbol      // selectedCatalog.needsParcel
+                                    // :
                                     
                                       !isDefined(condition) || condition.minForFree <= cartTotalPrice ? 
                                           !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
-                                              (Math.round((cartTotalPrice - discount) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
+                                              (Math.round((cartTotalPrice * (1 - discount) + getTotalCost(packages, country))* 1000) / 1000).toFixed(2) + " " + currency.currencySymbol :
+                                              (Math.round(((cartTotalPrice - discount) + getTotalCost(packages, country)) * 1000) / 1000).toFixed(2) + " " + currency.currencySymbol
                                       :
-                                          !isDefined(objectDiscount) || objectDiscount.percentage ? 
-                                              (Math.round(cartTotalPrice * (1 - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
-                                              (Math.round((cartTotalPrice - discount) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
+                                      !isDefined(objectDiscount) || objectDiscount.percentage ? 
+                                          (Math.round((cartTotalPrice * (1 - discount) + getTotalCost(packages, country)) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol :
+                                          (Math.round(((cartTotalPrice - discount) + getTotalCost(packages, country)) * 1000) / 1000 + (Math.round(condition.price * (1 + getConditionTax()) * 1000) / 1000)).toFixed(2) + " " + currency.currencySymbol
                                     }
                                 </li>
                             </ul>
@@ -324,13 +366,15 @@ const Checkout = ({ location, cartItems, currency, strings }) => {
                               <div style={{ color: 'black'}}><ul>
                                   <li style={{ color: 'black', fontSize: '0.9em', display: 'flex', justifyContent: 'space-between', width: '100%'}}>
                                     <span style={{ textAlign: 'left'}}> 
-                                    {/*  width: '50%',  */}
                                         {settings.subjectToTaxes ? "Dont TVA" : "TVA"}
                                     </span>
                                     {" "}
                                     <span style={{ textAlign: 'right' }}>
-                                      {/*  width: '50%',  */}
-                                        { ((isDefined(cartTotalTax) ? cartTotalTax : 0) + (isDefined(packageTotalTax) ? packageTotalTax : 0)).toFixed(2) 
+                                        { ((isDefined(cartTotalTax) ? cartTotalTax : 0) + 
+                                          (isDefined(packageTotalTax) ? packageTotalTax : 0) + 
+                                          (isDefined(condition) && condition.minForFree > cartTotalPrice ? condition.price * 
+                                          (isDefined(condition.tax.catalogTaxes.find(t => t.catalog.code === selectedCatalog.code)) ? (condition.tax.catalogTaxes.find(t => t.catalog.code === selectedCatalog.code)).percent : 0)
+                                          : 0 )).toFixed(2) 
                                           + " " + currency.currencySymbol
                                         }
                                     </span>

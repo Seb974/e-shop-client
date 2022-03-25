@@ -51,7 +51,20 @@ const getTotalCost = (packages, country) => {
         return packages.reduce((accumulator, _package) => {
             const { quantity, container } = _package;
             const catalogPrice = container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
-            return accumulator + (quantity * catalogPrice.amount)
+            const catalogTax = container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country);
+            return accumulator + (quantity * (isDefined(catalogPrice) ? catalogPrice.amount : 0) * (1 + (isDefined(catalogTax) ? catalogTax.percent : 0)))
+        }, 0)
+    }
+    return 0;
+}
+
+const getTotalPackageTax = (packages, country) => {
+    if (isDefinedAndNotVoid(packages)) {
+        return packages.reduce((accumulator, _package) => {
+            const { quantity, container } = _package;
+            const catalogPrice = container.catalogPrices.find(catalogPrice => catalogPrice.catalog.code === country);
+            const catalogTax = container.tax.catalogTaxes.find(catalogTax => catalogTax.catalog.code === country);
+            return accumulator + (quantity * (isDefined(catalogPrice) ? catalogPrice.amount : 0) * (isDefined(catalogTax) ? catalogTax.percent : 0));
         }, 0)
     }
     return 0;
@@ -87,4 +100,4 @@ const formatPackages = (packages, country) => {
     });
 }
 
-export { getOrderWeight, getPackages, getAvailableWeight, getTotalCost, definePackages, formatPackages };
+export { getOrderWeight, getPackages, getAvailableWeight, getTotalCost, definePackages, formatPackages, getTotalPackageTax };

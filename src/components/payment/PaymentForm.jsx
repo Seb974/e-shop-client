@@ -102,11 +102,15 @@ const PaymentForm = ({ name, available, user, informations, cartItems, deleteAll
         setLoading(true);
          api.post('/api/create-payment', {items: cartItems, area: selectedCatalog, customer: user, promotion: objectDiscount, condition: condition})
             .then(({data}) => {
-                setClientSecret(data.clientSecret);
-                setAmount(data.amount / 100 );
-                setError(null);
-                setInputError(null);
-                setLoading(false);
+                if (isDefined(data)) {
+                    setClientSecret(data.clientSecret);
+                    setAmount(data.amount / 100 );
+                    setError(null);
+                    setInputError(null);
+                    setLoading(false);
+                } else {
+                    setError(strings["payment_error"]);
+                }
             })
             .catch(error => setError(strings["payment_error"]));
     };

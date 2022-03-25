@@ -4,7 +4,7 @@ import Field from '../Field';
 const ContactPanel = ({ user, phone, onUserChange, onPhoneChange, errors }) => {
 
     const handleChange = ({ currentTarget }) => onPhoneChange(currentTarget.value);
-    const handleUserChange = ({ currentTarget }) => onUserChange({...user, [currentTarget.name]: currentTarget.value});
+    const handleUserChange = ({ currentTarget }) => onUserChange({...user, [currentTarget.name]: currentTarget.value}, currentTarget.name);
 
     return (
         <>

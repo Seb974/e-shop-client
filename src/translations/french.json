@@ -241,5 +241,6 @@
   "refuse": "Je refuse",
   "opps": "OUPS! PAGE NON TROUVÉE",
   "not_found": "Désolé mais la page que vous recherchez n'existe pas, a été supprimée, a changé de nom ou est temporairement indisponible.",
-  "back_to_home": "RETOUR À L'ACCUEIL"
+  "back_to_home": "RETOUR À L'ACCUEIL",
+  "included": "incluse"
 }
