@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import { multilanguage } from "redux-multilanguage";
 import { Link } from "react-router-dom";
 import AuthContext from "../../contexts/AuthContext";
-import { isDefined } from "../../helpers/utils";
+import { isDefined, isDefinedAndNotVoid } from "../../helpers/utils";
 
 const FooterCopyright = ({ footerLogo, spaceBottomClass, colorClass, strings }) => {
 
@@ -11,9 +11,16 @@ const FooterCopyright = ({ footerLogo, spaceBottomClass, colorClass, strings }) 
 
   return (
     <div className={`copyright ${spaceBottomClass ? spaceBottomClass : ""} ${colorClass ? colorClass : ""}`} style={{ marginTop: -40}}>   {/* style={{marginLeft: -100, marginTop: -40}} */}
-      <div className="footer-logo text-center" >   {/* style={{ marginLeft: -20}} */}
+      <div className="footer-logo text-center" >
         <Link to={process.env.PUBLIC_URL + "/"}>
-            <img alt="" src={process.env.PUBLIC_URL + footerLogo} height="100"/>
+          { isDefined(platform) && isDefinedAndNotVoid(platform.logos) && isDefined(platform.logos.find(l => l.type === "LOGO_FULL_DARK")) &&
+            <img
+              src={ (platform.logos.find(l => l.type === "LOGO_FULL_DARK")).image.imgPath }
+              alt={ isDefined(platform) ? platform.name : "LOGO" } 
+              height="100"
+              loading="lazy"
+            />
+          }
         </Link>
       </div>
       <p className="text-center">© { (new Date()).getFullYear() }{" "} <a href="#" rel="noopener noreferrer" target="_blank">{ isDefined(platform) ? platform.name : "" }</a>.<br />{ strings["all_rights_reserved"] }</p>

@@ -20,7 +20,8 @@ const styles = StyleSheet.create({
     background: {
         position: 'relative',
         top: 180,
-        zIndex: -20
+        zIndex: -20,
+        opacity: 0.2
     },
     body: {
         position: 'absolute',
@@ -147,11 +148,25 @@ const DeliveryInformations = ({order, ordersLength, maxPerPage, packagesLength =
 
             return !isDefinedAndNotVoid(itemsToDisplay) ? <></> : (
                 <Page size="A4" style={ styles.page }>
-                    <Image src="/assets/img/logo/logo_transparent.png" style={styles.background} />
+                    { isDefined(platform) && isDefinedAndNotVoid(platform.logos) && isDefined(platform.logos.find(l => l.type === "LOGO_FULL_DARK")) && 
+                        <Image 
+                            src={ (platform.logos.find(l => l.type === "LOGO_FULL_DARK")).image.imgPath }
+                            style={styles.background}
+                            loading="lazy"
+                            alt=""
+                        />
+                    }
                     <View style={ styles.body }>
                         <View style={styles.header}>
                                 <View style={ styles.society }>
-                                    <Image src="/assets/img/logo/logo_fp_4.png" style={{ width: '120px', marginLeft: 5, marginTop: -10, marginBottom: -15}} />
+                                    { isDefined(platform) && isDefinedAndNotVoid(platform.logos) && isDefined(platform.logos.find(l => l.type === "LOGO_STRETCHED_DARK")) && 
+                                        <Image 
+                                            src={ (platform.logos.find(l => l.type === "LOGO_STRETCHED_DARK")).image.imgPath }
+                                            style={{ width: '120px', marginLeft: 5, marginTop: -10, marginBottom: 10}}
+                                            loading="lazy"
+                                            alt=""
+                                        />
+                                    }
                                     <View >
                                         <Text style={styles.text}>{ getPlatformAddress() }</Text>
                                         <Text style={styles.text}>{ getPlatformCity() }</Text>

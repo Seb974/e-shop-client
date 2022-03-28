@@ -56,22 +56,31 @@ export const getProductsTotalTax = (order, catalog) => {
 
 export const getTotalHT = order => {
     const { packages, catalog, totalHT } = order
-    const containersTotal = getContainerTotalHT(packages, catalog);
-    return Math.round((totalHT + containersTotal) * 100) / 100;
+    return Math.round((totalHT) * 100) / 100;
 };
 
 export const getTotalTTC = order => {
-    const { packages, catalog, totalHT } = order
-    const containersTotal = getContainerTotalTTC(packages, catalog);
-    const productsTax = getProductsTotalTax(order, catalog);
-    return Math.round((totalHT + productsTax + containersTotal) * 100) / 100;
+    // const { packages, catalog, totalHT } = order
+    // // const containersTotal = getContainerTotalTTC(packages, catalog);
+    // const productsTax = getProductsTotalTax(order, catalog);
+    // return Math.round((totalHT + productsTax) * 100) / 100;
+    return getTotalHT(order) + getTotalTax(order);
 };
 
 export const getTotalTax = order => {
     const { packages, catalog } = order;
     const productsTotal = getProductsTotalTax(order, catalog);
     const containersTotal = getContainerTotalTax(packages, catalog);
-    return Math.round((productsTotal + containersTotal) * 100) / 100;
+    const deliveryTax = getDeliveryTax(order);
+    return Math.round((productsTotal + containersTotal + deliveryTax) * 100) / 100;
+};
+
+const getDeliveryTax = order => {
+    if (isDefined(order.appliedCondition)) {
+        const catalogTax = order.appliedCondition.tax.catalogTaxes.find(c => c.catalog.id === order.catalog.id);
+        return isDefined(catalogTax) && order.totalHT < order.appliedCondition.minForFree ? order.appliedCondition.price * catalogTax.percent : 0;
+    }
+    return 0;
 };
 
 const getProductTax = (product, catalog) => {
