@@ -1,7 +1,7 @@
 import React from 'react';
 import { Page, Text, View, Document, StyleSheet, PDFViewer } from '@react-pdf/renderer';
 import { isDefined, isDefinedAndNotVoid } from '../../helpers/utils';
-import { getContainerPrice, getTotalHT, getTotalTax, getTotalTTC } from '../../helpers/orders';
+import { getContainerCosts, getContainerPrice, getSubTotalHT, getTotalHT, getTotalTax, getTotalTTC } from '../../helpers/orders';
 
 const styles = StyleSheet.create({
     table: {
@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
     }
 });
 
-const DeliveryTable = ({ order, items }) => {
+const DeliveryTable = ({ order, items, currentPage, numberOfPages }) => {
 
     const getProductName = item => {
         const { variation, size, product } = item;
@@ -101,11 +101,11 @@ const DeliveryTable = ({ order, items }) => {
                 </View> 
             </View>
             {/* TableContent */}
-            { items.map(item => {
+            { items.map((item, i) => {
                 if (!item.isPackage) {
                     const invoicedQty = !isDefined(order.user) || isDefined(order.paymentId) ? item.orderedQty : isDefined(item.preparedQty) ? item.preparedQty : item.orderedQty;
                     return (
-                        <View style={styles.tableRow}>
+                        <View key={ i } style={styles.tableRow}>
                             <View style={styles.productCol}>
                                 <Text style={styles.tableCell}>{ getProductName(item) }</Text> 
                             </View> 
@@ -147,26 +147,87 @@ const DeliveryTable = ({ order, items }) => {
                 }
             })
             }
-            <View style={styles.tableRow}>
-                <View style={styles.productCol}>
-                    <Text style={styles.tableCell}>{ "Livraison" }</Text> 
-                </View> 
-                <View style={styles.tableCol}> 
-                    <Text style={styles.tableCell}>{ "" }</Text>
-                </View>
-                <View style={styles.tableCol}> 
-                    <Text style={styles.tableCell}>{ "" }</Text>
-                </View> 
-                <View style={styles.tableCol}> 
-                    <Text style={styles.tableCell}>{ "" }</Text> 
-                </View>
-                <View style={styles.tableCol}> 
-                    <Text style={styles.tableCell}>{ isDefined(order.appliedCondition) && order.appliedCondition.minForFree > getTotalHT(order) ? order.appliedCondition.price.toFixed(2) + " €" : "Offerte" }</Text> 
-                </View>
-            </View>
-            { ((!isDefinedAndNotVoid(order.packages) && order.items[order.items.length - 1].id === items[items.length - 1].id) ||
-              (isDefinedAndNotVoid(order.packages) && order.packages[order.packages.length - 1].id === items[items.length - 1].id)) &&
+            { currentPage + 1 !== numberOfPages ? 
                 <>
+                    <View style={styles.tableRow}> 
+                        <View style={styles.productFooterCol}> 
+                            <Text style={styles.tableCell}>{ " " }</Text> 
+                        </View> 
+                        <View style={styles.footerCol}> 
+                            <Text style={styles.tableCell}>{ " " }</Text> 
+                        </View> 
+                        <View style={styles.footerCol}> 
+                            <Text style={styles.tableCell}>{ " " }</Text>
+                        </View> 
+                        <View style={styles.footerCol}> 
+                            <Text style={styles.tableCell}>Sous-total page { currentPage + 1 }</Text> 
+                        </View>
+                        <View style={styles.footerCol}> 
+                            <Text style={styles.tableCell}>{ (getSubTotalHT(items, isDefined(order.paymentId))).toFixed(2) + " €" }</Text>
+                        </View> 
+                    </View>
+                </>
+            :
+                <>
+                    <View style={styles.tableRow}>
+                        <View style={styles.productCol}>
+                            <Text style={styles.tableCell}>{ "Livraison" }</Text> 
+                        </View> 
+                        <View style={styles.tableCol}> 
+                            <Text style={styles.tableCell}>{ "" }</Text>
+                        </View>
+                        <View style={styles.tableCol}> 
+                            <Text style={styles.tableCell}>{ "" }</Text>
+                        </View> 
+                        <View style={styles.tableCol}> 
+                            <Text style={styles.tableCell}>{ "" }</Text> 
+                        </View>
+                        <View style={styles.tableCol}> 
+                            <Text style={styles.tableCell}>{ isDefined(order.appliedCondition) && order.appliedCondition.minForFree > getTotalHT(order) ? order.appliedCondition.price.toFixed(2) + " €" : "Offerte" }</Text> 
+                        </View>
+                    </View> 
+                    { numberOfPages > 1 &&
+                        <>
+                            <View style={styles.tableRow}> 
+                                <View style={styles.productFooterCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text> 
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text> 
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text>
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>Sous-total page { currentPage + 1 }</Text> 
+                                </View>
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ (
+                                        getSubTotalHT(items, isDefined(order.paymentId)) + 
+                                        (isDefined(order.appliedCondition) && order.appliedCondition.minForFree > getTotalHT(order) ? order.appliedCondition.price : 0) +
+                                        getContainerCosts(items, order.catalog)
+                                        ).toFixed(2) + " €" }</Text>
+                                </View> 
+                            </View>
+                            <View style={styles.tableRow}> 
+                                <View style={styles.productFooterCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text> 
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text> 
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text>
+                                </View> 
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text> 
+                                </View>
+                                <View style={styles.footerCol}> 
+                                    <Text style={styles.tableCell}>{ " " }</Text>
+                                </View> 
+                            </View>
+                        </>
+                    }
                     <View style={styles.tableRow}> 
                         <View style={styles.productFooterCol}> 
                             <Text style={styles.tableCell}>{ " " }</Text> 
@@ -181,7 +242,7 @@ const DeliveryTable = ({ order, items }) => {
                             <Text style={styles.tableCell}>TOTAL HT</Text> 
                         </View>
                         <View style={styles.footerCol}> 
-                            <Text style={styles.tableCell}>{ (getTotalHT(order)).toFixed(2) + " €" }</Text> 
+                            <Text style={styles.tableCell}>{ (getTotalHT(order)).toFixed(2) + " €" }</Text>
                         </View> 
                     </View>
                     <View style={styles.tableRow}> 
@@ -198,7 +259,7 @@ const DeliveryTable = ({ order, items }) => {
                             <Text style={styles.tableCell}>TVA</Text> 
                         </View>
                         <View style={styles.footerCol}> 
-                            <Text style={styles.tableCell}>{ (getTotalTax(order)).toFixed(2) + " €" }</Text> 
+                            <Text style={styles.tableCell}>{ (getTotalTax(order)).toFixed(2) + " €" }</Text>
                         </View> 
                     </View>
                     <View style={styles.tableRow}> 

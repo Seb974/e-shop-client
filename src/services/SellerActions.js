@@ -12,6 +12,12 @@ function findSellersWithLogo() {
     .then(response => response.data['hydra:member']);
 }
 
+function findActiveSellers() {
+    return api
+        .get('/api/sellers?isActive=true&order[name]=asc')
+        .then(response => response.data['hydra:member']);
+}
+
 function deleteSeller(id) {
     return api.delete('/api/sellers/' + id);
 }
@@ -33,6 +39,7 @@ function create(seller) {
 export default {
     findAll,
     findSellersWithLogo,
+    findActiveSellers,
     delete: deleteSeller,
     find,
     update,
