@@ -132,7 +132,7 @@ const DeliveryInformations = ({order, ordersLength, maxPerPage, packagesLength =
 
         const platformItems = isDefined(order.packages) ? [...linkedItems, ...order.packages.map(p => ({...p, isPackage: true}))] : linkedItems;
 
-        return [...separatedItems, { platform: platform, items: platformItems}];
+        return platformItems.length > 0 ? [...separatedItems, { platform: platform, items: platformItems}] : separatedItems;
     };
 
     const itemsSellers = getItemsSellers(sellers);
